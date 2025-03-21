@@ -2,6 +2,13 @@
 	"name": "orgo",
 	"type": "module",
 	"version": "0.0.1",
+	"private": true,
+	"license": "MIT",
+	"author": "Mohamed Ibrahim",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/MoIbrahim10/orgo"
+	},
 	"scripts": {
 		"dev": "astro dev",
 		"build": "astro build",
@@ -17,7 +24,7 @@
 		"lint:fix-style": "stylelint \"src/**/*.{css,scss}\" --fix",
 		"lint": "npm run lint-oxc && npm run lint-biome && npm run lint-style",
 		"lint:fix": "npm run lint:fix-oxc && npm run lint:fix-biome && npm run lint:fix-style",
-		"ci": "npx @biomejs/biome ci . && npx oxlint && npx stylelint \"**/*.{css,scss}\"",
+		"ci": "npm run check:i18n && npx @biomejs/biome ci . && npx oxlint && npx stylelint \"**/*.{css,scss}\"",
 		"commit": "gitmoji -c"
 	},
 	"dependencies": {
