@@ -1,0 +1,15 @@
+---
+import { getHeaderTranslations } from '../data/translations/header';
+import type { Language } from '../types/translations';
+
+const { lang } = Astro.props as { lang: Language };
+const footerTranslations = getHeaderTranslations(lang);
+---
+
+<footer>
+  <nav>
+    {footerTranslations.links.map(link => (
+      <a href={link.href}>{link.label}</a>
+    ))}
+  </nav>
+</footer>

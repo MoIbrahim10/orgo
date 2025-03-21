@@ -1,0 +1,15 @@
+{
+	"rules": {
+		"semi": ["error", "always"],
+		"quotes": ["error", "single"],
+		"no-console": "warn",
+		"no-unused-vars": "warn",
+		"no-undef": "error",
+		"no-constant-condition": "error",
+		"no-extra-boolean-cast": "error",
+		"no-extra-semi": "error",
+		"no-extra-parens": "error",
+		"no-extra-label": "error",
+		"no-extra-bind": "error"
+	}
+}

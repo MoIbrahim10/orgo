@@ -1,0 +1,37 @@
+---
+import type { Language } from "../types/translations";
+
+interface Props {
+	lang: Language;
+	metaTitle: string;
+	metaDescription: string;
+	ogImage?: string;
+}
+
+const { lang, metaTitle, metaDescription, ogImage } = Astro.props as Props;
+---
+
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{metaTitle}</title>
+    <meta name="description" content={metaDescription} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:title" content={metaTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:locale" content={lang} />
+    <!-- JSON-LD Structured Data for BlogPosting -->
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": metaTitle,
+        "description": metaDescription,
+        "image": ogImage,
+      })}
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

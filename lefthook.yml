@@ -1,0 +1,26 @@
+pre-commit:
+  parallel: true
+  commands:
+    i18n:
+    run: npm run check:i18n
+    biome:
+      glob: "*.{js,ts,tsx,jsx,css,scss,json,jsonc,yml,yaml,mdx,md,cjs,mjs}"
+      run: npx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
+      stage: true
+    oxlint:
+      glob: "*.{js,ts,tsx,jsx}"
+      run: npx oxlint {staged_files}
+    stylelint:
+      glob: "*.{css,scss}"
+      run: npx stylelint --fix {staged_files}
+commit-msg:
+  commands:
+    commitlint:
+      run: npx commitlint --edit {1}
+pre-push:
+  commands:
+    test:
+      run: npm test
+    biome:
+      glob: "*.{js,ts,tsx,jsx,css,scss,json,jsonc,yml,yaml,mdx,md,cjs,mjs}"
+      run: npx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {push_files}

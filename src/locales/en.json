@@ -1,0 +1,21 @@
+{
+	"site": {
+		"title": "Ordo | SaaS Landing Page"
+	},
+	"header": {
+		"logo": "Logo",
+		"links": {
+			"about": "About",
+			"pricing": "Pricing",
+			"blog": "Blog"
+		},
+		"cta": "Get Started"
+	},
+	"hero": {
+		"banner": "All your planning and journaling in one place",
+		"title": "Your Life, Beautifully Organized",
+		"description": "Effortlessly blend your calendars, journals, and to-dos into one seamless experience.",
+		"cta_primary": "Get Started",
+		"cta_secondary": "Learn More"
+	}
+}

@@ -1,0 +1,17 @@
+---
+import { getHeaderTranslations } from '../data/translations/header';
+import type { Language } from '../types/translations';
+
+const { lang } = Astro.props as { lang: Language };
+const headerTranslations = getHeaderTranslations(lang);
+---
+
+<header>
+  <a href="/">{headerTranslations.logo}</a>
+  <nav>
+    {headerTranslations.links.map(link => (
+      <a href={link.href}>{link.label}</a>
+    ))}
+  </nav>
+  <a href="/signup">{headerTranslations.cta}</a>
+</header>

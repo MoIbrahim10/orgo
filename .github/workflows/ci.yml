@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+      - run: npm ci
+      - run: biome ci .
+      - run: npx --yes oxlint@0.0.0 --deny-warnings
+      - run: npx stylelint "**/*.{css,scss}"
+      - uses: wagoid/commitlint-github-action@v6
+      - run: npm test

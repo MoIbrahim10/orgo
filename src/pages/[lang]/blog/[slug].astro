@@ -1,0 +1,59 @@
+---
+import { getCollection, getEntry, render } from "astro:content";
+import { getEntries } from "astro:content";
+import type { Language } from "../../../types/translations";
+
+export async function getStaticPaths() {
+	const pages = await getCollection("blog");
+	return pages.map((page) => {
+		const slug = page.id;
+		const lang = page.data.language;
+		return { params: { lang, slug }, props: page };
+	});
+}
+
+const { lang, slug } = Astro.params as { lang: Language; slug: string };
+const page = Astro.props;
+const authorEntry = await getEntry(page.data.author);
+const author = authorEntry?.data;
+const relatedPosts = await getEntries(page.data.relatedPosts);
+
+const formattedDate = new Date(page.data.publishDate).toLocaleString(lang);
+const { Content } = await render(page);
+---
+<!DOCTYPE html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{page.data.metaTitle || page.data.title}</title>
+    <meta name="description" content={page.data.metaDescription || ""} />
+    <link rel="canonical" href={page.data.canonicalURL} />
+    {page.data.ogImage && <meta property="og:image" content={page.data.ogImage} />}
+  </head>
+  <body>
+    <article>
+      <header>
+        <h1>{page.data.title}</h1>
+        <p>
+          by {author?.name ?? "Unknown"} • {formattedDate}
+        </p>
+        {page.data.image && (
+          <img src={page.data.image.src} alt={page.data.image.alt} />
+        )}
+      </header>
+      <section>
+        <Content />
+
+          <ul>
+            {relatedPosts.map((post) => (
+              <li>
+                <a href={`/${lang}/blog/${post.data.slug}`}>
+                  {post.data.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+    </article>
+  </body>
+</html>

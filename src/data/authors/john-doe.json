@@ -1,0 +1,11 @@
+{
+	"id": "john-doe",
+	"name": "John Doe",
+	"email": "johndoe@gmail.com",
+	"portfolio": "https://johndoe.com",
+	"bio": "John Doe is a web developer and designer living in New York City. He has worked with several web technologies and frameworks.",
+	"image": {
+		"src": "/images/authors/john.jpg",
+		"alt": "Portrait of John Doe"
+	}
+}

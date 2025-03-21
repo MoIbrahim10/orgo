@@ -1,0 +1,18 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import type { Language } from "../../types/translations";
+import { t } from "../../utils/i18n";
+
+export function getStaticPaths() {
+	return [{ params: { lang: "en" } }, { params: { lang: "ar" } }];
+}
+
+const { lang } = Astro.params as { lang: Language };
+const pageTitle = t(lang, "site.title");
+---
+
+<Layout lang={lang} pageTitle={pageTitle}>
+  <h1>Pricing</h1>
+  <p>This is the Pricing page for {lang.toUpperCase()}.</p>
+  <!-- Your pricing details here -->
+</Layout>

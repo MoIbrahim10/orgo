@@ -1,0 +1,11 @@
+{
+	"id": "jane-doe",
+	"name": "Jane Doe",
+	"email": "janedoe@gmail.com",
+	"portfolio": "https://janedoe.com",
+	"bio": "Jane Doe is a web developer and designer living in New York City. She has worked with several web technologies and frameworks.",
+	"image": {
+		"src": "/images/authors/jane.jpg",
+		"alt": "Portrait of Jane Doe"
+	}
+}

@@ -1,14 +1,40 @@
 {
-  "name": "orgo",
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "astro": "^5.5.3"
-  }
+	"name": "orgo",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro",
+		"check:i18n": "ts-node src/utils/checkTranslations.ts",
+		"biome:report": "biome ci --reporter=json-pretty",
+		"lint-biome": "biome lint",
+		"lint-oxc": "npx --yes oxlint@latest",
+		"lint-style": "stylelint \"src/**/*.{css,scss}\"",
+		"lint:fix-oxc": "npx --yes oxlint@latest --fix",
+		"lint:fix-biome": "npx @biomejs/biome lint --write",
+		"lint:fix-style": "stylelint \"src/**/*.{css,scss}\" --fix",
+		"lint": "npm run lint-oxc && npm run lint-biome && npm run lint-style",
+		"lint:fix": "npm run lint:fix-oxc && npm run lint:fix-biome && npm run lint:fix-style",
+		"ci": "npx @biomejs/biome ci . && npx oxlint && npx stylelint \"**/*.{css,scss}\"",
+		"commit": "gitmoji -c"
+	},
+	"dependencies": {
+		"@astrojs/mdx": "^4.2.1",
+		"@tailwindcss/vite": "^4.0.14",
+		"astro": "^5.5.3",
+		"autoprefixer": "^10.4.21",
+		"cssnano": "^7.0.6",
+		"tailwindcss": "^4.0.14"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@commitlint/cli": "^19.8.0",
+		"@commitlint/config-conventional": "^19.8.0",
+		"@types/node": "^22.13.10",
+		"lefthook": "^1.11.3",
+		"stylelint": "^16.16.0",
+		"stylelint-config-standard": "^37.0.0"
+	}
 }

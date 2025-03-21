@@ -1,0 +1,35 @@
+---
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import { getEntries } from "astro:content";
+import Layout from "../../../layouts/BlogLayout.astro";
+import type { Language } from "../../../types/translations";
+
+export function getStaticPaths() {
+	return [{ params: { lang: "en" } }, { params: { lang: "ar" } }];
+}
+
+const { lang } = Astro.params as { lang: Language };
+const posts = await getCollection(
+	"blog",
+	(post) => post.data.language === lang,
+);
+const authors = await getEntries(posts.map((post) => post.data.author));
+
+const metaTitle = `Blog - ${lang.toUpperCase()}`;
+const metaDescription = `Read our latest posts in ${lang.toUpperCase()}`;
+const ogImage = posts[0]?.data.image.src ?? "";
+---
+
+<Layout lang={lang} metaTitle={metaTitle} metaDescription={metaDescription} ogImage={ogImage}>
+  <h1>Blog</h1>
+  <ul>
+    {posts.map(post => (
+      <li>
+        <a href={`/${lang}/blog/${post.data.slug}`}>
+          {post.data.title}
+        </a>
+      </li>
+    ))}
+  </ul>
+</Layout>
