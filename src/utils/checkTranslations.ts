@@ -1,18 +1,18 @@
-import ar from "../locales/ar.json";
-import en from "../locales/en.json";
+import ar from "../locales/ar.json" with { type: "json" };
+import en from "../locales/en.json" with { type: "json" };
 import {
 	type Language,
 	type TranslationSchema,
 	supportedLanguages,
-} from "../types/translations";
+} from "../types/translations.ts";
 
 const translations: Record<Language, TranslationSchema> = { en, ar };
 
-function getKeys(obj: any, prefix = ""): string[] {
+function getKeys(obj: Record<string, unknown>, prefix = ""): string[] {
 	return Object.keys(obj).flatMap((key) => {
 		const path = prefix ? `${prefix}.${key}` : key;
 		return typeof obj[key] === "object" && obj[key] !== null
-			? getKeys(obj[key], path)
+			? getKeys(obj[key] as Record<string, unknown>, path)
 			: [path];
 	});
 }
@@ -20,9 +20,8 @@ function getKeys(obj: any, prefix = ""): string[] {
 function compareKeys() {
 	const defaultKeys = getKeys(translations.en);
 	let isConsistent = true;
-	var x;
-	supportedLanguages.forEach((lang) => {
-		if (lang === "en") return;
+	for (const lang of supportedLanguages) {
+		if (lang === "en") continue;
 
 		const langKeys = getKeys(translations[lang]);
 		const missingKeys = defaultKeys.filter((key) => !langKeys.includes(key));
@@ -30,17 +29,17 @@ function compareKeys() {
 
 		if (missingKeys.length || extraKeys.length) {
 			isConsistent = false;
-			console.error(`🔴 Keys mismatch in ${lang}.json`);
+			globalThis.console.error(`🔴 Keys mismatch in ${lang}.json`);
 			if (missingKeys.length) {
-				console.error(`Missing keys:`, missingKeys);
+				globalThis.console.error("Missing keys:", missingKeys);
 			}
 			if (extraKeys.length) {
-				console.error(`Extra keys:`, extraKeys);
+				globalThis.console.error("Extra keys:", extraKeys);
 			}
 		} else {
-			console.log(`🟢 ${lang}.json is consistent.`);
+			globalThis.console.log(`🟢 ${lang}.json is consistent.`);
 		}
-	});
+	}
 
 	if (!isConsistent) process.exit(1);
 }

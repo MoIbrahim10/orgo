@@ -11,5 +11,13 @@
 		"no-extra-parens": "error",
 		"no-extra-label": "error",
 		"no-extra-bind": "error"
-	}
+	},
+	"overrides": [
+		{
+			"files": ["**/checkTranslations.ts"],
+			"rules": {
+				"no-console": "off"
+			}
+		}
+	]
 }
