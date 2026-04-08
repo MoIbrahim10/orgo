@@ -1,9 +1,9 @@
 export type NavLink = {
-  key: string;
-  href: string;
+	key: string;
+	href: string;
 };
 
 export type NavigationConfig = {
-  header: NavLink[];
-  footer: NavLink[];
+	header: NavLink[];
+	footer: NavLink[];
 };

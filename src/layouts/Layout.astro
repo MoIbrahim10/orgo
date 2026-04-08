@@ -1,25 +1,73 @@
 ---
 import "../styles/global.css";
+
+import Footer from "../components/Footer.astro";
+import Header from "../components/header.astro";
+import { getSiteTranslations } from "../data/translations/site";
+import type { Language } from "../types/translations";
+import { getLanguageDirection } from "../utils/routing";
+
+interface Props {
+	lang: Language;
+	pageTitle?: string;
+	pageDescription?: string;
+	canonicalUrl?: string;
+	ogImage?: string;
+	noIndex?: boolean;
+	structuredData?: Record<string, unknown>;
+	hideHeader?: boolean;
+	hideFooter?: boolean;
+}
+
+const {
+	lang,
+	pageTitle,
+	pageDescription,
+	canonicalUrl,
+	ogImage,
+	noIndex = false,
+	structuredData,
+	hideHeader = false,
+	hideFooter = false,
+} = Astro.props as Props;
+
+const siteTranslations = getSiteTranslations(lang);
+const metaTitle = pageTitle ?? siteTranslations.title;
+const metaDescription = pageDescription ?? siteTranslations.title;
 ---
+
 <!doctype html>
-<html lang="en">
+<html dir={getLanguageDirection(lang)} lang={lang}>
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta content="width=device-width, initial-scale=1" name="viewport" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>{metaTitle}</title>
+		<meta content={metaDescription} name="description" />
+		<meta content={metaTitle} property="og:title" />
+		<meta content={metaDescription} property="og:description" />
+		<meta content="website" property="og:type" />
+		<meta content={lang} property="og:locale" />
+		<meta content="summary_large_image" name="twitter:card" />
+		{canonicalUrl && <link href={canonicalUrl} rel="canonical" />}
+		{ogImage && <meta content={ogImage} property="og:image" />}
+		{noIndex && <meta content="noindex, nofollow" name="robots" />}
+		{
+			structuredData && (
+				<script
+					is:inline
+					set:html={JSON.stringify(structuredData)}
+					type="application/ld+json"
+				/>
+			)
+		}
 	</head>
-	<body>
-		<slot />
+	<body class="min-h-screen bg-white text-slate-900 antialiased">
+		{!hideHeader && <Header lang={lang} />}
+		<main class="min-h-[calc(100vh-137px)]">
+			<slot />
+		</main>
+		{!hideFooter && <Footer lang={lang} />}
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>

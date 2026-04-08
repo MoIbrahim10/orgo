@@ -1,11 +1,11 @@
 import ar from "../locales/ar.json";
 import en from "../locales/en.json";
 import {
+	defaultLang,
 	type Language,
+	supportedLanguages,
 	type TranslationKey,
 	type TranslationSchema,
-	defaultLang,
-	supportedLanguages,
 } from "../types/translations";
 
 const translations: Record<Language, TranslationSchema> = { en, ar };

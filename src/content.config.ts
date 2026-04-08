@@ -1,9 +1,10 @@
-import { defineCollection, reference, z } from "astro:content";
+import { defineCollection, reference } from "astro:content";
 import { glob } from "astro/loaders";
+import { z } from "astro/zod";
 import { supportedLanguages } from "./types/translations";
 
 const blog = defineCollection({
-	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blog" }),
+	loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
 	schema: z.object({
 		isDraft: z.boolean(),
 		title: z.string(),
@@ -17,7 +18,7 @@ const blog = defineCollection({
 		tags: z.array(z.string()).optional(),
 		publishDate: z.date(),
 		updatedDate: z.string().transform((str) => new Date(str)),
-		canonicalURL: z.string().url(),
+		canonicalURL: z.url(),
 		metaTitle: z.string().optional(),
 		metaDescription: z.string().optional(),
 		ogImage: z.string().optional(),
@@ -30,8 +31,8 @@ const authors = defineCollection({
 	schema: z.object({
 		id: z.string(),
 		name: z.string(),
-		email: z.string().email().optional(),
-		portfolio: z.string().url().optional(),
+		email: z.email().optional(),
+		portfolio: z.url().optional(),
 		bio: z.string().optional(),
 		image: z
 			.object({

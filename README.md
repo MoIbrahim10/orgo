@@ -14,16 +14,15 @@ Orgo is a SaaS product that helps you organize your life. With multi-language su
   - **Astro:** A modern static site generator for lightning-fast performance.
   - **TypeScript:** Ensures strong typing and improved developer experience.
   - **Tailwind CSS:** Utility-first CSS framework for rapid UI development.
-  - **Biome:** Fast and comprehensive code formatter & linter.
-  - **OXC:** Super-fast linter for additional code quality checks.
+  - **Oxc:** [oxfmt](https://www.npmjs.com/package/oxfmt) for formatting and [oxlint](https://www.npmjs.com/package/oxlint) for linting (Rust-powered, very fast).
   - **Commitlint & Lefthook:** Enforce commit message standards and run pre-commit/push hooks for code quality.
 
 ## Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en/) (version 16 or higher recommended)
-- npm
+- [Node.js](https://nodejs.org/en/) 22.12 or higher
+- [Bun](https://bun.sh/) 1.3.10 or higher
 
 ### Installation
 
@@ -37,7 +36,7 @@ Orgo is a SaaS product that helps you organize your life. With multi-language su
 2. Install dependencies:
 
    ```bash
-   npm i
+   bun install
    ```
 
 ### Running the Project Locally
@@ -45,7 +44,7 @@ Orgo is a SaaS product that helps you organize your life. With multi-language su
 To run the development server:
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 This will start the Astro development server, and you can navigate to `http://localhost:4321` (or the specified port) to view your project.
@@ -53,10 +52,13 @@ This will start the Astro development server, and you can navigate to `http://lo
 ## Development Workflow
 
 - **Commitlint & Lefthook:**
-  Ensure commit messages follow the Conventional Commit format with emojis. Lefthook automatically runs linters and formatters on staged files.
+  Ensure commit messages follow the Conventional Commit format with emojis. Lefthook automatically runs Bun-based checks on staged files.
 
-- **Biome & OXC:**
-  Biome formats and lints your code, while OXC provides additional static analysis. Both are integrated into the development workflow (pre-commit, pre-push, and CI).
+- **Oxc (oxfmt & oxlint):**
+  oxfmt formats supported files; oxlint runs static analysis. Both run in pre-commit, pre-push, and CI alongside Stylelint for stylesheets.
+
+- **Verification:**
+  Run `bun run verify` to execute translation checks, formatting, linting, the Astro build, and both Bun and npm security audits.
 
 - **Stylelint:**
   Enforces best practices for CSS and Tailwind styles.

@@ -1,4 +1,5 @@
 ---
+import Layout from "./Layout.astro";
 import type { Language } from "../types/translations";
 
 interface Props {
@@ -6,32 +7,26 @@ interface Props {
 	metaTitle: string;
 	metaDescription: string;
 	ogImage?: string;
+	canonicalUrl?: string;
 }
 
-const { lang, metaTitle, metaDescription, ogImage } = Astro.props as Props;
+const { lang, metaTitle, metaDescription, ogImage, canonicalUrl } = Astro.props as Props;
+const structuredData = {
+	"@context": "https://schema.org",
+	"@type": "BlogPosting",
+	headline: metaTitle,
+	description: metaDescription,
+	image: ogImage,
+};
 ---
 
-<html lang={lang}>
-  <head>
-    <meta charset="UTF-8" />
-    <title>{metaTitle}</title>
-    <meta name="description" content={metaDescription} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
-    <meta property="og:title" content={metaTitle} />
-    <meta property="og:description" content={metaDescription} />
-    <meta property="og:locale" content={lang} />
-    <!-- JSON-LD Structured Data for BlogPosting -->
-    <script type="application/ld+json">
-      {JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "BlogPosting",
-        "headline": metaTitle,
-        "description": metaDescription,
-        "image": ogImage,
-      })}
-    </script>
-  </head>
-  <body>
-    <slot />
-  </body>
-</html>
+<Layout
+	canonicalUrl={canonicalUrl}
+	lang={lang}
+	ogImage={ogImage}
+	pageDescription={metaDescription}
+	pageTitle={metaTitle}
+	structuredData={structuredData}
+>
+	<slot />
+</Layout>

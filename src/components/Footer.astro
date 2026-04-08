@@ -1,15 +1,21 @@
 ---
-import { getHeaderTranslations } from '../data/translations/header';
-import type { Language } from '../types/translations';
+import { getFooterTranslations } from "../data/translations/header";
+import type { Language } from "../types/translations";
+import { getLocalizedPath } from "../utils/routing";
 
 const { lang } = Astro.props as { lang: Language };
-const footerTranslations = getHeaderTranslations(lang);
+const footerTranslations = getFooterTranslations(lang);
 ---
 
-<footer>
-  <nav>
-    {footerTranslations.links.map(link => (
-      <a href={link.href}>{link.label}</a>
-    ))}
-  </nav>
+<footer class="border-t border-slate-200 bg-slate-50">
+	<div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-6 text-sm text-slate-600">
+		<p>&copy; {new Date().getFullYear()} Orgo</p>
+		<nav aria-label="Footer" class="flex items-center gap-4">
+			{footerTranslations.links.map((link) => (
+				<a class="transition hover:text-slate-900" href={getLocalizedPath(lang, link.href)}>
+					{link.label}
+				</a>
+			))}
+		</nav>
+	</div>
 </footer>

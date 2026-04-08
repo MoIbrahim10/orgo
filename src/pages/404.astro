@@ -1,0 +1,24 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { defaultLang } from "../types/translations";
+import { getLocalizedPath } from "../utils/routing";
+---
+
+<Layout
+	lang={defaultLang}
+	noIndex
+	pageDescription="The requested page could not be found."
+	pageTitle="Page not found"
+>
+	<section class="mx-auto flex max-w-3xl flex-col gap-4 px-6 py-24 text-center">
+		<p class="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">404</p>
+		<h1 class="text-4xl font-bold tracking-tight text-slate-950">Page not found</h1>
+		<p class="text-lg text-slate-600">The page you requested does not exist or has moved.</p>
+		<a
+			class="mx-auto rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700"
+			href={getLocalizedPath(defaultLang)}
+		>
+			Go home
+		</a>
+	</section>
+</Layout>

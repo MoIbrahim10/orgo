@@ -1,20 +1,16 @@
-// import astroI18next from "astro-i18next";
-import mdx from "@astrojs/mdx";
-// @ts-check
-import { defineConfig } from "astro/config";
-
 import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "astro/config";
 import { defaultLang, supportedLanguages } from "./src/types/translations";
+
+const locales = [...supportedLanguages];
 
 // https://astro.build/config
 export default defineConfig({
-	integrations: [mdx()],
-
 	vite: {
-		plugins: [tailwindcss()],
+		plugins: [tailwindcss({ applyBaseStyles: false })],
 	},
 	i18n: {
-		locales: supportedLanguages,
+		locales,
 		defaultLocale: defaultLang,
 		routing: {
 			prefixDefaultLocale: true,

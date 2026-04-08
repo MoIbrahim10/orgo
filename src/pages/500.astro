@@ -1,0 +1,24 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { defaultLang } from "../types/translations";
+
+const { error } = Astro.props;
+---
+
+<Layout
+	lang={defaultLang}
+	noIndex
+	pageDescription="A server error interrupted the request."
+	pageTitle="Server error"
+>
+	<section class="mx-auto flex max-w-3xl flex-col gap-4 px-6 py-24 text-center">
+		<p class="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">500</p>
+		<h1 class="text-4xl font-bold tracking-tight text-slate-950">Server error</h1>
+		<p class="text-lg text-slate-600">Something went wrong on our side.</p>
+		{error instanceof Error && (
+			<pre class="overflow-x-auto rounded-2xl bg-slate-950 p-4 text-left text-sm text-slate-100">
+				{error.message}
+			</pre>
+		)}
+	</section>
+</Layout>

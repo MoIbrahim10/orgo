@@ -11,8 +11,7 @@ export default {
 					//  - Group 3: Optional scope.
 					//  - An optional exclamation mark.
 					//  - Group 4: One or more characters for subject.
-					const regex =
-						/^([\p{Emoji}\p{Emoji_Presentation}]+\s)?(\w+)(?:\((.*)\))?!?: (.+)$/u;
+					const regex = /^([\p{Emoji}\p{Emoji_Presentation}]+\s)?(\w+)(?:\((.*)\))?!?: (.+)$/u;
 					const valid = regex.test(header);
 					return [
 						valid,
@@ -27,8 +26,7 @@ export default {
 	},
 	parserPreset: {
 		parserOpts: {
-			headerPattern:
-				/^([\p{Emoji}\p{Emoji_Presentation}]+\s)?(\w+)(?:\((.*)\))?!?: (.+)$/u,
+			headerPattern: /^([\p{Emoji}\p{Emoji_Presentation}]+\s)?(\w+)(?:\((.*)\))?!?: (.+)$/u,
 			headerCorrespondence: ["emoji", "type", "scope", "subject"],
 		},
 	},

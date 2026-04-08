@@ -1,17 +1,29 @@
 ---
-import { getHeaderTranslations } from '../data/translations/header';
-import type { Language } from '../types/translations';
+import { getHeaderTranslations } from "../data/translations/header";
+import type { Language } from "../types/translations";
+import { getLocalizedPath } from "../utils/routing";
 
 const { lang } = Astro.props as { lang: Language };
 const headerTranslations = getHeaderTranslations(lang);
+const homeHref = getLocalizedPath(lang);
+const ctaHref = getLocalizedPath(lang, "/pricing");
 ---
 
-<header>
-  <a href="/">{headerTranslations.logo}</a>
-  <nav>
-    {headerTranslations.links.map(link => (
-      <a href={link.href}>{link.label}</a>
-    ))}
-  </nav>
-  <a href="/signup">{headerTranslations.cta}</a>
+<header class="border-b border-slate-200 bg-white/90 backdrop-blur">
+	<div class="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4">
+		<a class="text-lg font-semibold text-slate-900" href={homeHref}>{headerTranslations.logo}</a>
+		<nav aria-label="Primary" class="flex items-center gap-4 text-sm text-slate-600">
+			{headerTranslations.links.map((link) => (
+				<a class="transition hover:text-slate-900" href={getLocalizedPath(lang, link.href)}>
+					{link.label}
+				</a>
+			))}
+		</nav>
+		<a
+			class="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
+			href={ctaHref}
+		>
+			{headerTranslations.cta}
+		</a>
+	</div>
 </header>

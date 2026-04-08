@@ -1,51 +1,53 @@
-name: CI
+name: Orgo quality checks
 
 on:
   push:
-    branches-ignore: [main]  # Prevent direct pushes to main
+    branches-ignore: [main] # Prevent direct pushes to main
   pull_request:
-    branches:
-      - main
+    branches: [main]
+
+concurrency:
+  group: orgo-quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
   pull-requests: read
 
 jobs:
-  lint-and-test:
+  verify:
+    name: Lint, format & test
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v6
         with:
-          node-version: 18
-          cache: npm
+          fetch-depth: 0
 
-      - name: Setup Biome
-        uses: biomejs/setup-biome@v2
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: latest
+          # Pin the minor line for reproducible CI; bump when you adopt a new Bun release.
+          bun-version: 1.3.x
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
-      - name: Run i18n Check
-        run: npm run check:i18n
+      - name: Verify i18n translations
+        run: bun run check:i18n
 
-      - name: Lint & Format with Biome
-        run: npm run lint-biome
+      - name: Check formatting (oxfmt)
+        run: bun run format:check
 
-      - name: Run OXC Linter
-        run: npx --yes oxlint@latest --deny-warnings
+      - name: Lint JavaScript/TypeScript (oxlint)
+        run: bun run lint-oxc -- --deny-warnings
 
-      - name: Lint Styles with Stylelint
-        run: npx stylelint "**/*.{css,scss}"
+      - name: Lint styles (Stylelint)
+        run: bun run lint-style
 
-      - name: Commitlint Check
-        uses: wagoid/commitlint-github-action@v6
+      - name: Validate commit messages (commitlint)
+        uses: wagoid/commitlint-github-action@v6.2.1
 
-      - name: Run Tests
-        run: npm test
+      - name: Run tests
+        run: bun run test

@@ -1,18 +1,30 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import type { Language } from "../../types/translations";
-import { t } from "../../utils/i18n";
+import { getSiteTranslations } from "../../data/translations/site";
+import { getLanguageFromParams, getLocaleStaticPaths } from "../../utils/routing";
 
-const { lang } = Astro.params as { lang: Language };
-const pageTitle = t(lang, "site.title");
+const lang = getLanguageFromParams(Astro.params.lang);
+const siteTranslations = getSiteTranslations(lang);
 
 export function getStaticPaths() {
-	return [{ params: { lang: "en" } }, { params: { lang: "ar" } }];
+	return getLocaleStaticPaths();
 }
 ---
 
-<Layout lang={lang} pageTitle={pageTitle}>
-  <h1>About</h1>
-  <p>This is the About page for {lang.toUpperCase()}.</p>
-  <!-- Your about page content -->
+<Layout
+	lang={lang}
+	pageDescription="Learn more about the ideas and product direction behind Orgo."
+	pageTitle={`About | ${siteTranslations.title}`}
+>
+	<section class="mx-auto max-w-4xl space-y-6 px-6 py-16">
+		<h1 class="text-4xl font-bold tracking-tight text-slate-950">About Orgo</h1>
+		<p class="text-lg leading-8 text-slate-600">
+			Orgo is designed to bring planning, journaling, and calm execution into one focused
+			experience.
+		</p>
+		<p class="leading-7 text-slate-600">
+			This project currently demonstrates Astro-based internationalized routing, typed content
+			collections, and a multilingual landing experience.
+		</p>
+	</section>
 </Layout>

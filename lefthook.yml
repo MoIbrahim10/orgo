@@ -1,28 +1,31 @@
 pre-commit:
-  parallel: true
+  parallel: false
   commands:
     i18n:
-      run: npm run check:i18n
-    biome:
+      run: bun run check:i18n
+    oxfmt:
       glob: "*.{js,ts,tsx,jsx,css,scss,json,jsonc,yml,yaml,mdx,md,cjs,mjs}"
-      run: npx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
+      run: bunx oxfmt {staged_files}
       stage: true
     oxlint:
-      glob: "*.{js,ts,tsx,jsx}"
-      run: npx --yes oxlint@latest {staged_files}
+      glob: "*.{js,ts,tsx,jsx,mjs,cjs}"
+      run: bunx oxlint {staged_files}
     stylelint:
       glob: "*.{css,scss}"
-      run: npx stylelint --fix {staged_files}
+      run: bunx stylelint --fix {staged_files}
 
 commit-msg:
   commands:
     commitlint:
-      run: npx commitlint --edit {1}
+      run: bunx commitlint --edit {1}
 
 pre-push:
   commands:
     test:
-      run: npm test
-    biome:
+      run: bun test
+    oxfmt-check:
       glob: "*.{js,ts,tsx,jsx,css,scss,json,jsonc,yml,yaml,mdx,md,cjs,mjs}"
-      run: npx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {push_files}
+      run: bunx oxfmt --check {push_files}
+    oxlint-push:
+      glob: "*.{js,ts,tsx,jsx,mjs,cjs}"
+      run: bunx oxlint {push_files}

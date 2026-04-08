@@ -1,18 +1,40 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import type { Language } from "../../types/translations";
-import { t } from "../../utils/i18n";
+import { getSiteTranslations } from "../../data/translations/site";
+import { getLanguageFromParams, getLocaleStaticPaths } from "../../utils/routing";
 
 export function getStaticPaths() {
-	return [{ params: { lang: "en" } }, { params: { lang: "ar" } }];
+	return getLocaleStaticPaths();
 }
 
-const { lang } = Astro.params as { lang: Language };
-const pageTitle = t(lang, "site.title");
+const lang = getLanguageFromParams(Astro.params.lang);
+const siteTranslations = getSiteTranslations(lang);
 ---
 
-<Layout lang={lang} pageTitle={pageTitle}>
-  <h1>Pricing</h1>
-  <p>This is the Pricing page for {lang.toUpperCase()}.</p>
-  <!-- Your pricing details here -->
+<Layout
+	lang={lang}
+	pageDescription="Review Orgo's pricing direction and evaluate the product offering."
+	pageTitle={`Pricing | ${siteTranslations.title}`}
+>
+	<section class="mx-auto max-w-5xl px-6 py-16">
+		<div class="max-w-2xl space-y-4">
+			<h1 class="text-4xl font-bold tracking-tight text-slate-950">Pricing</h1>
+			<p class="text-lg leading-8 text-slate-600">
+				The marketing site is ready for a pricing section, but the actual product plans are still
+				placeholder content.
+			</p>
+		</div>
+		<div class="mt-10 grid gap-6 md:grid-cols-2">
+			<div class="rounded-3xl border border-slate-200 p-8">
+				<h2 class="text-2xl font-semibold text-slate-950">Starter</h2>
+				<p class="mt-3 text-slate-600">For personal organization and lightweight planning.</p>
+			</div>
+			<div class="rounded-3xl border border-slate-900 bg-slate-900 p-8 text-white">
+				<h2 class="text-2xl font-semibold">Pro</h2>
+				<p class="mt-3 text-slate-300">
+					For deeper workflows, richer journaling, and advanced productivity features.
+				</p>
+			</div>
+		</div>
+	</section>
 </Layout>

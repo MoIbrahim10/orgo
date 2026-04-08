@@ -2,8 +2,8 @@ import ar from "../locales/ar.json" with { type: "json" };
 import en from "../locales/en.json" with { type: "json" };
 import {
 	type Language,
-	type TranslationSchema,
 	supportedLanguages,
+	type TranslationSchema,
 } from "../types/translations.ts";
 
 const translations: Record<Language, TranslationSchema> = { en, ar };
