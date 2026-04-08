@@ -3,9 +3,22 @@ import "../styles/global.css";
 
 import Footer from "../components/Footer.astro";
 import Header from "../components/header.astro";
+import LocaleSuggestionBanner from "../components/LocaleSuggestionBanner.astro";
+import {
+	getHtmlLanguage,
+	getLocaleCode,
+	getLocaleConfig,
+	siteConfig,
+} from "../data/site";
 import { getSiteTranslations } from "../data/translations/site";
-import type { Language } from "../types/translations";
-import { getLanguageDirection } from "../utils/routing";
+import { defaultLang, type Language } from "../types/translations";
+import {
+	buildLocalePathMap,
+	getLocalizedPath,
+	resolveLocalePathMap,
+	stripLocaleFromPath,
+	type LocalePathMap,
+} from "../utils/routing";
 
 interface Props {
 	lang: Language;
@@ -13,8 +26,13 @@ interface Props {
 	pageDescription?: string;
 	canonicalUrl?: string;
 	ogImage?: string;
+	rssFeedTitle?: string;
+	rssFeedUrl?: string;
 	noIndex?: boolean;
-	structuredData?: Record<string, unknown>;
+	localeAlternates?: LocalePathMap;
+	localeSwitcherPaths?: LocalePathMap;
+	showLocaleSuggestion?: boolean;
+	structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
 	hideHeader?: boolean;
 	hideFooter?: boolean;
 }
@@ -25,47 +43,152 @@ const {
 	pageDescription,
 	canonicalUrl,
 	ogImage,
+	rssFeedTitle,
+	rssFeedUrl,
 	noIndex = false,
+	localeAlternates,
+	localeSwitcherPaths,
+	showLocaleSuggestion = true,
 	structuredData,
 	hideHeader = false,
 	hideFooter = false,
 } = Astro.props as Props;
 
 const siteTranslations = getSiteTranslations(lang);
+const localeConfig = getLocaleConfig(lang);
 const metaTitle = pageTitle ?? siteTranslations.title;
-const metaDescription = pageDescription ?? siteTranslations.title;
+const metaDescription = pageDescription ?? siteTranslations.description;
+
+function resolveAbsoluteUrl(urlOrPath?: string): string | undefined {
+	if (!urlOrPath) {
+		return undefined;
+	}
+
+	if (/^https?:\/\//.test(urlOrPath)) {
+		return urlOrPath;
+	}
+
+	return Astro.site ? new URL(urlOrPath, Astro.site).toString() : undefined;
+}
+
+const resolvedCanonicalUrl =
+	canonicalUrl ?? (Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined);
+const resolvedOgImage = resolveAbsoluteUrl(ogImage ?? siteConfig.defaultOgImage);
+const resolvedRssFeedUrl = resolveAbsoluteUrl(rssFeedUrl);
+const isLocalizedPath =
+	Astro.url.pathname === `/${lang}` || Astro.url.pathname.startsWith(`/${lang}/`);
+const pathWithoutLocale = isLocalizedPath ? stripLocaleFromPath(Astro.url.pathname) : "/";
+const defaultLocalePaths: LocalePathMap = isLocalizedPath ? buildLocalePathMap(pathWithoutLocale) : {};
+const resolvedLocaleAlternates: LocalePathMap = localeAlternates ?? defaultLocalePaths;
+const resolvedLocaleSwitcherPaths =
+	localeSwitcherPaths ??
+	(isLocalizedPath
+		? resolveLocalePathMap(
+				resolvedLocaleAlternates,
+				(language) => defaultLocalePaths[language] ?? getLocalizedPath(language),
+			)
+		: {});
+const alternateLinks =
+	Astro.site && Object.keys(resolvedLocaleAlternates).length > 0
+		? (Object.keys(resolvedLocaleAlternates) as Language[]).flatMap((language) => {
+				const path = resolvedLocaleAlternates[language];
+				return path
+					? [
+							{
+								hreflang: getHtmlLanguage(language),
+								href: new URL(path, Astro.site).toString(),
+							},
+						]
+					: [];
+			})
+		: [];
+const xDefaultPath =
+	resolvedLocaleAlternates[defaultLang] ?? Object.values(resolvedLocaleAlternates)[0];
+const structuredDataItems = [
+	Astro.site && {
+		"@context": "https://schema.org",
+		"@type": "WebSite",
+		name: siteConfig.name,
+		url: Astro.site.toString(),
+		inLanguage: getHtmlLanguage(defaultLang),
+	},
+	resolvedCanonicalUrl && {
+		"@context": "https://schema.org",
+		"@type": "WebPage",
+		name: metaTitle,
+		description: metaDescription,
+		url: resolvedCanonicalUrl,
+		inLanguage: getHtmlLanguage(lang),
+	},
+	...(Array.isArray(structuredData)
+		? structuredData
+		: structuredData
+			? [structuredData]
+			: []),
+].filter((item): item is Record<string, unknown> => Boolean(item));
 ---
 
 <!doctype html>
-<html dir={getLanguageDirection(lang)} lang={lang}>
+<html dir={localeConfig.dir} lang={getHtmlLanguage(lang)}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta content="width=device-width, initial-scale=1" name="viewport" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
+		<meta content="strict-origin-when-cross-origin" name="referrer" />
+		<meta content={siteConfig.themeColor} name="theme-color" />
 		<title>{metaTitle}</title>
 		<meta content={metaDescription} name="description" />
+		<meta content={noIndex ? "noindex, nofollow" : "index, follow"} name="robots" />
 		<meta content={metaTitle} property="og:title" />
 		<meta content={metaDescription} property="og:description" />
+		<meta content={siteConfig.name} property="og:site_name" />
 		<meta content="website" property="og:type" />
-		<meta content={lang} property="og:locale" />
-		<meta content="summary_large_image" name="twitter:card" />
-		{canonicalUrl && <link href={canonicalUrl} rel="canonical" />}
-		{ogImage && <meta content={ogImage} property="og:image" />}
-		{noIndex && <meta content="noindex, nofollow" name="robots" />}
+		<meta content={getLocaleCode(lang)} property="og:locale" />
+		<meta
+			content={resolvedOgImage ? "summary_large_image" : "summary"}
+			name="twitter:card"
+		/>
+		<meta content={metaTitle} name="twitter:title" />
+		<meta content={metaDescription} name="twitter:description" />
+		{resolvedCanonicalUrl && <link href={resolvedCanonicalUrl} rel="canonical" />}
+		{resolvedRssFeedUrl && (
+			<link
+				href={resolvedRssFeedUrl}
+				rel="alternate"
+				title={rssFeedTitle ?? metaTitle}
+				type="application/rss+xml"
+			/>
+		)}
+		{resolvedCanonicalUrl && <meta content={resolvedCanonicalUrl} property="og:url" />}
+		{resolvedOgImage && <meta content={resolvedOgImage} property="og:image" />}
+		{resolvedOgImage && <meta content={resolvedOgImage} name="twitter:image" />}
+		{alternateLinks.map((link) => <link href={link.href} hreflang={link.hreflang} rel="alternate" />)}
 		{
-			structuredData && (
-				<script
-					is:inline
-					set:html={JSON.stringify(structuredData)}
-					type="application/ld+json"
+			xDefaultPath && Astro.site && (
+				<link
+					href={new URL(xDefaultPath, Astro.site).toString()}
+					hreflang="x-default"
+					rel="alternate"
 				/>
 			)
 		}
+		{structuredDataItems.map((item) => (
+			<script is:inline set:html={JSON.stringify(item)} type="application/ld+json" />
+		))}
 	</head>
-	<body class="min-h-screen bg-white text-slate-900 antialiased">
-		{!hideHeader && <Header lang={lang} />}
-		<main class="min-h-[calc(100vh-137px)]">
+	<body class={`min-h-screen bg-white text-slate-900 antialiased ${localeConfig.bodyClass}`}>
+		<a
+			class="sr-only absolute left-4 top-4 z-50 rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-white focus:not-sr-only"
+			href="#main-content"
+		>
+			Skip to content
+		</a>
+		{showLocaleSuggestion && !hideHeader && (
+			<LocaleSuggestionBanner lang={lang} paths={resolvedLocaleAlternates} />
+		)}
+		{!hideHeader && <Header lang={lang} localeSwitcherPaths={resolvedLocaleSwitcherPaths} />}
+		<main class="min-h-[calc(100vh-137px)]" id="main-content">
 			<slot />
 		</main>
 		{!hideFooter && <Footer lang={lang} />}

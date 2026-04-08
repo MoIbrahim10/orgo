@@ -1,24 +1,32 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { defaultLang } from "../types/translations";
-import { getLocalizedPath } from "../utils/routing";
+import { buildLocalePathMap, getLanguageFromPathname, getLocalizedPath } from "../utils/routing";
+import { t } from "../utils/i18n";
+
+const lang = getLanguageFromPathname(Astro.url.pathname);
+const homePaths = buildLocalePathMap("/");
 ---
 
 <Layout
-	lang={defaultLang}
+	lang={lang}
+	localeAlternates={{}}
+	localeSwitcherPaths={homePaths}
 	noIndex
-	pageDescription="The requested page could not be found."
-	pageTitle="Page not found"
+	pageDescription={t(lang, "pages.errors.not_found.description")}
+	pageTitle={t(lang, "pages.errors.not_found.title")}
+	showLocaleSuggestion={false}
 >
 	<section class="mx-auto flex max-w-3xl flex-col gap-4 px-6 py-24 text-center">
 		<p class="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">404</p>
-		<h1 class="text-4xl font-bold tracking-tight text-slate-950">Page not found</h1>
-		<p class="text-lg text-slate-600">The page you requested does not exist or has moved.</p>
+		<h1 class="text-4xl font-bold tracking-tight text-slate-950">
+			{t(lang, "pages.errors.not_found.title")}
+		</h1>
+		<p class="text-lg text-slate-600">{t(lang, "pages.errors.not_found.description")}</p>
 		<a
 			class="mx-auto rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700"
-			href={getLocalizedPath(defaultLang)}
+			href={getLocalizedPath(lang)}
 		>
-			Go home
+			{t(lang, "pages.errors.not_found.cta")}
 		</a>
 	</section>
 </Layout>

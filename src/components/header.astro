@@ -1,29 +1,37 @@
 ---
+import LocaleSwitcher from "./LocaleSwitcher.astro";
 import { getHeaderTranslations } from "../data/translations/header";
 import type { Language } from "../types/translations";
+import type { LocalePathMap } from "../utils/routing";
 import { getLocalizedPath } from "../utils/routing";
 
-const { lang } = Astro.props as { lang: Language };
+const { lang, localeSwitcherPaths } = Astro.props as {
+	lang: Language;
+	localeSwitcherPaths: LocalePathMap;
+};
 const headerTranslations = getHeaderTranslations(lang);
 const homeHref = getLocalizedPath(lang);
 const ctaHref = getLocalizedPath(lang, "/pricing");
 ---
 
 <header class="border-b border-slate-200 bg-white/90 backdrop-blur">
-	<div class="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4">
+	<div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
 		<a class="text-lg font-semibold text-slate-900" href={homeHref}>{headerTranslations.logo}</a>
-		<nav aria-label="Primary" class="flex items-center gap-4 text-sm text-slate-600">
-			{headerTranslations.links.map((link) => (
-				<a class="transition hover:text-slate-900" href={getLocalizedPath(lang, link.href)}>
-					{link.label}
-				</a>
-			))}
-		</nav>
-		<a
-			class="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
-			href={ctaHref}
-		>
-			{headerTranslations.cta}
-		</a>
+		<div class="flex flex-1 flex-wrap items-center justify-end gap-3">
+			<nav aria-label="Primary" class="flex items-center gap-4 text-sm text-slate-600">
+				{headerTranslations.links.map((link) => (
+					<a class="transition hover:text-slate-900" href={getLocalizedPath(lang, link.href)}>
+						{link.label}
+					</a>
+				))}
+			</nav>
+			<LocaleSwitcher lang={lang} paths={localeSwitcherPaths} />
+			<a
+				class="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
+				href={ctaHref}
+			>
+				{headerTranslations.cta}
+			</a>
+		</div>
 	</div>
 </header>

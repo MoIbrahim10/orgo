@@ -3,4 +3,5 @@ import type { Language } from "../../types/translations";
 
 export const getSiteTranslations = (lang: Language) => ({
 	title: t(lang, "site.title"),
+	description: t(lang, "site.description"),
 });

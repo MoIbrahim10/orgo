@@ -1,0 +1,56 @@
+---
+import { formatLocaleList, getLocaleConfig } from "../data/site";
+import { tWithParams, t } from "../utils/i18n";
+import { supportedLanguages, type Language } from "../types/translations";
+import type { LocalePathMap } from "../utils/routing";
+
+interface Props {
+	lang: Language;
+	availablePaths: LocalePathMap;
+}
+
+const { lang, availablePaths } = Astro.props as Props;
+const alternateLanguages = supportedLanguages.filter(
+	(language) => language !== lang && Boolean(availablePaths[language]),
+);
+const missingLanguages = supportedLanguages.filter(
+	(language) => language !== lang && !availablePaths[language],
+);
+const missingTranslationsCopy =
+	missingLanguages.length > 0
+		? tWithParams(lang, "blog.coming_soon", {
+				languages: formatLocaleList(lang, missingLanguages),
+			})
+		: undefined;
+---
+
+{
+	(alternateLanguages.length > 0 || missingTranslationsCopy) && (
+		<aside
+			aria-label={t(lang, "blog.translation_label")}
+			class="rounded-3xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700"
+		>
+			<div class="space-y-3">
+				{alternateLanguages.length > 0 && (
+					<p>
+						<span class="font-semibold text-slate-900">{t(lang, "blog.available_in")}</span>{" "}
+						{alternateLanguages.map((language, index) => (
+							<>
+								{index > 0 && <span>, </span>}
+								<a
+									class="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4"
+									dir={getLocaleConfig(language).dir}
+									href={availablePaths[language] as string}
+									lang={getLocaleConfig(language).htmlLang}
+								>
+									{getLocaleConfig(language).nativeLabel}
+								</a>
+							</>
+						))}
+					</p>
+				)}
+				{missingTranslationsCopy && <p>{missingTranslationsCopy}</p>}
+			</div>
+		</aside>
+	)
+}

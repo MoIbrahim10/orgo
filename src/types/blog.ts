@@ -1,16 +1,18 @@
+import type { Language } from "./translations";
+
 export interface BlogPost {
 	isDraft: boolean;
 	title: string;
+	translationGroup: string;
 	author: Author;
 	date: Date;
 	image: Image;
 	content: string;
 	slug: string;
-	language: string;
+	language: Language;
 	publishDate: Date;
 	updatedDate: Date;
 	tags?: string[];
-	canonicalURL: string;
 	metaTitle?: string;
 	metaDescription?: string;
 	ogImage?: string;

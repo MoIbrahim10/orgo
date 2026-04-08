@@ -8,6 +8,7 @@ const blog = defineCollection({
 	schema: z.object({
 		isDraft: z.boolean(),
 		title: z.string(),
+		translationGroup: z.string(),
 		author: reference("authors"),
 		image: z.object({
 			src: z.string(),
@@ -16,13 +17,12 @@ const blog = defineCollection({
 		slug: z.string().optional(),
 		language: z.enum([...supportedLanguages] as [string, ...string[]]),
 		tags: z.array(z.string()).optional(),
-		publishDate: z.date(),
-		updatedDate: z.string().transform((str) => new Date(str)),
-		canonicalURL: z.url(),
+		publishDate: z.coerce.date(),
+		updatedDate: z.coerce.date(),
 		metaTitle: z.string().optional(),
 		metaDescription: z.string().optional(),
 		ogImage: z.string().optional(),
-		relatedPosts: z.array(reference("blog")),
+		relatedPosts: z.array(reference("blog")).default([]),
 	}),
 });
 

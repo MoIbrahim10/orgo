@@ -1,0 +1,64 @@
+---
+import { t } from "../utils/i18n";
+import { localeRegistry, supportedLanguages, type Language } from "../types/translations";
+import type { LocalePathMap } from "../utils/routing";
+
+interface Props {
+	lang: Language;
+	paths: LocalePathMap;
+}
+
+const { lang, paths } = Astro.props as Props;
+const label = t(lang, "locale.switcher_label");
+---
+
+<label class="inline-flex min-w-40 flex-col gap-1 text-sm text-slate-600">
+	<span class="sr-only">{label}</span>
+	<select
+		aria-label={label}
+		class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm"
+		data-orgo-locale-switcher
+	>
+		{
+			supportedLanguages.map((language) => (
+				<option
+					data-lang={language}
+					dir={localeRegistry[language].dir}
+					disabled={!paths[language]}
+					selected={language === lang}
+					value={paths[language] ?? ""}
+				>
+					{localeRegistry[language].nativeLabel}
+				</option>
+			))
+		}
+	</select>
+</label>
+
+<script is:inline>
+	const localeSwitchers = document.querySelectorAll("[data-orgo-locale-switcher]");
+
+	for (const localeSwitcher of localeSwitchers) {
+		if (localeSwitcher.dataset.bound === "true") {
+			continue;
+		}
+
+		localeSwitcher.dataset.bound = "true";
+		localeSwitcher.addEventListener("change", (event) => {
+			const target = event.currentTarget;
+
+			if (!(target instanceof HTMLSelectElement) || !target.value) {
+				return;
+			}
+
+			try {
+				const selectedLanguage = target.selectedOptions[0]?.dataset.lang;
+				if (selectedLanguage) {
+					localStorage.setItem("orgo.selectedLang", selectedLanguage);
+				}
+			} catch {}
+
+			window.location.href = target.value;
+		});
+	}
+</script>

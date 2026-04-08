@@ -21,7 +21,7 @@ Orgo is a SaaS product that helps you organize your life. With multi-language su
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en/) 22.12 or higher
+- [Node.js](https://nodejs.org/en/) 24.0 or higher
 - [Bun](https://bun.sh/) 1.3.10 or higher
 
 ### Installation
@@ -72,6 +72,8 @@ This will start the Astro development server, and you can navigate to `http://lo
 ## Deployment
 
 This project uses GitHub Actions for Continuous Integration (CI). The CI workflow runs tests, lints, and commit message checks before merging pull requests. Deployment instructions (e.g., for Vercel, Netlify, or your preferred hosting) should be added based on your deployment process.
+
+Set `SITE_URL` in your deployment environment to enable absolute canonical URLs plus generated `robots.txt` and `sitemap.xml` output.
 
 ## Contributing
 

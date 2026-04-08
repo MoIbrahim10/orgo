@@ -1,11 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import { getHeaderTranslations } from "../src/data/translations/header";
 import { defaultLang } from "../src/types/translations";
-import { t } from "../src/utils/i18n";
+import { t, tWithParams } from "../src/utils/i18n";
 import {
+	buildLocalePathMap,
 	getLanguageDirection,
 	getLanguageFromParams,
 	getLocalizedPath,
+	matchPreferredLanguage,
+	stripLocaleFromPath,
 } from "../src/utils/routing";
 
 describe("routing helpers", () => {
@@ -25,6 +28,24 @@ describe("routing helpers", () => {
 		expect(getLanguageDirection("en")).toBe("ltr");
 		expect(getLanguageDirection("ar")).toBe("rtl");
 	});
+
+	test("builds locale path maps from a shared route", () => {
+		expect(buildLocalePathMap("/pricing")).toEqual({
+			en: "/en/pricing",
+			ar: "/ar/pricing",
+		});
+	});
+
+	test("strips locale prefixes from localized paths", () => {
+		expect(stripLocaleFromPath("/en/blog/designing-focus")).toBe("/blog/designing-focus");
+		expect(stripLocaleFromPath("/ar")).toBe("/");
+	});
+
+	test("matches preferred languages from regional browser locales", () => {
+		expect(matchPreferredLanguage("ar-EG")).toBe("ar");
+		expect(matchPreferredLanguage("en-GB")).toBe("en");
+		expect(matchPreferredLanguage("fr-FR")).toBeUndefined();
+	});
 });
 
 describe("translations", () => {
@@ -35,6 +56,14 @@ describe("translations", () => {
 
 	test("returns the key when a translation is missing", () => {
 		expect(t("en", "hero.missing" as never)).toBe("hero.missing");
+	});
+
+	test("formats translated strings with placeholders", () => {
+		expect(
+			tWithParams("en", "blog.coming_soon", {
+				languages: "Arabic",
+			}),
+		).toBe("Coming soon in Arabic.");
 	});
 
 	test("maps translated navigation labels", () => {

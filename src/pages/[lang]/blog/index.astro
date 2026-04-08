@@ -1,33 +1,59 @@
 ---
 import { getCollection, getEntries } from "astro:content";
+import Layout from "../../../layouts/Layout.astro";
+import { getSiteTranslations } from "../../../data/translations/site";
+import { t } from "../../../utils/i18n";
+import { getLocaleConfig } from "../../../data/site";
 import {
 	getLanguageFromParams,
 	getLocaleStaticPaths,
 	getLocalizedPath,
 } from "../../../utils/routing";
+import { getPublicAssetPath } from "../../../utils/assets";
 
 export function getStaticPaths() {
 	return getLocaleStaticPaths();
 }
 
 const lang = getLanguageFromParams(Astro.params.lang);
+const siteTranslations = getSiteTranslations(lang);
 const posts = (
 	await getCollection("blog", ({ data }) => data.language === lang && !data.isDraft)
 ).sort((left, right) => right.data.publishDate.getTime() - left.data.publishDate.getTime());
 const authors = await getEntries(posts.map((post) => post.data.author));
 const authorsByPostId = new Map(posts.map((post, index) => [post.id, authors[index]?.data]));
 
-const metaTitle = `Blog - ${lang.toUpperCase()}`;
-const metaDescription = `Read our latest posts in ${lang.toUpperCase()}`;
-const ogImage = posts[0]?.data.image.src ?? "";
+const blogLabel = t(lang, "blog.index_title");
+const blogEyebrow = t(lang, "blog.eyebrow");
+const rssFeedUrl = getLocalizedPath(lang, "/rss.xml");
+const metaTitle = `${blogLabel} | ${siteTranslations.title}`;
+const metaDescription = t(lang, "blog.index_description");
+const ogImage = getPublicAssetPath(posts[0]?.data.ogImage, "/og.png");
 ---
 
-<Layout lang={lang} metaDescription={metaDescription} metaTitle={metaTitle} ogImage={ogImage}>
+<Layout
+	lang={lang}
+	ogImage={ogImage}
+	pageDescription={metaDescription}
+	pageTitle={metaTitle}
+	rssFeedTitle={metaTitle}
+	rssFeedUrl={rssFeedUrl}
+>
 	<section class="mx-auto max-w-5xl space-y-8 px-6 py-16">
-		<div class="space-y-3">
-			<p class="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">Journal</p>
-			<h1 class="text-4xl font-bold tracking-tight text-slate-950">Blog</h1>
-			<p class="max-w-2xl text-lg text-slate-600">{metaDescription}</p>
+		<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+			<div class="space-y-3">
+				<p class="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
+					{blogEyebrow}
+				</p>
+				<h1 class="text-4xl font-bold tracking-tight text-slate-950">{blogLabel}</h1>
+				<p class="max-w-2xl text-lg text-slate-600">{metaDescription}</p>
+			</div>
+			<a
+				class="inline-flex items-center justify-center rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700"
+				href={rssFeedUrl}
+			>
+				{t(lang, "blog.rss_label")}
+			</a>
 		</div>
 		<ul class="grid gap-6">
 			{posts.map((post) => {
@@ -35,14 +61,16 @@ const ogImage = posts[0]?.data.image.src ?? "";
 				const href = getLocalizedPath(lang, `/blog/${post.data.slug ?? post.id}`);
 
 				return (
-					<li class="rounded-3xl border border-slate-200 p-6">
-						<a class="block space-y-3" href={href}>
-							<p class="text-sm text-slate-500">
-								{author?.name ?? "Unknown author"} •{" "}
-								{post.data.publishDate.toLocaleDateString(lang, { dateStyle: "medium" })}
-							</p>
-							<h2 class="text-2xl font-semibold tracking-tight text-slate-950">
-								{post.data.title}
+						<li class="rounded-3xl border border-slate-200 p-6">
+							<a class="block space-y-3" href={href}>
+								<p class="text-sm text-slate-500">
+									{author?.name ?? t(lang, "blog.unknown_author")} •{" "}
+									{post.data.publishDate.toLocaleDateString(getLocaleConfig(lang).dateLocale, {
+										dateStyle: "medium",
+									})}
+								</p>
+								<h2 class="text-2xl font-semibold tracking-tight text-slate-950">
+									{post.data.title}
 							</h2>
 							<p class="text-slate-600">{post.data.metaDescription}</p>
 						</a>

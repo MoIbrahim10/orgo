@@ -3,10 +3,10 @@ import en from "../locales/en.json";
 import {
 	defaultLang,
 	type Language,
-	supportedLanguages,
 	type TranslationKey,
 	type TranslationSchema,
 } from "../types/translations";
+import { getLanguageFromPathname } from "./routing";
 
 const translations: Record<Language, TranslationSchema> = { en, ar };
 
@@ -24,7 +24,16 @@ export function t(lang: Language, key: TranslationKey): string {
 	return typeof result === "string" ? result : key;
 }
 
+export function tWithParams(
+	lang: Language,
+	key: TranslationKey,
+	params: Record<string, string | number>,
+): string {
+	return t(lang, key).replace(/\{(\w+)\}/g, (_, paramName: string) =>
+		String(params[paramName] ?? `{${paramName}}`),
+	);
+}
+
 export function getLangFromUrl(url: URL): Language {
-	const [, lang] = url.pathname.split("/") as [string, Language?];
-	return lang && supportedLanguages.includes(lang) ? lang : defaultLang;
+	return getLanguageFromPathname(url.pathname) ?? defaultLang;
 }

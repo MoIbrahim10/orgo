@@ -1,1 +1,39 @@
 @import "tailwindcss";
+
+:root {
+	color-scheme: light;
+
+	--font-sans-latin:
+		"Inter", "Segoe UI", system-ui, -apple-system, "BlinkMacSystemFont", "Helvetica Neue",
+		sans-serif;
+	--font-sans-arabic:
+		"Noto Sans Arabic", "Noto Naskh Arabic", "Geeza Pro", "Tahoma", "Segoe UI", sans-serif;
+}
+
+html {
+	background: white;
+}
+
+body {
+	font-family: var(--font-sans-latin);
+}
+
+body.locale-arabic {
+	font-family: var(--font-sans-arabic);
+}
+
+body.locale-latin {
+	font-family: var(--font-sans-latin);
+}
+
+button,
+input,
+select,
+textarea {
+	font: inherit;
+}
+
+::selection {
+	background: #0f172a;
+	color: white;
+}

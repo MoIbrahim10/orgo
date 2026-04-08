@@ -1,21 +1,30 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { defaultLang } from "../types/translations";
+import { buildLocalePathMap, getLanguageFromPathname } from "../utils/routing";
+import { t } from "../utils/i18n";
 
 const { error } = Astro.props;
+const lang = getLanguageFromPathname(Astro.url.pathname);
+const homePaths = buildLocalePathMap("/");
+const shouldShowErrorDetails = import.meta.env.DEV && error instanceof Error;
 ---
 
 <Layout
-	lang={defaultLang}
+	lang={lang}
+	localeAlternates={{}}
+	localeSwitcherPaths={homePaths}
 	noIndex
-	pageDescription="A server error interrupted the request."
-	pageTitle="Server error"
+	pageDescription={t(lang, "pages.errors.server.description")}
+	pageTitle={t(lang, "pages.errors.server.title")}
+	showLocaleSuggestion={false}
 >
 	<section class="mx-auto flex max-w-3xl flex-col gap-4 px-6 py-24 text-center">
 		<p class="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">500</p>
-		<h1 class="text-4xl font-bold tracking-tight text-slate-950">Server error</h1>
-		<p class="text-lg text-slate-600">Something went wrong on our side.</p>
-		{error instanceof Error && (
+		<h1 class="text-4xl font-bold tracking-tight text-slate-950">
+			{t(lang, "pages.errors.server.title")}
+		</h1>
+		<p class="text-lg text-slate-600">{t(lang, "pages.errors.server.description")}</p>
+		{shouldShowErrorDetails && (
 			<pre class="overflow-x-auto rounded-2xl bg-slate-950 p-4 text-left text-sm text-slate-100">
 				{error.message}
 			</pre>

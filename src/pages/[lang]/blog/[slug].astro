@@ -1,7 +1,16 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getCollection, getEntries, getEntry, render } from "astro:content";
+import TranslationAvailabilityNotice from "../../../components/TranslationAvailabilityNotice.astro";
+import { getLocaleConfig } from "../../../data/site";
 import Layout from "../../../layouts/BlogLayout.astro";
+import {
+	getBlogLocaleAlternates,
+	getBlogLocaleSwitcherPaths,
+	getBlogTranslationEntries,
+} from "../../../utils/blog";
+import { getPublicAssetPath } from "../../../utils/assets";
+import { t } from "../../../utils/i18n";
 import { getLanguageFromParams, getLocalizedPath } from "../../../utils/routing";
 
 export async function getStaticPaths() {
@@ -14,21 +23,58 @@ export async function getStaticPaths() {
 
 const lang = getLanguageFromParams(Astro.params.lang);
 const page = Astro.props as CollectionEntry<"blog">;
+const allPosts = await getCollection("blog", ({ data }) => !data.isDraft);
 const authorEntry = await getEntry(page.data.author);
 const author = authorEntry?.data;
 const relatedPosts = (await getEntries(page.data.relatedPosts)).filter(
 	(post) => post.data.language === lang,
 );
+const translationEntries = getBlogTranslationEntries(page, allPosts);
+const localeAlternates = getBlogLocaleAlternates(translationEntries);
+const localeSwitcherPaths = getBlogLocaleSwitcherPaths(localeAlternates);
 
-const formattedDate = page.data.publishDate.toLocaleDateString(lang, { dateStyle: "long" });
+const formattedDate = page.data.publishDate.toLocaleDateString(getLocaleConfig(lang).dateLocale, {
+	dateStyle: "long",
+});
+const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined;
+const heroImage = getPublicAssetPath(page.data.image.src);
+const ogImage = getPublicAssetPath(page.data.ogImage, "/og.png");
+const rssFeedUrl = getLocalizedPath(lang, "/rss.xml");
+const structuredDataImage =
+	Astro.site && ogImage ? new URL(ogImage, Astro.site).toString() : undefined;
+const structuredData = {
+	"@context": "https://schema.org",
+	"@type": "BlogPosting",
+	headline: page.data.metaTitle ?? page.data.title,
+	description: page.data.metaDescription ?? page.data.title,
+	datePublished: page.data.publishDate.toISOString(),
+	dateModified: page.data.updatedDate.toISOString(),
+	inLanguage: lang,
+	mainEntityOfPage: canonicalUrl,
+	...(structuredDataImage ? { image: [structuredDataImage] } : {}),
+	...(author
+		? {
+				author: {
+					"@type": "Person",
+					name: author.name,
+					...(author.portfolio ? { url: author.portfolio } : {}),
+				},
+			}
+		: {}),
+};
 const { Content } = await render(page);
 ---
 <Layout
-	canonicalUrl={page.data.canonicalURL}
+	canonicalUrl={canonicalUrl}
 	lang={lang}
+	localeAlternates={localeAlternates}
+	localeSwitcherPaths={localeSwitcherPaths}
 	metaDescription={page.data.metaDescription ?? page.data.title}
 	metaTitle={page.data.metaTitle ?? page.data.title}
-	ogImage={page.data.ogImage}
+	ogImage={ogImage}
+	rssFeedTitle={page.data.metaTitle ?? page.data.title}
+	rssFeedUrl={rssFeedUrl}
+	structuredData={structuredData}
 >
 	<article class="mx-auto flex max-w-3xl flex-col gap-10 px-6 py-16">
 		<header class="space-y-4">
@@ -36,24 +82,29 @@ const { Content } = await render(page);
 				{formattedDate}
 			</p>
 			<h1 class="text-4xl font-bold tracking-tight text-slate-950">{page.data.title}</h1>
-			<p class="text-lg text-slate-600">by {author?.name ?? "Unknown author"}</p>
-			{page.data.image && (
+			<p class="text-lg text-slate-600">
+				{t(lang, "blog.by")} {author?.name ?? t(lang, "blog.unknown_author")}
+			</p>
+			{heroImage && (
 				<img
 					alt={page.data.image.alt}
 					class="rounded-3xl border border-slate-200 object-cover"
 					height="720"
 					loading="eager"
-					src={page.data.image.src}
+					src={heroImage}
 					width="1280"
 				/>
 			)}
 		</header>
+		<TranslationAvailabilityNotice availablePaths={localeAlternates} lang={lang} />
 		<section class="space-y-6 leading-8 text-slate-700">
 			<Content />
 		</section>
 		{relatedPosts.length > 0 && (
 			<section class="space-y-4 border-t border-slate-200 pt-8">
-				<h2 class="text-2xl font-semibold tracking-tight text-slate-950">Related posts</h2>
+				<h2 class="text-2xl font-semibold tracking-tight text-slate-950">
+					{t(lang, "blog.related_posts")}
+				</h2>
 				<ul class="space-y-3">
 					{relatedPosts.map((post) => (
 						<li>
@@ -67,6 +118,6 @@ const { Content } = await render(page);
 					))}
 				</ul>
 			</section>
-		)}
-	</article>
+			)}
+		</article>
 </Layout>

@@ -1,0 +1,119 @@
+---
+import { getLocaleConfig } from "../data/site";
+import { t } from "../utils/i18n";
+import { type Language, supportedLanguages } from "../types/translations";
+import type { LocalePathMap } from "../utils/routing";
+
+interface Props {
+	lang: Language;
+	paths: LocalePathMap;
+}
+
+const { lang, paths } = Astro.props as Props;
+const suggestionText = t(lang, "locale.suggestion");
+const suggestionAction = t(lang, "locale.suggestion_cta");
+const dismissLabel = t(lang, "locale.dismiss_suggestion");
+const localeLabels = Object.fromEntries(
+	supportedLanguages.map((language) => [language, getLocaleConfig(language).nativeLabel]),
+);
+---
+
+<aside
+	class="hidden border-b border-slate-200 bg-slate-950 text-white"
+	data-orgo-locale-suggestion
+	data-suggestion-action={suggestionAction}
+	data-suggestion-text={suggestionText}
+	hidden
+>
+	<div class="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-3 sm:flex-row sm:items-center sm:justify-between">
+		<p class="text-sm text-slate-100" data-orgo-locale-suggestion-text>{suggestionText}</p>
+		<div class="flex items-center gap-3">
+			<a
+				class="rounded-full bg-white px-4 py-2 text-sm font-medium text-slate-950"
+				data-orgo-locale-suggestion-link
+				href="/"
+			>
+				{suggestionAction}
+			</a>
+			<button
+				aria-label={dismissLabel}
+				class="rounded-full border border-slate-700 px-3 py-2 text-sm text-slate-200"
+				data-orgo-locale-suggestion-dismiss
+				type="button"
+			>
+				{dismissLabel}
+			</button>
+		</div>
+	</div>
+</aside>
+
+<script
+	define:vars={{
+		availablePaths: paths,
+		currentLang: lang,
+		localeLabels,
+	}}
+	is:inline
+>
+	const matchPreferredLanguage = (value) => {
+		if (!value) {
+			return undefined;
+		}
+
+		const normalizedValue = value.toLowerCase();
+		if (availablePaths[normalizedValue]) {
+			return normalizedValue;
+		}
+
+		const [baseLanguage] = normalizedValue.split("-");
+		return availablePaths[baseLanguage] ? baseLanguage : undefined;
+	};
+
+	const suggestionStorageKey = "orgo.localeSuggestion.dismissed";
+	const selectedLanguageKey = "orgo.selectedLang";
+	const suggestion = document.querySelector("[data-orgo-locale-suggestion]");
+	const suggestionLink = suggestion?.querySelector("[data-orgo-locale-suggestion-link]");
+	const suggestionTextElement = suggestion?.querySelector("[data-orgo-locale-suggestion-text]");
+	const dismissButton = suggestion?.querySelector("[data-orgo-locale-suggestion-dismiss]");
+	const suggestionMessagePrefix = suggestion?.dataset.suggestionText ?? "";
+	const suggestionButtonPrefix = suggestion?.dataset.suggestionAction ?? "";
+
+	if (suggestion && suggestionLink && suggestionTextElement && dismissButton) {
+		let selectedLanguage;
+		let isDismissed = false;
+
+		try {
+			selectedLanguage = localStorage.getItem(selectedLanguageKey);
+			isDismissed = localStorage.getItem(suggestionStorageKey) === "true";
+		} catch {}
+
+		const preferredLanguage =
+			matchPreferredLanguage(selectedLanguage) ?? matchPreferredLanguage(navigator.language);
+
+		if (
+			preferredLanguage &&
+			preferredLanguage !== currentLang &&
+			availablePaths[preferredLanguage] &&
+			!isDismissed
+		) {
+			suggestionTextElement.textContent = `${suggestionMessagePrefix} ${localeLabels[preferredLanguage]}?`;
+			suggestionLink.textContent = `${suggestionButtonPrefix} ${localeLabels[preferredLanguage]}`;
+			suggestionLink.href = availablePaths[preferredLanguage];
+			suggestion.hidden = false;
+			suggestion.classList.remove("hidden");
+
+			suggestionLink.addEventListener("click", () => {
+				try {
+					localStorage.setItem(selectedLanguageKey, preferredLanguage);
+				} catch {}
+			});
+
+			dismissButton.addEventListener("click", () => {
+				suggestion.hidden = true;
+				try {
+					localStorage.setItem(suggestionStorageKey, "true");
+				} catch {}
+			});
+		}
+	}
+</script>

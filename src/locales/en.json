@@ -1,9 +1,10 @@
 {
 	"site": {
-		"title": "Ordo | SaaS Landing Page"
+		"title": "Orgo | Organize your life with clarity",
+		"description": "Plan, journal, and manage your days in one calm workspace built for focus."
 	},
 	"header": {
-		"logo": "Logo",
+		"logo": "Orgo",
 		"links": {
 			"about": "About",
 			"pricing": "Pricing",
@@ -11,11 +12,65 @@
 		},
 		"cta": "Get Started"
 	},
+	"locale": {
+		"switcher_label": "Language",
+		"suggestion": "Prefer this page in",
+		"suggestion_cta": "Open",
+		"dismiss_suggestion": "Dismiss language suggestion"
+	},
 	"hero": {
 		"banner": "All your planning and journaling in one place",
 		"title": "Your Life, Beautifully Organized",
 		"description": "Effortlessly blend your calendars, journals, and to-dos into one seamless experience.",
 		"cta_primary": "Get Started",
 		"cta_secondary": "Learn More"
+	},
+	"pages": {
+		"about": {
+			"meta_title": "About",
+			"title": "About Orgo",
+			"description": "Learn more about the ideas and product direction behind Orgo.",
+			"intro": "Orgo is designed to bring planning, journaling, and calm execution into one focused experience.",
+			"body": "This marketing site showcases a multilingual experience, structured content, and a product voice centered on clarity."
+		},
+		"pricing": {
+			"meta_title": "Pricing",
+			"title": "Pricing",
+			"description": "Review Orgo's pricing direction and evaluate the product offering.",
+			"intro": "The marketing site is ready for a pricing section, but the actual product plans are still placeholder content.",
+			"plans": {
+				"starter": {
+					"title": "Starter",
+					"description": "For personal organization and lightweight planning."
+				},
+				"pro": {
+					"title": "Pro",
+					"description": "For deeper workflows, richer journaling, and advanced productivity features."
+				}
+			}
+		},
+		"errors": {
+			"not_found": {
+				"title": "Page not found",
+				"description": "The page you requested does not exist or has moved.",
+				"cta": "Go home"
+			},
+			"server": {
+				"title": "Server error",
+				"description": "Something went wrong on our side."
+			}
+		}
+	},
+	"blog": {
+		"eyebrow": "Journal",
+		"index_title": "Blog",
+		"index_description": "Explore the latest articles, product notes, and practical planning ideas from Orgo.",
+		"rss_label": "RSS feed",
+		"related_posts": "Related posts",
+		"unknown_author": "Unknown author",
+		"by": "by",
+		"translation_label": "Translations",
+		"available_in": "Also available in",
+		"coming_soon": "Coming soon in {languages}."
 	}
 }
