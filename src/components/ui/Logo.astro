@@ -1,0 +1,41 @@
+---
+import calendar from "../../assets/calendar.svg";
+
+interface Props {
+	alt: string;
+	class?: string;
+	href: string;
+}
+
+const { alt, class: className, href } = Astro.props as Props;
+---
+
+<a
+	class:list={[
+		"inline-flex shrink-0 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900",
+		className,
+	]}
+	href={href}
+>
+	<div class="flex items-center justify-center overflow-visible">
+		<div class="logo-container flex size-10 items-center justify-center">
+			<img alt={alt} height={18} src={calendar.src} width={18} />
+		</div>
+	</div>
+</a>
+
+<style>
+	.logo-container {
+		box-sizing: border-box;
+		padding: 11px;
+		background:
+			linear-gradient(226.81deg, rgba(202, 27, 100, 0.2) 8.14%, rgba(214, 75, 133, 0) 59.82%),
+			linear-gradient(116.57deg, rgba(126, 0, 255, 0.2) 11.89%, rgba(112, 33, 193, 0) 41.67%),
+			linear-gradient(0deg, rgba(214, 94, 14, 0.2) 0%, rgba(231, 130, 62, 0) 46.57%),
+			linear-gradient(278.68deg, #141414 47.91%, #202020 100.04%);
+		box-shadow:
+			0px 0px 0px 3px rgba(255, 255, 255, 0.03),
+			inset 0px 1px 6px rgba(255, 255, 255, 0.19);
+		border-radius: 29px;
+	}
+</style>

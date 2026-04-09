@@ -1,6 +1,7 @@
 ---
 import ActionLink from "./ui/ActionLink.astro";
 import Container from "./ui/Container.astro";
+import Logo from "./ui/Logo.astro";
 import LocaleSwitcher from "./LocaleSwitcher.astro";
 import ThemeToggle from "./ThemeToggle.astro";
 import { getHeaderTranslations } from "../data/translations/header";
@@ -20,9 +21,7 @@ const ctaHref = getLocalizedPath(lang, "/pricing");
 <header class="border-b border-slate-200 bg-white/90 backdrop-blur">
 	<Container class="py-4">
 		<div class="flex items-center justify-between gap-4">
-			<a class="font-display text-lg font-semibold text-slate-900" href={homeHref}>
-				{headerTranslations.logo}
-			</a>
+			<Logo alt={headerTranslations.logo} href={homeHref} />
 			<div class="hidden flex-1 items-center justify-end gap-3 md:flex">
 				<nav aria-label="Primary" class="flex items-center gap-4 text-sm text-slate-600">
 					{headerTranslations.links.map((link) => (
