@@ -30,6 +30,11 @@
 		"suggestion_cta": "افتح",
 		"dismiss_suggestion": "إخفاء اقتراح اللغة"
 	},
+	"theme": {
+		"toggle": "تبديل مظهر الألوان",
+		"switch_to_dark": "التبديل إلى الوضع الداكن",
+		"switch_to_light": "التبديل إلى الوضع الفاتح"
+	},
 	"home": {
 		"jump_links_label": "في هذه الصفحة",
 		"jump_links": {

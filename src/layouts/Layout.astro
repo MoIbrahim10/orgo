@@ -138,6 +138,8 @@ const structuredDataItems = [
 			? [structuredData]
 			: []),
 ].filter((item): item is Record<string, unknown> => Boolean(item));
+
+const defaultThemeColor = "#f8fafc";
 ---
 
 <!doctype html>
@@ -148,7 +150,40 @@ const structuredDataItems = [
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<meta content="strict-origin-when-cross-origin" name="referrer" />
-		<meta content={siteConfig.themeColor} name="theme-color" />
+		<meta content={defaultThemeColor} name="theme-color" />
+		<script is:inline>
+			(() => {
+				const storageKey = "orgo.theme";
+				const root = document.documentElement;
+				const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+				const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+				const readPreference = () => {
+					try {
+						const storedPreference = localStorage.getItem(storageKey);
+						return storedPreference === "light" || storedPreference === "dark"
+							? storedPreference
+							: "system";
+					} catch {
+						return "system";
+					}
+				};
+				const resolveTheme = (preference) =>
+					preference === "light" || preference === "dark"
+						? preference
+						: mediaQuery.matches
+							? "dark"
+							: "light";
+				const preference = readPreference();
+				const theme = resolveTheme(preference);
+
+				root.dataset.theme = theme;
+				root.dataset.themeSource = preference;
+
+				if (metaThemeColor) {
+					metaThemeColor.setAttribute("content", theme === "dark" ? "#020617" : "#f8fafc");
+				}
+			})();
+		</script>
 		<SiteVerificationMeta />
 		<title>{metaTitle}</title>
 		<meta content={metaDescription} name="description" />
@@ -196,7 +231,7 @@ const structuredDataItems = [
 			<script is:inline set:html={JSON.stringify(item)} type="application/ld+json" />
 		))}
 	</head>
-	<body class={`min-h-screen bg-white text-slate-900 antialiased ${localeConfig.bodyClass}`}>
+	<body class={`min-h-screen antialiased ${localeConfig.bodyClass}`}>
 		<a
 			class="sr-only absolute left-4 top-4 z-50 rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-white focus:not-sr-only"
 			href="#main-content"

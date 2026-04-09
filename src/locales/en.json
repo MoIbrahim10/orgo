@@ -30,6 +30,11 @@
 		"suggestion_cta": "Open",
 		"dismiss_suggestion": "Dismiss language suggestion"
 	},
+	"theme": {
+		"toggle": "Toggle color theme",
+		"switch_to_dark": "Switch to dark mode",
+		"switch_to_light": "Switch to light mode"
+	},
 	"home": {
 		"jump_links_label": "On this page",
 		"jump_links": {
