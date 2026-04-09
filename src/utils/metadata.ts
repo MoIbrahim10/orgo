@@ -22,9 +22,9 @@ type BaseMetadataInput = {
 
 export type LayoutMetadataProps = Omit<BaseMetadataInput, "description" | "title"> & {
 	lang: Language;
-	pageTitle: string;
-	pageDescription: string;
-	openGraphType: "article" | "website";
+	pageTitle?: string;
+	pageDescription?: string;
+	openGraphType?: "article" | "website";
 };
 
 type MarketingMetadataInput = BaseMetadataInput & {

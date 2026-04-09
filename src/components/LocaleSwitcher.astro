@@ -18,6 +18,7 @@ const label = t(lang, "locale.switcher_label");
 		aria-label={label}
 		class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm"
 		data-orgo-locale-switcher
+		name="locale"
 	>
 		{
 			supportedLanguages.map((language) => (
@@ -36,29 +37,31 @@ const label = t(lang, "locale.switcher_label");
 </label>
 
 <script is:inline>
-	const localeSwitchers = document.querySelectorAll("[data-orgo-locale-switcher]");
+	(() => {
+		const localeSwitchers = document.querySelectorAll("[data-orgo-locale-switcher]");
 
-	for (const localeSwitcher of localeSwitchers) {
-		if (localeSwitcher.dataset.bound === "true") {
-			continue;
-		}
-
-		localeSwitcher.dataset.bound = "true";
-		localeSwitcher.addEventListener("change", (event) => {
-			const target = event.currentTarget;
-
-			if (!(target instanceof HTMLSelectElement) || !target.value) {
-				return;
+		for (const localeSwitcher of localeSwitchers) {
+			if (localeSwitcher.dataset.bound === "true") {
+				continue;
 			}
 
-			try {
-				const selectedLanguage = target.selectedOptions[0]?.dataset.lang;
-				if (selectedLanguage) {
-					localStorage.setItem("orgo.selectedLang", selectedLanguage);
-				}
-			} catch {}
+			localeSwitcher.dataset.bound = "true";
+			localeSwitcher.addEventListener("change", (event) => {
+				const target = event.currentTarget;
 
-			window.location.href = target.value;
-		});
-	}
+				if (!(target instanceof HTMLSelectElement) || !target.value) {
+					return;
+				}
+
+				try {
+					const selectedLanguage = target.selectedOptions[0]?.dataset.lang;
+					if (selectedLanguage) {
+						localStorage.setItem("orgo.selectedLang", selectedLanguage);
+					}
+				} catch {}
+
+				window.location.href = target.value;
+			});
+		}
+	})();
 </script>

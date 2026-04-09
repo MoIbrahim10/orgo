@@ -2,46 +2,16 @@
 import "../styles/global.css";
 
 import AnalyticsScripts from "../components/common/AnalyticsScripts.astro";
-import SiteVerificationMeta from "../components/common/SiteVerificationMeta.astro";
+import LayoutHead from "../components/common/LayoutHead.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/header.astro";
 import LocaleSuggestionBanner from "../components/LocaleSuggestionBanner.astro";
-import {
-	featureFlags,
-	getHtmlLanguage,
-	getLocaleCode,
-	getLocaleConfig,
-	metadataConfig,
-	siteConfig,
-} from "../data/site";
+import { getHtmlLanguage, getLocaleConfig } from "../data/site";
 import { themeMetaColors, themeStorageKey } from "../data/theme";
-import { englishTypography } from "../data/typography";
-import { getSiteTranslations } from "../data/translations/site";
-import { defaultLang, type Language } from "../types/translations";
-import {
-	buildLocalePathMap,
-	getLocalizedPath,
-	resolveLocalePathMap,
-	stripLocaleFromPath,
-	type LocalePathMap,
-} from "../utils/routing";
+import type { LayoutMetadataProps } from "../utils/metadata";
+import { resolveLayoutChrome } from "../utils/layout";
 
-interface Props {
-	lang: Language;
-	pageTitle?: string;
-	pageDescription?: string;
-	canonicalUrl?: string;
-	ogImage?: string;
-	rssFeedTitle?: string;
-	rssFeedUrl?: string;
-	noIndex?: boolean;
-	openGraphType?: "article" | "website";
-	localeAlternates?: LocalePathMap;
-	localeSwitcherPaths?: LocalePathMap;
-	showLocaleSuggestion?: boolean;
-	structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
-	paginationPrevUrl?: string;
-	paginationNextUrl?: string;
+interface Props extends LayoutMetadataProps {
 	hideHeader?: boolean;
 	hideFooter?: boolean;
 }
@@ -55,10 +25,10 @@ const {
 	rssFeedTitle,
 	rssFeedUrl,
 	noIndex = false,
-	openGraphType = metadataConfig.openGraphType,
+	openGraphType,
 	localeAlternates,
 	localeSwitcherPaths,
-	showLocaleSuggestion = featureFlags.localeSuggestionBanner,
+	showLocaleSuggestion,
 	structuredData,
 	paginationPrevUrl,
 	paginationNextUrl,
@@ -66,83 +36,30 @@ const {
 	hideFooter = false,
 } = Astro.props as Props;
 
-const siteTranslations = getSiteTranslations(lang);
 const localeConfig = getLocaleConfig(lang);
-const metaTitle = pageTitle ?? siteTranslations.title;
-const metaDescription = pageDescription ?? siteTranslations.description ?? metadataConfig.description;
-
-function resolveAbsoluteUrl(urlOrPath?: string): string | undefined {
-	if (!urlOrPath) {
-		return undefined;
-	}
-
-	if (/^https?:\/\//.test(urlOrPath)) {
-		return urlOrPath;
-	}
-
-	return Astro.site ? new URL(urlOrPath, Astro.site).toString() : undefined;
-}
-
-const resolvedCanonicalUrl =
-	canonicalUrl ?? (Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined);
-const resolvedOgImage = resolveAbsoluteUrl(ogImage ?? siteConfig.defaultOgImage);
-const resolvedRssFeedUrl = resolveAbsoluteUrl(rssFeedUrl);
-const resolvedPaginationPrevUrl = resolveAbsoluteUrl(paginationPrevUrl);
-const resolvedPaginationNextUrl = resolveAbsoluteUrl(paginationNextUrl);
-const isLocalizedPath =
-	Astro.url.pathname === `/${lang}` || Astro.url.pathname.startsWith(`/${lang}/`);
-const pathWithoutLocale = isLocalizedPath ? stripLocaleFromPath(Astro.url.pathname) : "/";
-const defaultLocalePaths: LocalePathMap = isLocalizedPath ? buildLocalePathMap(pathWithoutLocale) : {};
-const resolvedLocaleAlternates: LocalePathMap = localeAlternates ?? defaultLocalePaths;
-const resolvedLocaleSwitcherPaths =
-	localeSwitcherPaths ??
-	(isLocalizedPath
-		? resolveLocalePathMap(
-				resolvedLocaleAlternates,
-				(language) => defaultLocalePaths[language] ?? getLocalizedPath(language),
-			)
-		: {});
-const alternateLinks =
-	Astro.site && Object.keys(resolvedLocaleAlternates).length > 0
-		? (Object.keys(resolvedLocaleAlternates) as Language[]).flatMap((language) => {
-				const path = resolvedLocaleAlternates[language];
-				return path
-					? [
-							{
-								hreflang: getHtmlLanguage(language),
-								href: new URL(path, Astro.site).toString(),
-							},
-						]
-					: [];
-			})
-		: [];
-const xDefaultPath =
-	resolvedLocaleAlternates[defaultLang] ?? Object.values(resolvedLocaleAlternates)[0];
-const structuredDataItems = [
-	Astro.site && {
-		"@context": "https://schema.org",
-		"@type": "WebSite",
-		name: siteConfig.name,
-		url: Astro.site.toString(),
-		inLanguage: getHtmlLanguage(defaultLang),
-	},
-	resolvedCanonicalUrl && {
-		"@context": "https://schema.org",
-		"@type": "WebPage",
-		name: metaTitle,
-		description: metaDescription,
-		url: resolvedCanonicalUrl,
-		inLanguage: getHtmlLanguage(lang),
-	},
-	...(Array.isArray(structuredData)
-		? structuredData
-		: structuredData
-			? [structuredData]
-			: []),
-].filter((item): item is Record<string, unknown> => Boolean(item));
-
-const defaultThemeColor = themeMetaColors.light;
-const shouldPreloadEnglishFonts = localeConfig.bodyClass === "locale-latin";
+const { resolvedLocaleAlternates, resolvedLocaleSwitcherPaths, showLocaleSuggestion: shouldShowLocaleSuggestion } =
+	resolveLayoutChrome({
+		lang,
+		localeAlternates,
+		localeSwitcherPaths,
+		pathname: Astro.url.pathname,
+		showLocaleSuggestion,
+	});
+const headProps = {
+	canonicalUrl,
+	lang,
+	localeAlternates,
+	noIndex,
+	ogImage,
+	openGraphType,
+	pageDescription,
+	pageTitle,
+	paginationNextUrl,
+	paginationPrevUrl,
+	rssFeedTitle,
+	rssFeedUrl,
+	structuredData,
+};
 ---
 
 <!doctype html>
@@ -153,109 +70,7 @@ const shouldPreloadEnglishFonts = localeConfig.bodyClass === "locale-latin";
 	dir={localeConfig.dir}
 	lang={getHtmlLanguage(lang)}
 >
-	<head>
-		<meta charset="UTF-8" />
-		<meta content="width=device-width, initial-scale=1" name="viewport" />
-		{
-			shouldPreloadEnglishFonts &&
-				englishTypography.preload.map((font) => (
-					<link as="font" crossorigin href={font.href} rel="preload" type={font.type} />
-				))
-		}
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<meta content="strict-origin-when-cross-origin" name="referrer" />
-		<meta content={defaultThemeColor} name="theme-color" />
-		<script is:inline>
-			(() => {
-				const root = document.documentElement;
-				const { themeColorDark, themeColorLight, themeStorageKey } = root.dataset;
-
-				if (!themeColorDark || !themeColorLight || !themeStorageKey) {
-					return;
-				}
-
-				const metaColors = {
-					dark: themeColorDark,
-					light: themeColorLight,
-				};
-				const storageKey = themeStorageKey;
-				const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-				const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-				const readPreference = () => {
-					try {
-						const storedPreference = localStorage.getItem(storageKey);
-						return storedPreference === "light" || storedPreference === "dark"
-							? storedPreference
-							: "system";
-					} catch {
-						return "system";
-					}
-				};
-				const resolveTheme = (preference) =>
-					preference === "light" || preference === "dark"
-						? preference
-						: mediaQuery.matches
-							? "dark"
-							: "light";
-				const preference = readPreference();
-				const theme = resolveTheme(preference);
-
-				root.dataset.theme = theme;
-				root.dataset.themeSource = preference;
-
-				if (metaThemeColor) {
-					metaThemeColor.setAttribute("content", metaColors[theme]);
-				}
-			})();
-		</script>
-		<SiteVerificationMeta />
-		<title>{metaTitle}</title>
-		<meta content={metaDescription} name="description" />
-		<meta
-			content={
-				noIndex
-					? "noindex, nofollow"
-					: `${metadataConfig.robots.index ? "index" : "noindex"}, ${metadataConfig.robots.follow ? "follow" : "nofollow"}`
-			}
-			name="robots"
-		/>
-		<meta content={metaTitle} property="og:title" />
-		<meta content={metaDescription} property="og:description" />
-		<meta content={siteConfig.name} property="og:site_name" />
-		<meta content={openGraphType} property="og:type" />
-		<meta content={getLocaleCode(lang)} property="og:locale" />
-		<meta content={resolvedOgImage ? metadataConfig.twitterCard : "summary"} name="twitter:card" />
-		<meta content={metaTitle} name="twitter:title" />
-		<meta content={metaDescription} name="twitter:description" />
-		{resolvedCanonicalUrl && <link href={resolvedCanonicalUrl} rel="canonical" />}
-		{resolvedPaginationPrevUrl && <link href={resolvedPaginationPrevUrl} rel="prev" />}
-		{resolvedPaginationNextUrl && <link href={resolvedPaginationNextUrl} rel="next" />}
-		{resolvedRssFeedUrl && (
-			<link
-				href={resolvedRssFeedUrl}
-				rel="alternate"
-				title={rssFeedTitle ?? metaTitle}
-				type="application/rss+xml"
-			/>
-		)}
-		{resolvedCanonicalUrl && <meta content={resolvedCanonicalUrl} property="og:url" />}
-		{resolvedOgImage && <meta content={resolvedOgImage} property="og:image" />}
-		{resolvedOgImage && <meta content={resolvedOgImage} name="twitter:image" />}
-		{alternateLinks.map((link) => <link href={link.href} hreflang={link.hreflang} rel="alternate" />)}
-		{
-			xDefaultPath && Astro.site && (
-				<link
-					href={new URL(xDefaultPath, Astro.site).toString()}
-					hreflang="x-default"
-					rel="alternate"
-				/>
-			)
-		}
-		{structuredDataItems.map((item) => (
-			<script is:inline set:html={JSON.stringify(item)} type="application/ld+json" />
-		))}
-	</head>
+	<LayoutHead {...headProps} localeBodyClass={localeConfig.bodyClass} />
 	<body class={`min-h-screen antialiased ${localeConfig.bodyClass}`}>
 		<a
 			class="sr-only absolute left-4 top-4 z-50 rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-white focus:not-sr-only"
@@ -263,7 +78,7 @@ const shouldPreloadEnglishFonts = localeConfig.bodyClass === "locale-latin";
 		>
 			Skip to content
 		</a>
-		{showLocaleSuggestion && !hideHeader && (
+		{shouldShowLocaleSuggestion && !hideHeader && (
 			<LocaleSuggestionBanner lang={lang} paths={resolvedLocaleAlternates} />
 		)}
 		{!hideHeader && <Header lang={lang} localeSwitcherPaths={resolvedLocaleSwitcherPaths} />}

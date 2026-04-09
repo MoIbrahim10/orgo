@@ -1,0 +1,83 @@
+---
+import { metadataConfig, siteConfig } from "../../data/site";
+import { themeMetaColors } from "../../data/theme";
+import { englishTypography } from "../../data/typography";
+import type { LayoutMetadataProps } from "../../utils/metadata";
+import { resolveHeadMetadata } from "../../utils/layout";
+import SiteVerificationMeta from "./SiteVerificationMeta.astro";
+import ThemeBootScript from "./ThemeBootScript.astro";
+
+interface Props extends LayoutMetadataProps {
+	localeBodyClass: string;
+}
+
+const { localeBodyClass, ...metadata } = Astro.props as Props;
+const {
+	alternateLinks,
+	metaDescription,
+	metaTitle,
+	openGraphType,
+	robotsContent,
+	resolvedCanonicalUrl,
+	resolvedLocaleCode,
+	resolvedOgImage,
+	resolvedPaginationNextUrl,
+	resolvedPaginationPrevUrl,
+	resolvedRssFeedUrl,
+	shouldPreloadEnglishFonts,
+	structuredDataItems,
+	xDefaultHref,
+} = resolveHeadMetadata({
+	...metadata,
+	localeBodyClass,
+	pathname: Astro.url.pathname,
+	site: Astro.site,
+});
+---
+
+<head>
+	<meta charset="UTF-8" />
+	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	{
+		shouldPreloadEnglishFonts &&
+			englishTypography.preload.map((font) => (
+				<link as="font" crossorigin href={font.href} rel="preload" type={font.type} />
+			))
+	}
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+	<meta name="generator" content={Astro.generator} />
+	<meta content="strict-origin-when-cross-origin" name="referrer" />
+	<meta content={themeMetaColors.light} name="theme-color" />
+	<ThemeBootScript />
+	<SiteVerificationMeta />
+	<title>{metaTitle}</title>
+	<meta content={metaDescription} name="description" />
+	<meta content={robotsContent} name="robots" />
+	<meta content={metaTitle} property="og:title" />
+	<meta content={metaDescription} property="og:description" />
+	<meta content={siteConfig.name} property="og:site_name" />
+	<meta content={openGraphType} property="og:type" />
+	<meta content={resolvedLocaleCode} property="og:locale" />
+	<meta content={resolvedOgImage ? metadataConfig.twitterCard : "summary"} name="twitter:card" />
+	<meta content={metaTitle} name="twitter:title" />
+	<meta content={metaDescription} name="twitter:description" />
+	{resolvedCanonicalUrl && <link href={resolvedCanonicalUrl} rel="canonical" />}
+	{resolvedPaginationPrevUrl && <link href={resolvedPaginationPrevUrl} rel="prev" />}
+	{resolvedPaginationNextUrl && <link href={resolvedPaginationNextUrl} rel="next" />}
+	{resolvedRssFeedUrl && (
+		<link
+			href={resolvedRssFeedUrl}
+			rel="alternate"
+			title={metadata.rssFeedTitle ?? metaTitle}
+			type="application/rss+xml"
+		/>
+	)}
+	{resolvedCanonicalUrl && <meta content={resolvedCanonicalUrl} property="og:url" />}
+	{resolvedOgImage && <meta content={resolvedOgImage} property="og:image" />}
+	{resolvedOgImage && <meta content={resolvedOgImage} name="twitter:image" />}
+	{alternateLinks.map((link) => <link href={link.href} hreflang={link.hreflang} rel="alternate" />)}
+	{xDefaultHref && <link href={xDefaultHref} hreflang="x-default" rel="alternate" />}
+	{structuredDataItems.map((item) => (
+		<script is:inline set:html={JSON.stringify(item)} type="application/ld+json" />
+	))}
+</head>

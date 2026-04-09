@@ -1,0 +1,43 @@
+<script is:inline>
+	(() => {
+		const root = document.documentElement;
+		const { themeColorDark, themeColorLight, themeStorageKey } = root.dataset;
+
+		if (!themeColorDark || !themeColorLight || !themeStorageKey) {
+			return;
+		}
+
+		const metaColors = {
+			dark: themeColorDark,
+			light: themeColorLight,
+		};
+		const storageKey = themeStorageKey;
+		const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+		const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+		const readPreference = () => {
+			try {
+				const storedPreference = localStorage.getItem(storageKey);
+				return storedPreference === "light" || storedPreference === "dark"
+					? storedPreference
+					: "system";
+			} catch {
+				return "system";
+			}
+		};
+		const resolveTheme = (preference) =>
+			preference === "light" || preference === "dark"
+				? preference
+				: mediaQuery.matches
+					? "dark"
+					: "light";
+		const preference = readPreference();
+		const theme = resolveTheme(preference);
+
+		root.dataset.theme = theme;
+		root.dataset.themeSource = preference;
+
+		if (metaThemeColor) {
+			metaThemeColor.setAttribute("content", metaColors[theme]);
+		}
+	})();
+</script>
