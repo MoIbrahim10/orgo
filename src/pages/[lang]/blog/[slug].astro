@@ -4,6 +4,7 @@ import { getCollection, getEntry, getEntries, render } from "astro:content";
 import ResponsiveMedia from "../../../components/common/ResponsiveMedia.astro";
 import TranslationAvailabilityNotice from "../../../components/TranslationAvailabilityNotice.astro";
 import ActionLink from "../../../components/ui/ActionLink.astro";
+import Breadcrumbs from "../../../components/ui/Breadcrumbs.astro";
 import Container from "../../../components/ui/Container.astro";
 import { getAuthorAvatarImage, getBlogCoverImage } from "../../../data/media";
 import { formatLocalizedDate } from "../../../data/site";
@@ -22,7 +23,8 @@ import {
 	getTagSlug,
 } from "../../../utils/blog";
 import { t } from "../../../utils/i18n";
-import { createArticleMetadata } from "../../../utils/metadata";
+import { createArticleMetadata, createBreadcrumbStructuredData } from "../../../utils/metadata";
+import { getLocalizedPerson } from "../../../utils/people";
 import { getLanguageFromParams, getLocalizedPath } from "../../../utils/routing";
 
 export async function getStaticPaths() {
@@ -41,7 +43,7 @@ const page = Astro.props as CollectionEntry<"blog">;
 const allPosts = await getCollection("blog", ({ data }) => !data.isDraft);
 const explicitRelatedEntries = await getEntries(page.data.relatedPosts);
 const authorEntry = await getEntry(page.data.author);
-const author = authorEntry?.data;
+const author = authorEntry ? getLocalizedPerson(authorEntry, lang) : undefined;
 const relatedPosts = getRelatedBlogPosts({
 	entries: allPosts,
 	entry: page,
@@ -51,12 +53,28 @@ const translationEntries = getBlogTranslationEntries(page, allPosts);
 const localeAlternates = getBlogLocaleAlternates(translationEntries);
 const localeSwitcherPaths = getBlogLocaleSwitcherPaths(localeAlternates);
 const coverImage = getBlogCoverImage(page.data.translationGroup);
-const authorAvatar = getAuthorAvatarImage(author?.id ?? authorEntry?.id);
+const authorAvatar = getAuthorAvatarImage(author?.id ?? authorEntry?.data.id);
 const formattedDate = formatLocalizedDate(lang, page.data.publishDate);
 const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined;
 const ogImage = coverImage.src;
 const rssFeedUrl = getLocalizedPath(lang, "/rss.xml");
 const structuredDataImage = Astro.site ? new URL(coverImage.src, Astro.site).toString() : undefined;
+const breadcrumbItems = [
+	{ href: getLocalizedPath(lang), label: t(lang, "header.logo") },
+	{ href: getBlogIndexPath(lang), label: t(lang, "blog.index_title") },
+	{
+		href: getBlogCategoryPath(lang, getCategorySlug(page.data.category)),
+		label: page.data.category,
+	},
+	{ label: page.data.title },
+];
+const breadcrumbStructuredData = createBreadcrumbStructuredData(
+	Astro.site,
+	breadcrumbItems.map((item) => ({
+		label: item.label,
+		path: item.href,
+	})),
+);
 const structuredData = {
 	"@context": "https://schema.org",
 	"@type": "BlogPosting",
@@ -79,6 +97,9 @@ const structuredData = {
 			}
 		: {}),
 };
+const structuredDataItems = [structuredData, breadcrumbStructuredData].filter(Boolean) as Array<
+	Record<string, unknown>
+>;
 const metadata = createArticleMetadata(lang, {
 	canonicalUrl,
 	description: page.data.metaDescription ?? page.data.title,
@@ -87,7 +108,7 @@ const metadata = createArticleMetadata(lang, {
 	ogImage,
 	rssFeedTitle: page.data.metaTitle ?? page.data.title,
 	rssFeedUrl,
-	structuredData,
+	structuredData: structuredDataItems,
 	title: page.data.metaTitle ?? page.data.title,
 });
 const { Content } = await render(page);
@@ -98,6 +119,7 @@ const { Content } = await render(page);
 		<Container size="article">
 			<article class="space-y-10">
 				<header class="space-y-6">
+					<Breadcrumbs items={breadcrumbItems} />
 					<div class="flex flex-wrap items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
 						<a
 							class="rounded-full bg-slate-950 px-3 py-1 text-white transition hover:bg-slate-800"

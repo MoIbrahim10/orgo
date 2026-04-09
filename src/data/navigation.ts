@@ -8,11 +8,18 @@ export const navigation: NavigationConfig = {
 		{ key: "blog", href: "/blog" },
 		{ key: "contact", href: "/contact" },
 	],
-	footer: [
-		{ key: "about", href: "/about" },
-		{ key: "teams", href: "/teams" },
-		{ key: "pricing", href: "/pricing" },
-		{ key: "blog", href: "/blog" },
-		{ key: "contact", href: "/contact" },
-	],
+	footer: {
+		primary: [
+			{ key: "about", href: "/about" },
+			{ key: "teams", href: "/teams" },
+			{ key: "pricing", href: "/pricing" },
+			{ key: "blog", href: "/blog" },
+			{ key: "contact", href: "/contact" },
+		],
+		resources: [
+			{ key: "features", href: "/features" },
+			{ key: "faq", href: "/faq" },
+			{ key: "changelog", href: "/changelog" },
+		],
+	},
 };

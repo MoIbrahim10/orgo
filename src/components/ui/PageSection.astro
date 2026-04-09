@@ -6,31 +6,74 @@ interface Props {
 	as?: HTMLTag;
 	id?: string;
 	size?: "article" | "narrow" | "page" | "wide";
-	tone?: "default" | "soft" | "contrast" | "transparent";
+	tone?: "default" | "soft" | "contrast" | "transparent" | "warm";
+	layout?: "default" | "split";
+	surface?: "none" | "panel";
+	backdrop?: "none" | "grid" | "glow";
+	asideSticky?: boolean;
 	class?: string;
 	containerClass?: string;
 }
 
 const {
 	as = "section",
+	asideSticky = true,
+	backdrop = "none",
 	class: className = "",
 	containerClass = "",
 	id,
+	layout = "default",
 	size = "page",
+	surface = "none",
 	tone = "default",
 } = Astro.props as Props;
 
 const SectionTag = as;
+const hasIntroSlot = Astro.slots.has("intro");
+const hasAsideSlot = Astro.slots.has("aside");
 const toneClasses = {
 	default: "bg-transparent",
 	soft: "bg-linear-to-b from-slate-50 via-white to-white",
 	contrast: "bg-slate-950 text-white",
 	transparent: "bg-transparent",
+	warm: "bg-linear-to-br from-amber-50 via-white to-sky-50",
 } satisfies Record<NonNullable<Props["tone"]>, string>;
+const surfaceClasses = {
+	none: "",
+	panel:
+		"relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white/90 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:p-8",
+} satisfies Record<NonNullable<Props["surface"]>, string>;
+const backdropClasses = {
+	none: "",
+	grid: "before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_top_left,rgba(148,163,184,0.12),transparent_32%),linear-gradient(rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.08)_1px,transparent_1px)] before:bg-[size:auto,2rem_2rem,2rem_2rem] before:opacity-60 before:content-['']",
+	glow: "before:absolute before:inset-x-8 before:top-0 before:h-40 before:rounded-full before:bg-linear-to-r before:from-amber-200/30 before:via-sky-200/30 before:to-emerald-200/30 before:blur-3xl before:content-['']",
+} satisfies Record<NonNullable<Props["backdrop"]>, string>;
+const layoutClasses = {
+	default: "",
+	split: "grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.36fr)] lg:items-start",
+} satisfies Record<NonNullable<Props["layout"]>, string>;
 ---
 
 <SectionTag class:list={["scroll-mt-28 py-16", toneClasses[tone], className]} {...(id ? { id } : {})}>
 	<Container class={containerClass} size={size}>
-		<slot />
+		<div class:list={["relative", surfaceClasses[surface], backdropClasses[backdrop]]}>
+			<div class="relative">
+				{hasIntroSlot && <div class="mb-10"><slot name="intro" /></div>}
+				{
+					layout === "split" && hasAsideSlot ? (
+						<div class={layoutClasses.split}>
+							<div>
+								<slot />
+							</div>
+							<aside class:list={[asideSticky && "lg:sticky lg:top-28"]}>
+								<slot name="aside" />
+							</aside>
+						</div>
+					) : (
+						<slot />
+					)
+				}
+			</div>
+		</div>
 	</Container>
 </SectionTag>

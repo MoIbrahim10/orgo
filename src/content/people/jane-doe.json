@@ -1,0 +1,28 @@
+{
+	"id": "jane-doe",
+	"order": 1,
+	"location": "New York, United States",
+	"email": "jane@orgo.app",
+	"portfolio": "https://janedoe.com",
+	"availability": "Product direction, editorial strategy, and calm workflow design.",
+	"image": {
+		"src": "/images/authors/jane.jpg",
+		"alt": "Portrait of Jane Doe"
+	},
+	"localized": {
+		"en": {
+			"name": "Jane Doe",
+			"role": "Product storyteller",
+			"summary": "Shapes Orgo's product narrative, weekly rituals, and editorial voice.",
+			"bio": "Jane helps turn rough product thinking into clear stories, onboarding flows, and content systems that people can trust. She focuses on clarity, pacing, and making thoughtful software feel approachable.",
+			"focusAreas": ["Product narrative", "Editorial systems", "Onboarding"]
+		},
+		"ar": {
+			"name": "جين دو",
+			"role": "قائدة السرد المنتج",
+			"summary": "تصوغ قصة Orgo ونبرة المحتوى وإيقاع التجربة الأسبوعي.",
+			"bio": "تعمل جين على تحويل الأفكار الأولية حول المنتج إلى قصص واضحة ومسارات استخدام مريحة ونظام محتوى يمكن الوثوق به. يتركز عملها على الوضوح والإيقاع وبناء تجربة تبدو هادئة وقريبة من الناس.",
+			"focusAreas": ["سرد المنتج", "أنظمة المحتوى", "تجربة البداية"]
+		}
+	}
+}

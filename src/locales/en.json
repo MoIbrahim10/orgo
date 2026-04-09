@@ -10,10 +10,18 @@
 			"teams": "Teams",
 			"pricing": "Pricing",
 			"blog": "Blog",
-			"contact": "Contact"
+			"contact": "Contact",
+			"features": "Features",
+			"faq": "FAQ",
+			"changelog": "Changelog"
 		},
 		"cta": "Get Started",
 		"menu_label": "Open menu"
+	},
+	"footer": {
+		"tagline": "Calm planning, thoughtful writing, and bilingual product systems designed with care.",
+		"primary_title": "Explore",
+		"resources_title": "Resources"
 	},
 	"locale": {
 		"switcher_label": "Language",

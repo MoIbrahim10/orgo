@@ -1,0 +1,73 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
+import { formatLocalizedDate } from "../../data/site";
+import type { Language } from "../../types/translations";
+
+interface Props {
+	entries: CollectionEntry<"changelog">[];
+	lang: Language;
+}
+
+const { entries, lang } = Astro.props as Props;
+const toneClasses = {
+	launch: "bg-emerald-100 text-emerald-800",
+	improvement: "bg-sky-100 text-sky-800",
+	note: "bg-amber-100 text-amber-800",
+} as const;
+const typeLabels = {
+	en: {
+		launch: "Launch",
+		improvement: "Improvement",
+		note: "Note",
+	},
+	ar: {
+		launch: "إطلاق",
+		improvement: "تحسين",
+		note: "ملاحظة",
+	},
+} as const;
+const renderedEntries = await Promise.all(
+	entries.map(async (entry) => ({
+		entry,
+		Content: (await render(entry)).Content,
+	})),
+);
+---
+
+<div class="grid gap-6">
+	{renderedEntries.map(({ entry, Content }) => (
+		<article class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.05)]">
+			<div class="flex flex-wrap items-center gap-3 text-sm text-slate-500">
+				<span
+					class:list={[
+						"rounded-full px-3 py-1 text-xs font-medium uppercase tracking-[0.18em]",
+						toneClasses[entry.data.type],
+					]}
+				>
+					{typeLabels[lang][entry.data.type]}
+				</span>
+				<span>{entry.data.version}</span>
+				<time datetime={entry.data.releaseDate.toISOString()}>
+					{formatLocalizedDate(lang, entry.data.releaseDate, { dateStyle: "long" })}
+				</time>
+			</div>
+			<h2 class="font-display mt-5 text-3xl font-semibold tracking-tight text-slate-950">
+				{entry.data.title}
+			</h2>
+			<p class="mt-4 text-lg leading-8 text-slate-600">{entry.data.summary}</p>
+			{entry.data.highlights.length > 0 && (
+				<ul class="mt-5 grid gap-3 sm:grid-cols-3">
+					{entry.data.highlights.map((highlight) => (
+						<li class="rounded-3xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700">
+							{highlight}
+						</li>
+					))}
+				</ul>
+			)}
+			<div class="blog-prose mt-6">
+				<Content />
+			</div>
+		</article>
+	))}
+</div>

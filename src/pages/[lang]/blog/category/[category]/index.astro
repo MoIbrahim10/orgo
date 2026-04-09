@@ -15,8 +15,8 @@ import {
 	getTagSummaries,
 } from "../../../../../utils/blog";
 import { t, tWithParams } from "../../../../../utils/i18n";
-import { createArchiveMetadata } from "../../../../../utils/metadata";
-import { getLanguageFromParams } from "../../../../../utils/routing";
+import { createArchiveMetadata, createBreadcrumbStructuredData } from "../../../../../utils/metadata";
+import { getLanguageFromParams, getLocalizedPath } from "../../../../../utils/routing";
 
 export async function getStaticPaths() {
 	const allEntries = await getCollection("blog");
@@ -39,7 +39,7 @@ const postsForCategory = getPostsForCategory(allEntries, lang, categorySlug);
 const posts = getPaginatedItems(postsForCategory, 1);
 const authors = await getEntries(posts.map((post) => post.data.author));
 const authorsByPostId = Object.fromEntries(
-	posts.map((post, index) => [post.id, authors[index]?.data.name]),
+	posts.map((post, index) => [post.id, authors[index]?.data.localized[lang].name]),
 ) as Record<string, string | undefined>;
 const categories = getCategorySummaries(allEntries, lang).map((summary) => ({
 	...summary,
@@ -66,7 +66,19 @@ const pageTitle = tWithParams(lang, "blog.category_page_title", {
 const pageDescription = tWithParams(lang, "blog.category_page_description", {
 	label: category?.label ?? t(lang, "blog.index_title"),
 });
+const breadcrumbs = [
+	{ href: getLocalizedPath(lang), label: t(lang, "header.logo") },
+	{ href: getBlogIndexPath(lang), label: t(lang, "blog.index_title") },
+	{ label: category?.label ?? pageTitle },
+];
 const ogImage = getBlogCoverImage(postsForCategory[0]?.data.translationGroup ?? "introduction").src;
+const breadcrumbStructuredData = createBreadcrumbStructuredData(
+	Astro.site,
+	breadcrumbs.map((item) => ({
+		label: item.label,
+		path: item.href,
+	})),
+);
 const metadata = createArchiveMetadata(lang, {
 	description: pageDescription,
 	localeAlternates,
@@ -74,6 +86,7 @@ const metadata = createArchiveMetadata(lang, {
 	ogImage,
 	paginationNextUrl: pagination.nextPath,
 	paginationPrevUrl: pagination.prevPath,
+	structuredData: breadcrumbStructuredData,
 	title: pageTitle,
 });
 ---
@@ -81,6 +94,7 @@ const metadata = createArchiveMetadata(lang, {
 <Layout {...metadata}>
 	<BlogArchiveView
 		authorsByPostId={authorsByPostId}
+		breadcrumbs={breadcrumbs}
 		description={pageDescription}
 		eyebrow={t(lang, "blog.categories_title")}
 		lang={lang}

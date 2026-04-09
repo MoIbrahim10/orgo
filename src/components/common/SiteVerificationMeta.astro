@@ -1,12 +1,7 @@
 ---
-import { verificationConfig } from "../../data/site";
+import { getVerificationMetaEntries } from "../../data/site";
+
+const entries = getVerificationMetaEntries();
 ---
 
-{
-	verificationConfig.googleSiteVerificationId && (
-		<meta
-			content={verificationConfig.googleSiteVerificationId}
-			name="google-site-verification"
-		/>
-	)
-}
+{entries.map((entry) => <meta content={entry.content} name={entry.name} />)}

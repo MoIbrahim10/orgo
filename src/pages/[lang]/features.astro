@@ -1,0 +1,103 @@
+---
+import { getCollection, render } from "astro:content";
+import ActionLink from "../../components/ui/ActionLink.astro";
+import PageSection from "../../components/ui/PageSection.astro";
+import SectionIntro from "../../components/ui/SectionIntro.astro";
+import { getResourcePagesContent } from "../../data/translations/resources";
+import Layout from "../../layouts/Layout.astro";
+import { createMarketingMetadata } from "../../utils/metadata";
+import { getLocalizedFeatureEntries } from "../../utils/marketingContent";
+import { getLanguageFromParams, getLocaleStaticPaths, getLocalizedPath } from "../../utils/routing";
+
+export function getStaticPaths() {
+	return getLocaleStaticPaths();
+}
+
+const lang = getLanguageFromParams(Astro.params.lang);
+const pageContent = getResourcePagesContent(lang).features;
+const allFeatures = await getCollection("features");
+const features = getLocalizedFeatureEntries(allFeatures, lang);
+const featureSections = await Promise.all(
+	features.map(async (feature) => ({
+		feature,
+		Content: (await render(feature)).Content,
+	})),
+);
+const metadata = createMarketingMetadata(lang, {
+	description: pageContent.description,
+	title: pageContent.metaTitle,
+});
+---
+
+<Layout {...metadata}>
+	<PageSection backdrop="glow" tone="warm">
+		<SectionIntro
+			description={pageContent.intro}
+			title={pageContent.title}
+			titleTag="h1"
+		/>
+	</PageSection>
+
+	{
+		featureSections.map(({ feature, Content }, index) => (
+			<PageSection
+				backdrop={index % 2 === 0 ? "grid" : "glow"}
+				layout="split"
+				surface="panel"
+				tone={index % 2 === 0 ? "transparent" : "soft"}
+			>
+				<div>
+					<p class="marketing-eyebrow">{feature.data.eyebrow}</p>
+					<h2 class="font-display mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
+						{feature.data.title}
+					</h2>
+					<p class="mt-5 text-lg leading-8 text-slate-600">{feature.data.summary}</p>
+					<div class="blog-prose mt-6">
+						<Content />
+					</div>
+				</div>
+				<div slot="aside" class="space-y-5">
+					<div class="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
+						<p class="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+							{lang === "ar" ? "لماذا يهم هذا" : "Why this matters"}
+						</p>
+						<ul class="mt-4 grid gap-4">
+							{feature.data.benefits.map((benefit) => (
+								<li class="rounded-2xl bg-white p-4">
+									<h3 class="text-base font-semibold text-slate-950">{benefit.title}</h3>
+									<p class="mt-2 text-sm leading-6 text-slate-600">{benefit.body}</p>
+								</li>
+							))}
+						</ul>
+					</div>
+					{feature.data.relatedPath && feature.data.relatedLabel && (
+						<ActionLink href={getLocalizedPath(lang, feature.data.relatedPath)} variant="secondary">
+							{feature.data.relatedLabel}
+						</ActionLink>
+					)}
+				</div>
+			</PageSection>
+		))
+	}
+
+	<PageSection class="pt-0">
+		<div class="rounded-[2rem] border border-slate-200 bg-linear-to-br from-amber-50 via-white to-sky-50 px-6 py-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10">
+			<div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
+				<div class="max-w-3xl">
+					<h2 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
+						{pageContent.closingTitle}
+					</h2>
+					<p class="mt-5 text-lg leading-8 text-slate-600">{pageContent.closingDescription}</p>
+				</div>
+				<div class="flex flex-wrap gap-4">
+					<ActionLink href={pageContent.primaryHref} variant="primary">
+						{pageContent.primaryLabel}
+					</ActionLink>
+					<ActionLink href={pageContent.secondaryHref} variant="secondary">
+						{pageContent.secondaryLabel}
+					</ActionLink>
+				</div>
+			</div>
+		</div>
+	</PageSection>
+</Layout>

@@ -16,7 +16,17 @@ import {
 } from "../utils/blog";
 import { getLocalizedPath } from "../utils/routing";
 
-const staticRoutes = ["/", "/about", "/teams", "/pricing", "/blog", "/contact"] as const;
+const staticRoutes = [
+	"/",
+	"/about",
+	"/teams",
+	"/pricing",
+	"/blog",
+	"/contact",
+	"/features",
+	"/faq",
+	"/changelog",
+] as const;
 const sitemapXmlHeader = `<?xml version="1.0" encoding="UTF-8"?>`;
 const emptySitemap = `${sitemapXmlHeader}\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />\n`;
 

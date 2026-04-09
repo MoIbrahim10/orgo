@@ -1,0 +1,28 @@
+{
+	"id": "ahmed-ali",
+	"order": 3,
+	"location": "Cairo, Egypt",
+	"email": "ahmed@orgo.app",
+	"portfolio": "https://ahmedali.dev",
+	"availability": "Arabic UX, bilingual content design, and regional product adaptation.",
+	"image": {
+		"src": "/images/authors/ahmed.jpg",
+		"alt": "Portrait of Ahmed Ali"
+	},
+	"localized": {
+		"en": {
+			"name": "Ahmed Ali",
+			"role": "Arabic experience designer",
+			"summary": "Leads Arabic UX quality, localization tone, and culturally fluent product decisions.",
+			"bio": "Ahmed focuses on making Orgo feel native in Arabic, not merely translated. He brings a strong eye for right-to-left layouts, tone, and the small experience decisions that make bilingual products feel respectful and natural.",
+			"focusAreas": ["Arabic UX", "Localization quality", "RTL design"]
+		},
+		"ar": {
+			"name": "أحمد علي",
+			"role": "مصمم التجربة العربية",
+			"summary": "يقود جودة التجربة العربية ونبرة الترجمة والقرارات التي تجعل المنتج طبيعيًا ثقافيًا.",
+			"bio": "يركز أحمد على جعل Orgo يبدو منتجًا عربيًا أصيلًا لا مجرد واجهة مترجمة. يهتم بتفاصيل الاتجاه من اليمين إلى اليسار ونبرة اللغة والقرارات الصغيرة التي تجعل المنتج الثنائي اللغة محترمًا وطبيعيًا.",
+			"focusAreas": ["تجربة عربية", "جودة الترجمة", "تصميم RTL"]
+		}
+	}
+}

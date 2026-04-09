@@ -1,11 +1,14 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import type { BreadcrumbItem } from "../ui/Breadcrumbs.astro";
+import BlogLeadStory from "./BlogLeadStory.astro";
 import type { Language } from "../../types/translations";
 import { t } from "../../utils/i18n";
 import BlogPagination from "./BlogPagination.astro";
 import BlogPostCard from "./BlogPostCard.astro";
 import BlogTaxonomyList, { type BlogTaxonomyLink } from "./BlogTaxonomyList.astro";
 import ActionLink from "../ui/ActionLink.astro";
+import Breadcrumbs from "../ui/Breadcrumbs.astro";
 import PageSection from "../ui/PageSection.astro";
 import SectionIntro from "../ui/SectionIntro.astro";
 
@@ -16,7 +19,10 @@ interface Props {
 	eyebrow?: string;
 	posts: CollectionEntry<"blog">[];
 	authorsByPostId: Record<string, string | undefined>;
+	breadcrumbs?: BreadcrumbItem[];
 	rssFeedUrl?: string;
+	featuredPost?: CollectionEntry<"blog">;
+	featuredAuthorName?: string;
 	pagination?: {
 		currentPage: number;
 		totalPages: number;
@@ -31,8 +37,11 @@ interface Props {
 
 const {
 	authorsByPostId,
+	breadcrumbs = [],
 	description,
 	eyebrow,
+	featuredAuthorName,
+	featuredPost,
 	lang,
 	pagination,
 	posts,
@@ -43,51 +52,61 @@ const {
 const hasTaxonomyGroups = taxonomyGroups.some((group) => group.items.length > 0);
 ---
 
-<PageSection>
-	<div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-		<SectionIntro description={description} eyebrow={eyebrow} title={title} titleTag="h1" />
-		{rssFeedUrl && (
-			<ActionLink href={rssFeedUrl} variant="secondary">
-				{t(lang, "blog.rss_label")}
-			</ActionLink>
-		)}
-	</div>
-	<div class:list={["mt-12", hasTaxonomyGroups && "grid gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]"]}>
-		<div>
-			<ul class="grid gap-8">
-				{posts.map((post, index) => (
-					<li>
-						<BlogPostCard
-							authorName={authorsByPostId[post.id]}
-							lang={lang}
-							post={post}
-							priority={index === 0}
-						/>
-					</li>
-				))}
-			</ul>
-			{pagination && (
-				<BlogPagination
-					currentPage={pagination.currentPage}
-					nextHref={pagination.nextHref}
-					nextLabel={t(lang, "blog.pagination.next")}
-					prevHref={pagination.prevHref}
-					prevLabel={t(lang, "blog.pagination.prev")}
-					summaryLabel={t(lang, "blog.pagination.summary")
-						.replace("{page}", String(pagination.currentPage))
-						.replace("{total}", String(pagination.totalPages))}
-					totalPages={pagination.totalPages}
-				/>
+<PageSection backdrop={featuredPost ? "grid" : "none"} layout={hasTaxonomyGroups ? "split" : "default"}>
+	<div slot="intro" class="space-y-6">
+		<Breadcrumbs items={breadcrumbs} />
+		<div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+			<SectionIntro description={description} eyebrow={eyebrow} title={title} titleTag="h1" />
+			{rssFeedUrl && (
+				<ActionLink href={rssFeedUrl} variant="secondary">
+					{t(lang, "blog.rss_label")}
+				</ActionLink>
 			)}
 		</div>
+	</div>
+	<div class="space-y-8">
 		{
-			hasTaxonomyGroups && (
-				<aside class="space-y-4">
-					{taxonomyGroups.map((group) => (
-						<BlogTaxonomyList items={group.items} title={group.title} />
-					))}
-				</aside>
+			featuredPost && (
+				<BlogLeadStory
+					authorName={featuredAuthorName ?? authorsByPostId[featuredPost.id]}
+					lang={lang}
+					post={featuredPost}
+				/>
 			)
 		}
+		<ul class="grid gap-8">
+			{posts.map((post, index) => (
+				<li>
+					<BlogPostCard
+						authorName={authorsByPostId[post.id]}
+						lang={lang}
+						post={post}
+						priority={!featuredPost && index === 0}
+					/>
+				</li>
+			))}
+		</ul>
+		{pagination && (
+			<BlogPagination
+				currentPage={pagination.currentPage}
+				nextHref={pagination.nextHref}
+				nextLabel={t(lang, "blog.pagination.next")}
+				prevHref={pagination.prevHref}
+				prevLabel={t(lang, "blog.pagination.prev")}
+				summaryLabel={t(lang, "blog.pagination.summary")
+					.replace("{page}", String(pagination.currentPage))
+					.replace("{total}", String(pagination.totalPages))}
+				totalPages={pagination.totalPages}
+			/>
+		)}
 	</div>
+	{
+		hasTaxonomyGroups && (
+			<div slot="aside" class="space-y-4">
+				{taxonomyGroups.map((group) => (
+					<BlogTaxonomyList items={group.items} title={group.title} />
+				))}
+			</div>
+		)
+	}
 </PageSection>

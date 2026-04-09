@@ -26,6 +26,11 @@ type TeamsPageContent = {
 			body: string;
 		}>;
 	};
+	roster: {
+		eyebrow: string;
+		title: string;
+		description: string;
+	};
 	closing: {
 		title: string;
 		description: string;
@@ -92,6 +97,12 @@ const contentByLanguage: Record<Language, TeamsPageContent> = {
 				},
 			],
 		},
+		roster: {
+			eyebrow: "People",
+			title: "The people shaping the workflow",
+			description:
+				"Orgo's team view feels stronger when the people behind product, editorial systems, and Arabic experience stay visible.",
+		},
 		closing: {
 			title: "Built for teams that want clarity without extra process.",
 			description:
@@ -147,6 +158,12 @@ const contentByLanguage: Record<Language, TeamsPageContent> = {
 					body: "اختموا الأسبوع بمراجعة قصيرة تُبقي القرارات والنتائج والخطوات التالية واضحة للأسبوع القادم.",
 				},
 			],
+		},
+		roster: {
+			eyebrow: "الأشخاص",
+			title: "الأشخاص الذين يصوغون سير العمل",
+			description:
+				"تبدو طبقة الفرق في Orgo أقوى عندما يبقى الأشخاص وراء المنتج والمحتوى والتجربة العربية ظاهرين وواضحين.",
 		},
 		closing: {
 			title: "مصمم للفرق التي تريد وضوحًا دون تعقيد إضافي.",

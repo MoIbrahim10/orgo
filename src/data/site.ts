@@ -38,6 +38,14 @@ type FeatureFlags = {
 	blogTaxonomies: boolean;
 };
 
+type ScriptPolicy = {
+	category: "analytics" | "verification";
+	description: string;
+	enabled: boolean;
+	loadingStrategy: "async" | "meta";
+	vendor: string;
+};
+
 const productionAnalyticsEnabled = import.meta.env.PROD;
 
 export const siteConfig = {
@@ -99,6 +107,30 @@ export const blogConfig: BlogConfig = {
 	},
 };
 
+export const scriptPolicies = {
+	googleAnalytics: {
+		category: "analytics",
+		description: "Behavior analytics for marketing and product-site traffic.",
+		enabled: analyticsConfig.isEnabled && Boolean(analyticsConfig.googleAnalyticsId),
+		loadingStrategy: "async",
+		vendor: "Google Analytics",
+	},
+	plausible: {
+		category: "analytics",
+		description: "Lightweight privacy-conscious page analytics.",
+		enabled: analyticsConfig.isEnabled && Boolean(analyticsConfig.plausibleDomain),
+		loadingStrategy: "async",
+		vendor: "Plausible",
+	},
+	googleSiteVerification: {
+		category: "verification",
+		description: "Search Console ownership verification for SEO tooling.",
+		enabled: Boolean(verificationConfig.googleSiteVerificationId),
+		loadingStrategy: "meta",
+		vendor: "Google Search Console",
+	},
+} as const satisfies Record<string, ScriptPolicy>;
+
 export const featureFlags: FeatureFlags = {
 	localeSuggestionBanner: true,
 	teamsLandingPage: true,
@@ -112,6 +144,7 @@ export const appConfig = {
 	analytics: analyticsConfig,
 	blog: blogConfig,
 	features: featureFlags,
+	scripts: scriptPolicies,
 	defaultLanguage: defaultLang,
 } as const;
 
@@ -150,4 +183,30 @@ export function formatLocalizedDate(
 	options: Intl.DateTimeFormatOptions = { dateStyle: "long" },
 ): string {
 	return date.toLocaleDateString(getLocaleConfig(lang).dateLocale, options);
+}
+
+export function getVerificationMetaEntries() {
+	return [
+		scriptPolicies.googleSiteVerification.enabled &&
+			verificationConfig.googleSiteVerificationId && {
+				content: verificationConfig.googleSiteVerificationId,
+				name: "google-site-verification",
+			},
+	].filter(
+		(
+			entry,
+		): entry is {
+			name: string;
+			content: string;
+		} => Boolean(entry),
+	);
+}
+
+export function getEnabledAnalyticsProviders() {
+	return {
+		googleAnalytics: scriptPolicies.googleAnalytics.enabled
+			? analyticsConfig.googleAnalyticsId
+			: undefined,
+		plausible: scriptPolicies.plausible.enabled ? analyticsConfig.plausibleDomain : undefined,
+	};
 }

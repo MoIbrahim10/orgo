@@ -1,11 +1,12 @@
 ---
-import { analyticsConfig } from "../../data/site";
+import { getEnabledAnalyticsProviders } from "../../data/site";
 
-const { googleAnalyticsId, isEnabled, plausibleDomain } = analyticsConfig;
+const { googleAnalytics: googleAnalyticsId, plausible: plausibleDomain } =
+	getEnabledAnalyticsProviders();
 ---
 
 {
-	isEnabled && googleAnalyticsId && (
+	googleAnalyticsId && (
 		<>
 			<script
 				async
@@ -24,13 +25,12 @@ const { googleAnalyticsId, isEnabled, plausibleDomain } = analyticsConfig;
 	)
 }
 {
-	isEnabled &&
-		plausibleDomain && (
-			<script
-				async
-				data-domain={plausibleDomain}
-				is:inline
-				src="https://plausible.io/js/script.js"
-			></script>
-		)
+	plausibleDomain && (
+		<script
+			async
+			data-domain={plausibleDomain}
+			is:inline
+			src="https://plausible.io/js/script.js"
+		></script>
+	)
 }

@@ -18,5 +18,9 @@ export const getHeaderTranslations = (lang: Language) => ({
 });
 
 export const getFooterTranslations = (lang: Language) => ({
-	links: translateLinks(lang, navigation.footer),
+	tagline: t(lang, "footer.tagline" as TranslationKey),
+	primaryTitle: t(lang, "footer.primary_title" as TranslationKey),
+	resourcesTitle: t(lang, "footer.resources_title" as TranslationKey),
+	primaryLinks: translateLinks(lang, navigation.footer.primary),
+	resourceLinks: translateLinks(lang, navigation.footer.resources),
 });

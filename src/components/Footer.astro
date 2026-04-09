@@ -9,14 +9,39 @@ const footerTranslations = getFooterTranslations(lang);
 ---
 
 <footer class="border-t border-slate-200 bg-slate-50">
-	<Container class="flex flex-wrap items-center justify-between gap-4 py-6 text-sm text-slate-600">
-		<p>&copy; {new Date().getFullYear()} Orgo</p>
-		<nav aria-label="Footer" class="flex flex-wrap items-center gap-4">
-			{footerTranslations.links.map((link) => (
-				<a class="transition hover:text-slate-900" href={getLocalizedPath(lang, link.href)}>
-					{link.label}
-				</a>
-			))}
-		</nav>
+	<Container class="py-10 text-sm text-slate-600">
+		<div class="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,0.8fr)]">
+			<div class="max-w-md">
+				<p class="font-display text-xl font-semibold text-slate-900">Orgo</p>
+				<p class="mt-3 leading-7">{footerTranslations.tagline}</p>
+			</div>
+			<div>
+				<p class="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+					{footerTranslations.primaryTitle}
+				</p>
+				<nav aria-label="Footer primary" class="mt-4 grid gap-3">
+					{footerTranslations.primaryLinks.map((link) => (
+						<a class="transition hover:text-slate-900" href={getLocalizedPath(lang, link.href)}>
+							{link.label}
+						</a>
+					))}
+				</nav>
+			</div>
+			<div>
+				<p class="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+					{footerTranslations.resourcesTitle}
+				</p>
+				<nav aria-label="Footer resources" class="mt-4 grid gap-3">
+					{footerTranslations.resourceLinks.map((link) => (
+						<a class="transition hover:text-slate-900" href={getLocalizedPath(lang, link.href)}>
+							{link.label}
+						</a>
+					))}
+				</nav>
+			</div>
+		</div>
+		<div class="mt-8 border-t border-slate-200 pt-5">
+			<p>&copy; {new Date().getFullYear()} Orgo</p>
+		</div>
 	</Container>
 </footer>

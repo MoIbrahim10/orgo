@@ -1,0 +1,28 @@
+{
+	"id": "john-doe",
+	"order": 2,
+	"location": "London, United Kingdom",
+	"email": "john@orgo.app",
+	"portfolio": "https://johndoe.com",
+	"availability": "Design systems, product UX, and interface strategy.",
+	"image": {
+		"src": "/images/authors/john.jpg",
+		"alt": "Portrait of John Doe"
+	},
+	"localized": {
+		"en": {
+			"name": "John Doe",
+			"role": "Design systems lead",
+			"summary": "Owns interface direction, product polish, and the systems that keep the UI coherent.",
+			"bio": "John works at the intersection of product UX and systems thinking. He focuses on helping Orgo feel calm under pressure, with components and patterns that stay clear as the product grows.",
+			"focusAreas": ["Design systems", "Interface direction", "Product UX"]
+		},
+		"ar": {
+			"name": "جون دو",
+			"role": "قائد أنظمة التصميم",
+			"summary": "يقود اتجاه الواجهة وصقل المنتج والأنظمة التي تحافظ على تماسك التجربة.",
+			"bio": "يعمل جون عند تقاطع تجربة المنتج والتفكير المنظومي. يركز على جعل Orgo يبدو هادئًا حتى عندما يزداد تعقيد المنتج، من خلال مكوّنات وأنماط تبقى واضحة وقابلة للتوسّع.",
+			"focusAreas": ["أنظمة التصميم", "اتجاه الواجهة", "تجربة المنتج"]
+		}
+	}
+}

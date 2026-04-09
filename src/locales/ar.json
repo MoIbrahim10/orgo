@@ -10,10 +10,18 @@
 			"teams": "الفرق",
 			"pricing": "التسعير",
 			"blog": "المدونة",
-			"contact": "تواصل"
+			"contact": "تواصل",
+			"features": "المزايا",
+			"faq": "الأسئلة الشائعة",
+			"changelog": "سجل التحديثات"
 		},
 		"cta": "ابدأ الآن",
 		"menu_label": "فتح القائمة"
+	},
+	"footer": {
+		"tagline": "تخطيط هادئ، وكتابة واعية، وأنظمة منتج ثنائية اللغة صُممت بعناية.",
+		"primary_title": "استكشف",
+		"resources_title": "المصادر"
 	},
 	"locale": {
 		"switcher_label": "اللغة",

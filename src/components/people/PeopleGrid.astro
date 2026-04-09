@@ -1,0 +1,70 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ResponsiveMedia from "../common/ResponsiveMedia.astro";
+import { getAuthorAvatarImage } from "../../data/media";
+import type { Language } from "../../types/translations";
+import { getLocalizedPerson } from "../../utils/people";
+
+interface Props {
+	lang: Language;
+	people: CollectionEntry<"people">[];
+}
+
+const { lang, people } = Astro.props as Props;
+---
+
+<div class="grid gap-6 lg:grid-cols-3">
+	{people.map((person) => {
+		const localizedPerson = getLocalizedPerson(person, lang);
+		const avatar = getAuthorAvatarImage(person.data.id);
+
+		return (
+			<article class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
+				<div class="flex items-center gap-4">
+					{avatar && (
+						<ResponsiveMedia
+							alt={localizedPerson.image?.alt ?? localizedPerson.name}
+							height={80}
+							imgClass="h-20 w-20 rounded-full border border-slate-200 bg-slate-50 object-cover"
+							mode="image"
+							src={avatar}
+							width={80}
+						/>
+					)}
+					<div>
+						<h3 class="font-display text-2xl font-semibold tracking-tight text-slate-950">
+							{localizedPerson.name}
+						</h3>
+						<p class="mt-2 text-sm font-medium uppercase tracking-[0.18em] text-slate-500">
+							{localizedPerson.role}
+						</p>
+					</div>
+				</div>
+				<p class="mt-5 text-base leading-7 text-slate-600">{localizedPerson.summary}</p>
+				<p class="mt-4 text-sm leading-6 text-slate-500">{localizedPerson.bio}</p>
+				{localizedPerson.focusAreas.length > 0 && (
+					<ul class="mt-5 flex flex-wrap gap-2">
+						{localizedPerson.focusAreas.map((focusArea) => (
+							<li class="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700">
+								{focusArea}
+							</li>
+						))}
+					</ul>
+				)}
+				<div class="mt-6 flex flex-wrap gap-3 text-sm text-slate-500">
+					{localizedPerson.location && <span>{localizedPerson.location}</span>}
+					{localizedPerson.portfolio && (
+						<a
+							class="font-medium text-slate-700 transition hover:text-slate-950"
+							href={localizedPerson.portfolio}
+							rel="noreferrer"
+							target="_blank"
+						>
+							{lang === "ar" ? "الأعمال" : "Portfolio"}
+						</a>
+					)}
+				</div>
+			</article>
+		);
+	})}
+</div>

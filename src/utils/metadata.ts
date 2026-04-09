@@ -82,3 +82,37 @@ export function getDefaultOgImage(): string {
 export function shouldIndexTagPages(): boolean {
 	return blogConfig.tag.robots.index;
 }
+
+export function createBreadcrumbStructuredData(
+	site: URL | undefined,
+	items: Array<{ label: string; path?: string }>,
+) {
+	if (!site) {
+		return undefined;
+	}
+
+	const itemListElement = items
+		.map((item, index) => {
+			if (!item.path) {
+				return undefined;
+			}
+
+			return {
+				"@type": "ListItem",
+				position: index + 1,
+				name: item.label,
+				item: new URL(item.path, site).toString(),
+			};
+		})
+		.filter((item): item is Exclude<typeof item, undefined> => Boolean(item));
+
+	if (itemListElement.length === 0) {
+		return undefined;
+	}
+
+	return {
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		itemListElement,
+	};
+}

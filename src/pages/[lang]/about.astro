@@ -1,22 +1,21 @@
 ---
+import { getCollection } from "astro:content";
+import PeopleGrid from "../../components/people/PeopleGrid.astro";
 import ActionLink from "../../components/ui/ActionLink.astro";
-import Container from "../../components/ui/Container.astro";
+import PageSection from "../../components/ui/PageSection.astro";
 import SectionIntro from "../../components/ui/SectionIntro.astro";
+import { getAboutPageContent } from "../../data/translations/about";
 import Layout from "../../layouts/Layout.astro";
-import { t } from "../../utils/i18n";
 import { createMarketingMetadata } from "../../utils/metadata";
-import {
-	getLanguageFromParams,
-	getLocalizedPath,
-	getLocaleStaticPaths,
-} from "../../utils/routing";
+import { sortPeople } from "../../utils/people";
+import { getLanguageFromParams, getLocaleStaticPaths } from "../../utils/routing";
 
 const lang = getLanguageFromParams(Astro.params.lang);
-const contactHref = getLocalizedPath(lang, "/contact");
-const blogHref = getLocalizedPath(lang, "/blog");
+const content = getAboutPageContent(lang);
+const people = sortPeople(await getCollection("people"));
 const metadata = createMarketingMetadata(lang, {
-	description: t(lang, "pages.about.description"),
-	title: t(lang, "pages.about.meta_title"),
+	description: content.description,
+	title: content.metaTitle,
 });
 
 export function getStaticPaths() {
@@ -25,18 +24,77 @@ export function getStaticPaths() {
 ---
 
 <Layout {...metadata}>
-	<section class="py-16">
-			<Container size="narrow">
-				<SectionIntro
-					description={t(lang, "pages.about.intro")}
-					title={t(lang, "pages.about.title")}
-					titleTag="h1"
-				/>
-				<p class="leading-7 text-slate-600">{t(lang, "pages.about.body")}</p>
-				<div class="flex flex-wrap gap-4 pt-4">
-					<ActionLink href={contactHref} variant="primary">{t(lang, "header.links.contact")}</ActionLink>
-				<ActionLink href={blogHref} variant="secondary">{t(lang, "header.links.blog")}</ActionLink>
+	<PageSection backdrop="glow" tone="warm">
+		<SectionIntro description={content.intro} title={content.title} titleTag="h1" />
+	</PageSection>
+
+	<PageSection backdrop="grid" layout="split" surface="panel">
+		<div class="space-y-5">
+			<p class="marketing-eyebrow">{content.story.eyebrow}</p>
+			<h2 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
+				{content.story.title}
+			</h2>
+			<p class="text-lg leading-8 text-slate-600">{content.story.body}</p>
+		</div>
+		<div slot="aside" class="rounded-[1.75rem] border border-slate-200 bg-slate-950 p-6 text-white">
+			<p class="text-xs font-medium uppercase tracking-[0.18em] text-white/60">
+				{lang === "ar" ? "لقطة سريعة" : "At a glance"}
+			</p>
+			<ul class="mt-4 grid gap-4 text-sm text-white/90">
+				<li>{lang === "ar" ? "٣ مساهمين عبر المحتوى والتصميم والتجربة العربية" : "3 contributors across product, editorial, and Arabic experience"}</li>
+				<li>{lang === "ar" ? "طبقة منتج ثنائية اللغة في المسارات والمحتوى والواجهة" : "Bilingual product thinking across routing, content, and interface details"}</li>
+				<li>{lang === "ar" ? "قرارات مبنية على الوضوح وقابلية الصيانة" : "Decisions shaped by clarity, maintainability, and calm UX"}</li>
+			</ul>
+		</div>
+	</PageSection>
+
+	<PageSection tone="soft">
+		<SectionIntro
+			description={content.principles.description}
+			eyebrow={content.principles.eyebrow}
+			title={content.principles.title}
+		/>
+		<div class="mt-10 grid gap-6 lg:grid-cols-3">
+			{content.principles.items.map((item) => (
+				<article class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
+					<h2 class="font-display text-2xl font-semibold tracking-tight text-slate-950">
+						{item.title}
+					</h2>
+					<p class="mt-4 text-base leading-7 text-slate-600">{item.body}</p>
+				</article>
+			))}
+		</div>
+	</PageSection>
+
+	<PageSection>
+		<SectionIntro
+			description={lang === "ar" ? "الأشخاص الذين يصوغون المنتج والمحتوى والجودة الثنائية اللغة." : "The people shaping the product, editorial voice, and bilingual quality layer."}
+			eyebrow={lang === "ar" ? "الفريق" : "People"}
+			title={lang === "ar" ? "تعرف على الفريق وراء Orgo" : "Meet the people behind Orgo"}
+		/>
+		<div class="mt-10">
+			<PeopleGrid lang={lang} people={people} />
+		</div>
+	</PageSection>
+
+	<PageSection class="pt-0">
+		<div class="rounded-[2rem] border border-slate-200 bg-linear-to-br from-amber-50 via-white to-sky-50 px-6 py-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10">
+			<div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
+				<div class="max-w-3xl">
+					<h2 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
+						{content.cta.title}
+					</h2>
+					<p class="mt-5 text-lg leading-8 text-slate-600">{content.cta.description}</p>
+				</div>
+				<div class="flex flex-wrap gap-4">
+					<ActionLink href={content.cta.primaryHref} variant="primary">
+						{content.cta.primaryLabel}
+					</ActionLink>
+					<ActionLink href={content.cta.secondaryHref} variant="secondary">
+						{content.cta.secondaryLabel}
+					</ActionLink>
+				</div>
 			</div>
-		</Container>
-	</section>
+		</div>
+	</PageSection>
 </Layout>
