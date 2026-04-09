@@ -14,6 +14,8 @@ import {
 	metadataConfig,
 	siteConfig,
 } from "../data/site";
+import { themeMetaColors, themeStorageKey } from "../data/theme";
+import { englishTypography } from "../data/typography";
 import { getSiteTranslations } from "../data/translations/site";
 import { defaultLang, type Language } from "../types/translations";
 import {
@@ -139,22 +141,45 @@ const structuredDataItems = [
 			: []),
 ].filter((item): item is Record<string, unknown> => Boolean(item));
 
-const defaultThemeColor = "#f8fafc";
+const defaultThemeColor = themeMetaColors.light;
+const shouldPreloadEnglishFonts = localeConfig.bodyClass === "locale-latin";
 ---
 
 <!doctype html>
-<html dir={localeConfig.dir} lang={getHtmlLanguage(lang)}>
+<html
+	data-theme-color-dark={themeMetaColors.dark}
+	data-theme-color-light={themeMetaColors.light}
+	data-theme-storage-key={themeStorageKey}
+	dir={localeConfig.dir}
+	lang={getHtmlLanguage(lang)}
+>
 	<head>
 		<meta charset="UTF-8" />
 		<meta content="width=device-width, initial-scale=1" name="viewport" />
+		{
+			shouldPreloadEnglishFonts &&
+				englishTypography.preload.map((font) => (
+					<link as="font" crossorigin href={font.href} rel="preload" type={font.type} />
+				))
+		}
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<meta content="strict-origin-when-cross-origin" name="referrer" />
 		<meta content={defaultThemeColor} name="theme-color" />
 		<script is:inline>
 			(() => {
-				const storageKey = "orgo.theme";
 				const root = document.documentElement;
+				const { themeColorDark, themeColorLight, themeStorageKey } = root.dataset;
+
+				if (!themeColorDark || !themeColorLight || !themeStorageKey) {
+					return;
+				}
+
+				const metaColors = {
+					dark: themeColorDark,
+					light: themeColorLight,
+				};
+				const storageKey = themeStorageKey;
 				const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 				const metaThemeColor = document.querySelector('meta[name="theme-color"]');
 				const readPreference = () => {
@@ -180,7 +205,7 @@ const defaultThemeColor = "#f8fafc";
 				root.dataset.themeSource = preference;
 
 				if (metaThemeColor) {
-					metaThemeColor.setAttribute("content", theme === "dark" ? "#020617" : "#f8fafc");
+					metaThemeColor.setAttribute("content", metaColors[theme]);
 				}
 			})();
 		</script>

@@ -17,7 +17,7 @@ const switchToLightLabel = t(lang, "theme.switch_to_light");
 	aria-label={switchToDarkLabel}
 	aria-pressed="false"
 	class:list={[
-		"theme-toggle inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-900 shadow-[0_18px_40px_rgba(15,23,42,0.08)] backdrop-blur transition hover:border-slate-300",
+		"theme-toggle inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-900 shadow-(--theme-shadow-soft) backdrop-blur transition hover:border-slate-300",
 		className,
 	]}
 	data-orgo-theme-toggle
@@ -73,122 +73,127 @@ const switchToLightLabel = t(lang, "theme.switch_to_light");
 	if (!themeToggleWindow.__orgoThemeToggleReady) {
 		themeToggleWindow.__orgoThemeToggleReady = true;
 
-		const storageKey = "orgo.theme";
 		const root = document.documentElement;
-		const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-		const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-		const themeColors: Record<ResolvedTheme, string> = {
-			dark: "#020617",
-			light: "#f8fafc",
-		};
-		const transitionDurationMs = 320;
-		let transitionTimeoutId: number | undefined;
+		const { themeColorDark, themeColorLight, themeStorageKey } = root.dataset;
 
-		const readPreference = (): ThemePreference => {
-			try {
-				const storedPreference = localStorage.getItem(storageKey);
-				return storedPreference === "light" || storedPreference === "dark"
-					? storedPreference
-					: "system";
-			} catch {
-				return "system";
-			}
-		};
+		if (themeColorDark && themeColorLight && themeStorageKey) {
+			const storageKey = themeStorageKey;
+			const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+			const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+			const themeColors: Record<ResolvedTheme, string> = {
+				dark: themeColorDark,
+				light: themeColorLight,
+			};
+			const transitionDurationMs = 320;
+			let transitionTimeoutId: number | undefined;
 
-		const resolveTheme = (preference: ThemePreference): ResolvedTheme =>
-			preference === "light" || preference === "dark"
-				? preference
-				: mediaQuery.matches
-					? "dark"
-					: "light";
+			const readPreference = (): ThemePreference => {
+				try {
+					const storedPreference = localStorage.getItem(storageKey);
+					return storedPreference === "light" || storedPreference === "dark"
+						? storedPreference
+						: "system";
+				} catch {
+					return "system";
+				}
+			};
 
-		const syncToggle = (toggle: HTMLButtonElement, theme: ResolvedTheme) => {
-			const lightLabel = toggle.getAttribute("data-theme-label-light") ?? "Switch to light mode";
-			const darkLabel = toggle.getAttribute("data-theme-label-dark") ?? "Switch to dark mode";
-			const nextLabel = theme === "dark" ? lightLabel : darkLabel;
+			const resolveTheme = (preference: ThemePreference): ResolvedTheme =>
+				preference === "light" || preference === "dark"
+					? preference
+					: mediaQuery.matches
+						? "dark"
+						: "light";
 
-			toggle.dataset.theme = theme;
-			toggle.setAttribute("aria-label", nextLabel);
-			toggle.setAttribute("aria-pressed", String(theme === "dark"));
-			toggle.setAttribute("title", nextLabel);
-		};
+			const syncToggle = (toggle: HTMLButtonElement, theme: ResolvedTheme) => {
+				const lightLabel =
+					toggle.getAttribute("data-theme-label-light") ?? "Switch to light mode";
+				const darkLabel = toggle.getAttribute("data-theme-label-dark") ?? "Switch to dark mode";
+				const nextLabel = theme === "dark" ? lightLabel : darkLabel;
 
-		const syncAllToggles = (theme: ResolvedTheme) => {
-			document.querySelectorAll("[data-orgo-theme-toggle]").forEach((toggle) => {
-				if (!(toggle instanceof HTMLButtonElement)) {
+				toggle.dataset.theme = theme;
+				toggle.setAttribute("aria-label", nextLabel);
+				toggle.setAttribute("aria-pressed", String(theme === "dark"));
+				toggle.setAttribute("title", nextLabel);
+			};
+
+			const syncAllToggles = (theme: ResolvedTheme) => {
+				document.querySelectorAll("[data-orgo-theme-toggle]").forEach((toggle) => {
+					if (!(toggle instanceof HTMLButtonElement)) {
+						return;
+					}
+
+					syncToggle(toggle, theme);
+				});
+			};
+
+			const applyTheme = (
+				preference: ThemePreference,
+				{ animate = false }: { animate?: boolean } = {},
+			) => {
+				const resolvedTheme = resolveTheme(preference);
+
+				if (animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+					root.classList.add("theme-transition");
+					window.clearTimeout(transitionTimeoutId);
+					transitionTimeoutId = window.setTimeout(() => {
+						root.classList.remove("theme-transition");
+					}, transitionDurationMs);
+				}
+
+				root.dataset.theme = resolvedTheme;
+				root.dataset.themeSource = preference;
+
+				if (metaThemeColor) {
+					metaThemeColor.setAttribute("content", themeColors[resolvedTheme]);
+				}
+
+				syncAllToggles(resolvedTheme);
+			};
+
+			const storePreference = (preference: ThemePreference) => {
+				try {
+					if (preference === "system") {
+						localStorage.removeItem(storageKey);
+						return;
+					}
+
+					localStorage.setItem(storageKey, preference);
+				} catch {}
+			};
+
+			const toggleTheme = () => {
+				const currentTheme = root.dataset.theme === "dark" ? "dark" : "light";
+				const nextPreference = currentTheme === "dark" ? "light" : "dark";
+
+				storePreference(nextPreference);
+				applyTheme(nextPreference, { animate: true });
+			};
+
+			const bindThemeToggles = () => {
+				document.querySelectorAll("[data-orgo-theme-toggle]").forEach((toggle) => {
+					if (!(toggle instanceof HTMLButtonElement) || toggle.dataset.bound === "true") {
+						return;
+					}
+
+					toggle.dataset.bound = "true";
+					toggle.addEventListener("click", toggleTheme);
+				});
+
+				applyTheme(readPreference());
+			};
+
+			bindThemeToggles();
+
+			mediaQuery.addEventListener("change", () => {
+				if (readPreference() !== "system") {
 					return;
 				}
 
-				syncToggle(toggle, theme);
+				applyTheme("system", { animate: true });
 			});
-		};
 
-		const applyTheme = (
-			preference: ThemePreference,
-			{ animate = false }: { animate?: boolean } = {},
-		) => {
-			const resolvedTheme = resolveTheme(preference);
-
-			if (animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-				root.classList.add("theme-transition");
-				window.clearTimeout(transitionTimeoutId);
-				transitionTimeoutId = window.setTimeout(() => {
-					root.classList.remove("theme-transition");
-				}, transitionDurationMs);
-			}
-
-			root.dataset.theme = resolvedTheme;
-			root.dataset.themeSource = preference;
-
-			if (metaThemeColor) {
-				metaThemeColor.setAttribute("content", themeColors[resolvedTheme]);
-			}
-
-			syncAllToggles(resolvedTheme);
-		};
-
-		const storePreference = (preference: ThemePreference) => {
-			try {
-				if (preference === "system") {
-					localStorage.removeItem(storageKey);
-					return;
-				}
-
-				localStorage.setItem(storageKey, preference);
-			} catch {}
-		};
-
-		const toggleTheme = () => {
-			const currentTheme = root.dataset.theme === "dark" ? "dark" : "light";
-			const nextPreference = currentTheme === "dark" ? "light" : "dark";
-
-			storePreference(nextPreference);
-			applyTheme(nextPreference, { animate: true });
-		};
-
-		const bindThemeToggles = () => {
-			document.querySelectorAll("[data-orgo-theme-toggle]").forEach((toggle) => {
-				if (!(toggle instanceof HTMLButtonElement) || toggle.dataset.bound === "true") {
-					return;
-				}
-
-				toggle.dataset.bound = "true";
-				toggle.addEventListener("click", toggleTheme);
-			});
-
-			applyTheme(readPreference());
-		};
-
-		bindThemeToggles();
-
-		mediaQuery.addEventListener("change", () => {
-			if (readPreference() !== "system") {
-				return;
-			}
-
-			applyTheme("system", { animate: true });
-		});
-
-		document.addEventListener("astro:page-load", bindThemeToggles);
+			document.addEventListener("astro:page-load", bindThemeToggles);
+		}
 	}
 </script>

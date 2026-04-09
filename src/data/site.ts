@@ -1,4 +1,5 @@
 import { defaultLang, localeRegistry, type Language } from "../types/translations";
+import { themeMetaColors } from "./theme";
 
 type RobotsPolicy = {
 	index: boolean;
@@ -52,7 +53,7 @@ export const siteConfig = {
 	name: "Orgo",
 	basePath: "/",
 	defaultOgImage: "/og.png",
-	themeColor: "#0f172a",
+	themeColor: themeMetaColors.light,
 } as const;
 
 export const metadataConfig = {
