@@ -46,6 +46,22 @@ export type HomeWorkflowStep = {
 	title: string;
 };
 
+export type HomeSignal = {
+	label: string;
+	tone: "mint" | "rose" | "sky" | "sun";
+	value: string;
+};
+
+export type HomeCaseStudy = {
+	body: string;
+	cta?: string;
+	href?: string;
+	icon: HomeIconName;
+	label: string;
+	outcome: string;
+	title: string;
+};
+
 export type HomePlan = {
 	accent: "dark" | "light";
 	cta: string;
@@ -56,10 +72,10 @@ export type HomePlan = {
 	title: string;
 };
 
-export type HomePersonaCard = {
+export type HomePerspectiveCard = {
 	body: string;
+	focus: string;
 	icon: HomeIconName;
-	quote: string;
 	title: string;
 };
 
@@ -82,16 +98,33 @@ export type HomePageContent = {
 	};
 	jumpLinks: HomeJumpLink[];
 	jumpLinksLabel: string;
+	perspectives: {
+		cards: HomePerspectiveCard[];
+		description: string;
+		eyebrow: string;
+		focusLabel: string;
+		title: string;
+	};
 	pricing: {
 		description: string;
 		eyebrow: string;
 		plans: HomePlan[];
 		title: string;
 	};
-	proof: {
-		cards: HomePersonaCard[];
+	processSignals: HomeSignal[];
+	proposal: {
 		description: string;
 		eyebrow: string;
+		points: string[];
+		primaryCta: string;
+		secondaryCta: string;
+		title: string;
+	};
+	stories: {
+		cards: HomeCaseStudy[];
+		description: string;
+		eyebrow: string;
+		outcomeLabel: string;
 		title: string;
 	};
 	workflow: {

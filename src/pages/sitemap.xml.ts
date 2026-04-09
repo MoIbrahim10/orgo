@@ -24,6 +24,7 @@ const staticRoutes = [
 	"/blog",
 	"/contact",
 	"/features",
+	"/bilingual-planning",
 	"/faq",
 	"/changelog",
 ] as const;

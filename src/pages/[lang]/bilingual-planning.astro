@@ -1,0 +1,131 @@
+---
+import ActionLink from "../../components/ui/ActionLink.astro";
+import PageSection from "../../components/ui/PageSection.astro";
+import SectionIntro from "../../components/ui/SectionIntro.astro";
+import { getBilingualPlanningPageContent } from "../../data/translations/bilingualPlanning";
+import Layout from "../../layouts/Layout.astro";
+import { createMarketingMetadata } from "../../utils/metadata";
+import { getLanguageFromParams, getLocaleStaticPaths } from "../../utils/routing";
+
+export function getStaticPaths() {
+	return getLocaleStaticPaths();
+}
+
+const lang = getLanguageFromParams(Astro.params.lang);
+const content = getBilingualPlanningPageContent(lang);
+const metadata = createMarketingMetadata(lang, {
+	title: content.metaTitle,
+	description: content.description,
+});
+---
+
+<Layout {...metadata}>
+	<PageSection class="overflow-hidden pt-12" size="wide" tone="warm">
+		<div class="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(18rem,0.95fr)] lg:items-center">
+			<div class="max-w-3xl">
+				<p class="marketing-eyebrow">{content.hero.eyebrow}</p>
+				<h1 class="font-display mt-6 text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl sm:leading-[1.02]">
+					{content.hero.title}
+				</h1>
+				<p class="mt-6 text-lg leading-8 text-slate-600">{content.hero.description}</p>
+				<div class="mt-8 flex flex-wrap gap-4">
+					<ActionLink href={content.hero.primaryHref} size="lg" variant="primary">
+						{content.hero.primaryCta}
+					</ActionLink>
+					<ActionLink href={content.hero.secondaryHref} size="lg" variant="secondary">
+						{content.hero.secondaryCta}
+					</ActionLink>
+				</div>
+			</div>
+			<div class="grid gap-4">
+				{content.signals.map((signal) => (
+					<div class="home-proof-chip border-slate-200 bg-white/88">
+						<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
+							{signal.label}
+						</p>
+						<p class="mt-3 text-sm leading-6 text-slate-700">{signal.value}</p>
+					</div>
+				))}
+			</div>
+		</div>
+	</PageSection>
+
+	<PageSection backdrop="glow" tone="contrast">
+		<SectionIntro
+			description={content.tensions.description}
+			eyebrow={content.tensions.eyebrow}
+			title={content.tensions.title}
+			tone="inverse"
+		/>
+		<div class="mt-10 grid gap-4 md:grid-cols-3">
+			{content.tensions.points.map((point) => (
+				<div class="home-rhythm-card">
+					<p class="text-sm leading-6 text-slate-200">{point}</p>
+				</div>
+			))}
+		</div>
+	</PageSection>
+
+	<PageSection tone="soft">
+		<SectionIntro
+			description={content.playbook.description}
+			eyebrow={content.playbook.eyebrow}
+			title={content.playbook.title}
+		/>
+		<div class="mt-10 grid gap-6 lg:grid-cols-3">
+			{content.playbook.steps.map((step, index) => (
+				<article class="home-case-card">
+					<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
+						0{index + 1}
+					</p>
+					<h2 class="font-display mt-5 text-2xl font-semibold tracking-tight text-slate-950">
+						{step.title}
+					</h2>
+					<p class="mt-4 text-base leading-7 text-slate-600">{step.body}</p>
+				</article>
+			))}
+		</div>
+	</PageSection>
+
+	<PageSection>
+		<SectionIntro
+			description={content.scenarios.description}
+			eyebrow={content.scenarios.eyebrow}
+			title={content.scenarios.title}
+		/>
+		<div class="mt-10 grid gap-6 xl:grid-cols-3">
+			{content.scenarios.cards.map((card) => (
+				<article class="home-perspective-card">
+					<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
+						{card.label}
+					</p>
+					<h2 class="font-display mt-5 text-2xl font-semibold tracking-tight text-slate-950">
+						{card.title}
+					</h2>
+					<p class="mt-4 text-base leading-7 text-slate-600">{card.body}</p>
+				</article>
+			))}
+		</div>
+	</PageSection>
+
+	<PageSection class="pt-0">
+		<div class="marketing-panel mx-auto max-w-6xl rounded-[2rem] border border-slate-200 bg-linear-to-br from-amber-50 via-white to-sky-50 px-6 py-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10 lg:px-12">
+			<div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
+				<div class="max-w-3xl">
+					<h2 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
+						{content.closing.title}
+					</h2>
+					<p class="mt-5 text-lg leading-8 text-slate-600">{content.closing.description}</p>
+				</div>
+				<div class="flex flex-wrap gap-4">
+					<ActionLink href={content.closing.primaryHref} variant="primary">
+						{content.closing.primaryCta}
+					</ActionLink>
+					<ActionLink href={content.closing.secondaryHref} variant="secondary">
+						{content.closing.secondaryCta}
+					</ActionLink>
+				</div>
+			</div>
+		</div>
+	</PageSection>
+</Layout>

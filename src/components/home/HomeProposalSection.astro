@@ -1,0 +1,51 @@
+---
+import type { HomePageContent } from "../../types/home";
+import ActionLink from "../ui/ActionLink.astro";
+import PageSection from "../ui/PageSection.astro";
+import SectionIntro from "../ui/SectionIntro.astro";
+
+interface Props {
+	content: HomePageContent["proposal"];
+	primaryHref: string;
+	secondaryHref: string;
+}
+
+const { content, primaryHref, secondaryHref } = Astro.props as Props;
+---
+
+<PageSection class="py-8" tone="transparent">
+	<div class="home-proposal-panel">
+		<div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.42fr)] lg:items-center">
+			<SectionIntro
+				description={content.description}
+				eyebrow={content.eyebrow}
+				title={content.title}
+				tone="inverse"
+			/>
+			<div class="rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-5">
+				<ul class="grid gap-4">
+					{
+						content.points.map((point) => (
+							<li class="flex items-start gap-3">
+								<span class="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-amber-300"></span>
+								<span class="text-sm leading-6 text-slate-200">{point}</span>
+							</li>
+						))
+					}
+				</ul>
+				<div class="mt-6 flex flex-wrap gap-3">
+					<ActionLink href={primaryHref} variant="inverted">
+						{content.primaryCta}
+					</ActionLink>
+					<ActionLink
+						class="text-white/80 hover:text-white"
+						href={secondaryHref}
+						variant="ghost"
+					>
+						{content.secondaryCta}
+					</ActionLink>
+				</div>
+			</div>
+		</div>
+	</div>
+</PageSection>

@@ -18,6 +18,7 @@ export const navigation: NavigationConfig = {
 		],
 		resources: [
 			{ key: "features", href: "/features" },
+			{ key: "bilingual_planning", href: "/bilingual-planning" },
 			{ key: "faq", href: "/faq" },
 			{ key: "changelog", href: "/changelog" },
 		],

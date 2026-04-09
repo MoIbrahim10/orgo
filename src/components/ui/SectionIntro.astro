@@ -4,8 +4,10 @@ interface Props {
 	class?: string;
 	description?: string;
 	eyebrow?: string;
+	size?: "default" | "display";
 	title: string;
 	titleTag?: "h1" | "h2" | "h3";
+	tone?: "default" | "inverse";
 }
 
 const {
@@ -13,11 +15,14 @@ const {
 	class: className,
 	description,
 	eyebrow,
+	size = "default",
 	title,
 	titleTag = "h2",
+	tone = "default",
 } = Astro.props as Props;
 
 const Tag = titleTag;
+const isInverse = tone === "inverse";
 ---
 
 <div
@@ -27,9 +32,19 @@ const Tag = titleTag;
 		className,
 	]}
 >
-	{eyebrow && <p class="marketing-eyebrow">{eyebrow}</p>}
-	<Tag class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
+	{eyebrow && <p class:list={["marketing-eyebrow", isInverse && "marketing-eyebrow-inverse"]}>{eyebrow}</p>}
+	<Tag
+		class:list={[
+			"font-display font-semibold tracking-tight sm:leading-[1.08]",
+			size === "display" ? "text-5xl sm:text-6xl" : "text-4xl sm:text-[2.7rem]",
+			isInverse ? "text-white" : "text-slate-950",
+		]}
+	>
 		{title}
 	</Tag>
-	{description && <p class="text-lg leading-8 text-slate-600">{description}</p>}
+	{description && (
+		<p class:list={["text-lg leading-8", isInverse ? "text-slate-300" : "text-slate-600"]}>
+			{description}
+		</p>
+	)}
 </div>

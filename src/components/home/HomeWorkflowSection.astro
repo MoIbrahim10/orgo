@@ -1,0 +1,39 @@
+---
+import type { HomePageContent } from "../../types/home";
+import PageSection from "../ui/PageSection.astro";
+import SectionIntro from "../ui/SectionIntro.astro";
+import MarketingIcon from "./MarketingIcon.astro";
+
+interface Props {
+	content: HomePageContent["workflow"];
+}
+
+const { content } = Astro.props as Props;
+---
+
+<PageSection backdrop="glow" id="workflow" tone="contrast">
+	<SectionIntro
+		description={content.description}
+		eyebrow={content.eyebrow}
+		title={content.title}
+		tone="inverse"
+	/>
+	<div class="mt-10 grid gap-4 lg:grid-cols-4">
+		{
+			content.steps.map((step, index) => (
+				<article class="home-rhythm-card">
+					<div class="flex items-center justify-between gap-4">
+						<div class="rounded-2xl bg-white/10 p-2 text-white">
+							<MarketingIcon className="h-5 w-5" name={step.icon} />
+						</div>
+						<p class="text-xs font-medium uppercase tracking-[0.22em] text-slate-500">
+							0{index + 1}
+						</p>
+					</div>
+					<h3 class="mt-5 text-lg font-semibold text-white">{step.title}</h3>
+					<p class="mt-3 text-sm leading-6 text-slate-300">{step.body}</p>
+				</article>
+			))
+		}
+	</div>
+</PageSection>

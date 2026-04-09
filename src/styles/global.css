@@ -1,14 +1,30 @@
 @import "tailwindcss";
 
+@font-face {
+	font-display: swap;
+	font-family: "Space Grotesk";
+	font-style: normal;
+	font-weight: 400;
+	src: url("/fonts/grotesk/SpaceGrotesk-Regular.woff") format("woff");
+}
+
+@font-face {
+	font-display: swap;
+	font-family: "Space Grotesk";
+	font-style: normal;
+	font-weight: 500;
+	src: url("/fonts/grotesk/SpaceGrotesk-Medium.woff") format("woff");
+}
+
 :root {
 	color-scheme: light;
 
 	--font-sans-latin:
-		"Inter", "Segoe UI", system-ui, -apple-system, "BlinkMacSystemFont", "Helvetica Neue",
+		"Space Grotesk", "Segoe UI", system-ui, -apple-system, "BlinkMacSystemFont", "Helvetica Neue",
 		sans-serif;
 	--font-sans-arabic:
 		"Noto Sans Arabic", "Noto Naskh Arabic", "Geeza Pro", "Tahoma", "Segoe UI", sans-serif;
-	--font-display-latin: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", georgia, serif;
+	--font-display-latin: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
 	--font-display-arabic: "Noto Naskh Arabic", "Amiri", "Geeza Pro", serif;
 	--brand-ink: #0f172a;
 	--brand-line: rgb(148 163 184 / 18%);
@@ -16,6 +32,7 @@
 	--brand-rose: #fff1f2;
 	--brand-sky: #eff6ff;
 	--brand-sun: #fff7ed;
+	--brand-contrast: #020617;
 }
 
 html {
@@ -69,6 +86,7 @@ img {
 	background:
 		radial-gradient(circle at top left, rgb(255 237 213 / 92%), transparent 28%),
 		radial-gradient(circle at top right, rgb(224 242 254 / 88%), transparent 24%),
+		radial-gradient(circle at 30% 55%, rgb(236 253 245 / 62%), transparent 28%),
 		linear-gradient(180deg, #fffaf5 0%, #fff 34%, #f8fafc 100%);
 }
 
@@ -78,7 +96,9 @@ img {
 
 .marketing-eyebrow {
 	border: 1px solid var(--brand-line);
-	background: rgb(255 255 255 / 70%);
+	background:
+		linear-gradient(135deg, rgb(255 255 255 / 92%), rgb(255 250 245 / 80%)), rgb(255 255 255 / 70%);
+	box-shadow: 0 10px 24px rgb(15 23 42 / 5%);
 	border-radius: 9999px;
 	display: inline-flex;
 	font-size: 0.72rem;
@@ -86,6 +106,52 @@ img {
 	letter-spacing: 0.22em;
 	padding: 0.45rem 0.9rem;
 	text-transform: uppercase;
+}
+
+.marketing-eyebrow-inverse {
+	background: rgb(255 255 255 / 6%);
+	border-color: rgb(255 255 255 / 12%);
+	box-shadow: none;
+	color: rgb(226 232 240 / 92%);
+}
+
+.home-proof-chip {
+	backdrop-filter: blur(16px);
+	border: 1px solid rgb(226 232 240 / 95%);
+	border-radius: 1.5rem;
+	box-shadow: 0 18px 40px rgb(15 23 42 / 6%);
+	padding: 1.25rem;
+}
+
+.home-rhythm-card {
+	background:
+		linear-gradient(180deg, rgb(255 255 255 / 6%), rgb(255 255 255 / 2%)), rgb(15 23 42 / 55%);
+	border: 1px solid rgb(255 255 255 / 8%);
+	border-radius: 1.5rem;
+	padding: 1.25rem;
+}
+
+.home-case-card,
+.home-perspective-card {
+	background: rgb(255 255 255 / 88%);
+	backdrop-filter: blur(16px);
+	border: 1px solid rgb(226 232 240 / 92%);
+	border-radius: 1.75rem;
+	box-shadow: 0 24px 60px rgb(15 23 42 / 6%);
+	padding: 1.5rem;
+}
+
+.home-proposal-panel {
+	background:
+		radial-gradient(circle at top left, rgb(251 191 36 / 14%), transparent 28%),
+		radial-gradient(circle at bottom right, rgb(125 211 252 / 16%), transparent 28%),
+		linear-gradient(160deg, #020617 0%, #0f172a 62%, #111827 100%);
+	border: 1px solid rgb(15 23 42 / 8%);
+	border-radius: 2rem;
+	box-shadow: 0 26px 80px rgb(15 23 42 / 18%);
+	color: white;
+	overflow: hidden;
+	padding: 2rem;
 }
 
 .blog-prose {

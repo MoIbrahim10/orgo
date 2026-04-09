@@ -1,5 +1,6 @@
 ---
 import type { HomeFeatureStory as HomeFeatureStoryData } from "../../types/home";
+import SectionIntro from "../ui/SectionIntro.astro";
 import MarketingIcon from "./MarketingIcon.astro";
 import FeatureScene from "./FeatureScene.astro";
 
@@ -16,16 +17,16 @@ const { story } = Astro.props as Props;
 			"mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-center",
 			story.reverse && "lg:[&>div:first-child]:order-2 lg:[&>div:last-child]:order-1",
 		]}
-	>
+		>
 		<div class="relative">
 			<FeatureScene variant={story.scene} />
 		</div>
 		<div class="max-w-2xl">
-			<p class="marketing-eyebrow">{story.eyebrow}</p>
-			<h2 class="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
-				{story.title}
-			</h2>
-			<p class="mt-5 text-lg leading-8 text-slate-600">{story.description}</p>
+			<SectionIntro
+				description={story.description}
+				eyebrow={story.eyebrow}
+				title={story.title}
+			/>
 			<ul class="mt-8 grid gap-4">
 				{
 					story.highlights.map((highlight) => (
