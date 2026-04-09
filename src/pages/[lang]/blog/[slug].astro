@@ -1,37 +1,52 @@
 ---
-import { Image, Picture } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
-import { getCollection, getEntries, getEntry, render } from "astro:content";
+import { getCollection, getEntry, getEntries, render } from "astro:content";
+import ResponsiveMedia from "../../../components/common/ResponsiveMedia.astro";
 import TranslationAvailabilityNotice from "../../../components/TranslationAvailabilityNotice.astro";
 import ActionLink from "../../../components/ui/ActionLink.astro";
 import Container from "../../../components/ui/Container.astro";
 import { getAuthorAvatarImage, getBlogCoverImage } from "../../../data/media";
 import { formatLocalizedDate } from "../../../data/site";
-import Layout from "../../../layouts/BlogLayout.astro";
+import Layout from "../../../layouts/Layout.astro";
 import {
+	getBlogCategoryPath,
+	getBlogEntrySlug,
+	getBlogIndexPath,
 	getBlogLocaleAlternates,
 	getBlogLocaleSwitcherPaths,
+	getBlogPostPath,
+	getBlogTagPath,
 	getBlogTranslationEntries,
+	getCategorySlug,
+	getRelatedBlogPosts,
+	getTagSlug,
 } from "../../../utils/blog";
 import { t } from "../../../utils/i18n";
+import { createArticleMetadata } from "../../../utils/metadata";
 import { getLanguageFromParams, getLocalizedPath } from "../../../utils/routing";
 
 export async function getStaticPaths() {
 	const pages = await getCollection("blog");
-	return pages.map((page) => {
-		const slug = page.data.slug ?? page.id;
-		return { params: { lang: page.data.language, slug }, props: page };
-	});
+	return pages.map((page) => ({
+		params: {
+			lang: page.data.language,
+			slug: getBlogEntrySlug(page),
+		},
+		props: page,
+	}));
 }
 
 const lang = getLanguageFromParams(Astro.params.lang);
 const page = Astro.props as CollectionEntry<"blog">;
 const allPosts = await getCollection("blog", ({ data }) => !data.isDraft);
+const explicitRelatedEntries = await getEntries(page.data.relatedPosts);
 const authorEntry = await getEntry(page.data.author);
 const author = authorEntry?.data;
-const relatedPosts = (await getEntries(page.data.relatedPosts)).filter(
-	(post) => post.data.language === lang,
-);
+const relatedPosts = getRelatedBlogPosts({
+	entries: allPosts,
+	entry: page,
+	explicitEntries: explicitRelatedEntries,
+});
 const translationEntries = getBlogTranslationEntries(page, allPosts);
 const localeAlternates = getBlogLocaleAlternates(translationEntries);
 const localeSwitcherPaths = getBlogLocaleSwitcherPaths(localeAlternates);
@@ -64,41 +79,47 @@ const structuredData = {
 			}
 		: {}),
 };
+const metadata = createArticleMetadata(lang, {
+	canonicalUrl,
+	description: page.data.metaDescription ?? page.data.title,
+	localeAlternates,
+	localeSwitcherPaths,
+	ogImage,
+	rssFeedTitle: page.data.metaTitle ?? page.data.title,
+	rssFeedUrl,
+	structuredData,
+	title: page.data.metaTitle ?? page.data.title,
+});
 const { Content } = await render(page);
 ---
 
-<Layout
-	canonicalUrl={canonicalUrl}
-	lang={lang}
-	localeAlternates={localeAlternates}
-	localeSwitcherPaths={localeSwitcherPaths}
-	metaDescription={page.data.metaDescription ?? page.data.title}
-	metaTitle={page.data.metaTitle ?? page.data.title}
-	ogImage={ogImage}
-	rssFeedTitle={page.data.metaTitle ?? page.data.title}
-	rssFeedUrl={rssFeedUrl}
-	structuredData={structuredData}
->
+<Layout {...metadata}>
 	<section class="py-16">
 		<Container size="article">
 			<article class="space-y-10">
 				<header class="space-y-6">
 					<div class="flex flex-wrap items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-						<span class="rounded-full bg-slate-950 px-3 py-1 text-white">{page.data.category}</span>
+						<a
+							class="rounded-full bg-slate-950 px-3 py-1 text-white transition hover:bg-slate-800"
+							href={getBlogCategoryPath(lang, getCategorySlug(page.data.category))}
+						>
+							{page.data.category}
+						</a>
 						<time datetime={page.data.publishDate.toISOString()}>{formattedDate}</time>
 					</div>
 					<h1 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl sm:leading-tight">
 						{page.data.title}
 					</h1>
-					<p class="text-lg leading-8 text-slate-600">
-						{page.data.metaDescription ?? page.data.title}
-					</p>
+					<p class="text-lg leading-8 text-slate-600">{page.data.metaDescription ?? page.data.title}</p>
 					{page.data.tags && page.data.tags.length > 0 && (
 						<div class="flex flex-wrap gap-2">
 							{page.data.tags.map((tag) => (
-								<span class="rounded-full bg-slate-100 px-3 py-1.5 text-sm text-slate-600">
+								<a
+									class="rounded-full bg-slate-100 px-3 py-1.5 text-sm text-slate-600 transition hover:bg-slate-200 hover:text-slate-900"
+									href={getBlogTagPath(lang, getTagSlug(tag))}
+								>
 									#{tag}
-								</span>
+								</a>
 							))}
 						</div>
 					)}
@@ -106,10 +127,11 @@ const { Content } = await render(page);
 						<div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
 							<div class="flex items-center gap-4">
 								{authorAvatar && (
-									<Image
+									<ResponsiveMedia
 										alt={author?.image?.alt ?? author?.name ?? t(lang, "blog.unknown_author")}
-										class="h-16 w-16 rounded-full border border-slate-200 bg-slate-50"
 										height={64}
+										imgClass="h-16 w-16 rounded-full border border-slate-200 bg-slate-50 object-cover"
+										mode="image"
 										src={authorAvatar}
 										width={64}
 									/>
@@ -132,9 +154,9 @@ const { Content } = await render(page);
 						</div>
 					</div>
 					<div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
-						<Picture
+						<ResponsiveMedia
 							alt={page.data.image.alt}
-							class="h-full w-full object-cover"
+							imgClass="h-full w-full object-cover"
 							loading="eager"
 							sizes="(max-width: 768px) 100vw, 768px"
 							src={coverImage}
@@ -155,21 +177,21 @@ const { Content } = await render(page);
 							{relatedPosts.map((post) => (
 								<a
 									class="grid gap-4 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-[0_18px_50px_rgba(15,23,42,0.05)] sm:grid-cols-[12rem_minmax(0,1fr)]"
-									href={getLocalizedPath(lang, `/blog/${post.data.slug ?? post.id}`)}
+									href={getBlogPostPath(lang, getBlogEntrySlug(post))}
 								>
-									<div class="overflow-hidden rounded-[1.25rem] border border-slate-200 bg-slate-50">
-										<Picture
-											alt={post.data.image.alt}
-											class="h-full w-full object-cover"
-											loading="lazy"
-											sizes="(max-width: 640px) 100vw, 192px"
-											src={getBlogCoverImage(post.data.translationGroup)}
-											widths={[320, 480]}
-										/>
-									</div>
+									<ResponsiveMedia
+										alt={post.data.image.alt}
+										imgClass="h-full w-full object-cover"
+										loading="lazy"
+										sizes="(max-width: 640px) 100vw, 192px"
+										src={getBlogCoverImage(post.data.translationGroup)}
+										wrapperClass="overflow-hidden rounded-[1.25rem] border border-slate-200 bg-slate-50"
+										widths={[320, 480]}
+									/>
 									<div class="space-y-3">
 										<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-											{post.data.category} • {formatLocalizedDate(lang, post.data.publishDate, { dateStyle: "medium" })}
+											{post.data.category} •{" "}
+											{formatLocalizedDate(lang, post.data.publishDate, { dateStyle: "medium" })}
 										</p>
 										<h3 class="font-display text-xl font-semibold text-slate-950">
 											{post.data.title}
@@ -182,7 +204,7 @@ const { Content } = await render(page);
 					</section>
 				)}
 				<div class="flex justify-center border-t border-slate-200 pt-8">
-					<ActionLink href={getLocalizedPath(lang, "/blog")} variant="secondary">
+					<ActionLink href={getBlogIndexPath(lang)} variant="secondary">
 						{t(lang, "blog.back_to_blog")}
 					</ActionLink>
 				</div>

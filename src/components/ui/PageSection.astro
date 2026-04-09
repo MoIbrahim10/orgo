@@ -1,0 +1,36 @@
+---
+import type { HTMLTag } from "astro/types";
+import Container from "./Container.astro";
+
+interface Props {
+	as?: HTMLTag;
+	id?: string;
+	size?: "article" | "narrow" | "page" | "wide";
+	tone?: "default" | "soft" | "contrast" | "transparent";
+	class?: string;
+	containerClass?: string;
+}
+
+const {
+	as = "section",
+	class: className = "",
+	containerClass = "",
+	id,
+	size = "page",
+	tone = "default",
+} = Astro.props as Props;
+
+const SectionTag = as;
+const toneClasses = {
+	default: "bg-transparent",
+	soft: "bg-linear-to-b from-slate-50 via-white to-white",
+	contrast: "bg-slate-950 text-white",
+	transparent: "bg-transparent",
+} satisfies Record<NonNullable<Props["tone"]>, string>;
+---
+
+<SectionTag class:list={["scroll-mt-28 py-16", toneClasses[tone], className]} {...(id ? { id } : {})}>
+	<Container class={containerClass} size={size}>
+		<slot />
+	</Container>
+</SectionTag>

@@ -1,12 +1,12 @@
 ---
-import { Picture } from "astro:assets";
 import ActionLink from "../../components/ui/ActionLink.astro";
+import ResponsiveMedia from "../../components/common/ResponsiveMedia.astro";
 import Container from "../../components/ui/Container.astro";
 import SectionIntro from "../../components/ui/SectionIntro.astro";
 import { contactSceneImage } from "../../data/media";
 import Layout from "../../layouts/Layout.astro";
-import { getSiteTranslations } from "../../data/translations/site";
 import { t } from "../../utils/i18n";
+import { createMarketingMetadata } from "../../utils/metadata";
 import {
 	getLanguageFromParams,
 	getLocalizedPath,
@@ -18,18 +18,17 @@ export function getStaticPaths() {
 }
 
 const lang = getLanguageFromParams(Astro.params.lang);
-const siteTranslations = getSiteTranslations(lang);
 const pricingHref = getLocalizedPath(lang, "/pricing");
 const blogHref = getLocalizedPath(lang, "/blog");
 const contactEmail = t(lang, "pages.contact.email_value");
 const githubUrl = t(lang, "pages.contact.github_value");
+const metadata = createMarketingMetadata(lang, {
+	description: t(lang, "pages.contact.description"),
+	title: t(lang, "pages.contact.meta_title"),
+});
 ---
 
-<Layout
-	lang={lang}
-	pageDescription={t(lang, "pages.contact.description")}
-	pageTitle={`${t(lang, "pages.contact.meta_title")} | ${siteTranslations.title}`}
->
+<Layout {...metadata}>
 	<section class="py-16">
 		<Container size="page">
 			<SectionIntro
@@ -66,15 +65,15 @@ const githubUrl = t(lang, "pages.contact.github_value");
 						</div>
 					</div>
 				</div>
-				<div class="space-y-6">
-					<div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
-						<Picture
-							alt=""
-							aria-hidden="true"
-							class="h-full w-full object-cover"
-							loading="eager"
-							sizes="(max-width: 1024px) 100vw, 420px"
-							src={contactSceneImage}
+					<div class="space-y-6">
+						<div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
+							<ResponsiveMedia
+								alt=""
+								ariaHidden={true}
+								imgClass="h-full w-full object-cover"
+								loading="eager"
+								sizes="(max-width: 1024px) 100vw, 420px"
+								src={contactSceneImage}
 							widths={[480, 720, 960]}
 						/>
 					</div>

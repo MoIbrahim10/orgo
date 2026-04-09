@@ -1,0 +1,96 @@
+---
+import { getCollection, getEntries } from "astro:content";
+import BlogArchiveView from "../../../../../components/blog/BlogArchiveView.astro";
+import { getBlogCoverImage } from "../../../../../data/media";
+import Layout from "../../../../../layouts/Layout.astro";
+import { supportedLanguages } from "../../../../../types/translations";
+import {
+	findTagSummary,
+	getBlogIndexPath,
+	getBlogTagPath,
+	getCategorySummaries,
+	getPaginatedItems,
+	getPaginationState,
+	getPostsForTag,
+	getTagSummaries,
+} from "../../../../../utils/blog";
+import { t, tWithParams } from "../../../../../utils/i18n";
+import { createArchiveMetadata, shouldIndexTagPages } from "../../../../../utils/metadata";
+import { getLanguageFromParams } from "../../../../../utils/routing";
+
+export async function getStaticPaths() {
+	const allEntries = await getCollection("blog");
+
+	return supportedLanguages.flatMap((language) =>
+		getTagSummaries(allEntries, language).map((summary) => ({
+			params: {
+				lang: language,
+				tag: summary.slug,
+			},
+		})),
+	);
+}
+
+const lang = getLanguageFromParams(Astro.params.lang);
+const tagSlug = Astro.params.tag ?? "";
+const allEntries = await getCollection("blog");
+const tag = findTagSummary(allEntries, lang, tagSlug);
+const postsForTag = getPostsForTag(allEntries, lang, tagSlug);
+const posts = getPaginatedItems(postsForTag, 1);
+const authors = await getEntries(posts.map((post) => post.data.author));
+const authorsByPostId = Object.fromEntries(
+	posts.map((post, index) => [post.id, authors[index]?.data.name]),
+) as Record<string, string | undefined>;
+const categories = getCategorySummaries(allEntries, lang).map((summary) => ({
+	...summary,
+	active: false,
+}));
+const tags = getTagSummaries(allEntries, lang).map((summary) => ({
+	...summary,
+	active: summary.slug === tagSlug,
+}));
+const pagination = getPaginationState({
+	currentPage: 1,
+	pathForPage: (page) => getBlogTagPath(lang, tagSlug, page),
+	totalItems: postsForTag.length,
+});
+const localeAlternates = {
+	[lang]: getBlogTagPath(lang, tagSlug),
+};
+const localeSwitcherPaths = Object.fromEntries(
+	supportedLanguages.map((language) => [language, getBlogIndexPath(language)]),
+) as Record<(typeof supportedLanguages)[number], string>;
+const pageTitle = tWithParams(lang, "blog.tag_page_title", {
+	label: tag?.label ?? t(lang, "blog.index_title"),
+});
+const pageDescription = tWithParams(lang, "blog.tag_page_description", {
+	label: tag?.label ?? t(lang, "blog.index_title"),
+});
+const ogImage = getBlogCoverImage(postsForTag[0]?.data.translationGroup ?? "introduction").src;
+const metadata = createArchiveMetadata(lang, {
+	description: pageDescription,
+	localeAlternates,
+	localeSwitcherPaths,
+	noIndex: !shouldIndexTagPages(),
+	ogImage,
+	paginationNextUrl: pagination.nextPath,
+	paginationPrevUrl: pagination.prevPath,
+	title: pageTitle,
+});
+---
+
+<Layout {...metadata}>
+	<BlogArchiveView
+		authorsByPostId={authorsByPostId}
+		description={pageDescription}
+		eyebrow={t(lang, "blog.topics_title")}
+		lang={lang}
+		pagination={pagination}
+		posts={posts}
+		taxonomyGroups={[
+			{ title: t(lang, "blog.categories_title"), items: categories },
+			{ title: t(lang, "blog.topics_title"), items: tags },
+		]}
+		title={pageTitle}
+	/>
+</Layout>

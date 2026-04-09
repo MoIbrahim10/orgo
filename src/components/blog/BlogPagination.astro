@@ -1,0 +1,38 @@
+---
+import ActionLink from "../ui/ActionLink.astro";
+
+interface Props {
+	currentPage: number;
+	totalPages: number;
+	prevHref?: string;
+	nextHref?: string;
+	prevLabel: string;
+	nextLabel: string;
+	summaryLabel: string;
+}
+
+const { nextHref, nextLabel, prevHref, prevLabel, summaryLabel, totalPages } = Astro.props as Props;
+---
+
+{
+	totalPages > 1 && (
+		<nav
+			aria-label={summaryLabel}
+			class="mt-10 flex flex-col gap-4 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between"
+		>
+			<p class="text-sm text-slate-500">{summaryLabel}</p>
+			<div class="flex flex-wrap gap-3">
+				{prevHref && (
+					<ActionLink href={prevHref} size="sm" variant="secondary">
+						{prevLabel}
+					</ActionLink>
+				)}
+				{nextHref && (
+					<ActionLink href={nextHref} size="sm" variant="subtle">
+						{nextLabel}
+					</ActionLink>
+				)}
+			</div>
+		</nav>
+	)
+}

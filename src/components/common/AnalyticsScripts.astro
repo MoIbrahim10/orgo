@@ -1,0 +1,36 @@
+---
+import { analyticsConfig } from "../../data/site";
+
+const { googleAnalyticsId, isEnabled, plausibleDomain } = analyticsConfig;
+---
+
+{
+	isEnabled && googleAnalyticsId && (
+		<>
+			<script
+				async
+				is:inline
+				src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
+			></script>
+			<script define:vars={{ googleAnalyticsId }} is:inline>
+				window.dataLayer = window.dataLayer || [];
+				function gtag() {
+					dataLayer.push(arguments);
+				}
+				gtag("js", new Date());
+				gtag("config", googleAnalyticsId);
+			</script>
+		</>
+	)
+}
+{
+	isEnabled &&
+		plausibleDomain && (
+			<script
+				async
+				data-domain={plausibleDomain}
+				is:inline
+				src="https://plausible.io/js/script.js"
+			></script>
+		)
+}

@@ -1,0 +1,93 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { Language } from "../../types/translations";
+import { t } from "../../utils/i18n";
+import BlogPagination from "./BlogPagination.astro";
+import BlogPostCard from "./BlogPostCard.astro";
+import BlogTaxonomyList, { type BlogTaxonomyLink } from "./BlogTaxonomyList.astro";
+import ActionLink from "../ui/ActionLink.astro";
+import PageSection from "../ui/PageSection.astro";
+import SectionIntro from "../ui/SectionIntro.astro";
+
+interface Props {
+	lang: Language;
+	title: string;
+	description: string;
+	eyebrow?: string;
+	posts: CollectionEntry<"blog">[];
+	authorsByPostId: Record<string, string | undefined>;
+	rssFeedUrl?: string;
+	pagination?: {
+		currentPage: number;
+		totalPages: number;
+		prevHref?: string;
+		nextHref?: string;
+	};
+	taxonomyGroups?: Array<{
+		title: string;
+		items: BlogTaxonomyLink[];
+	}>;
+}
+
+const {
+	authorsByPostId,
+	description,
+	eyebrow,
+	lang,
+	pagination,
+	posts,
+	rssFeedUrl,
+	taxonomyGroups = [],
+	title,
+} = Astro.props as Props;
+const hasTaxonomyGroups = taxonomyGroups.some((group) => group.items.length > 0);
+---
+
+<PageSection>
+	<div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+		<SectionIntro description={description} eyebrow={eyebrow} title={title} titleTag="h1" />
+		{rssFeedUrl && (
+			<ActionLink href={rssFeedUrl} variant="secondary">
+				{t(lang, "blog.rss_label")}
+			</ActionLink>
+		)}
+	</div>
+	<div class:list={["mt-12", hasTaxonomyGroups && "grid gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]"]}>
+		<div>
+			<ul class="grid gap-8">
+				{posts.map((post, index) => (
+					<li>
+						<BlogPostCard
+							authorName={authorsByPostId[post.id]}
+							lang={lang}
+							post={post}
+							priority={index === 0}
+						/>
+					</li>
+				))}
+			</ul>
+			{pagination && (
+				<BlogPagination
+					currentPage={pagination.currentPage}
+					nextHref={pagination.nextHref}
+					nextLabel={t(lang, "blog.pagination.next")}
+					prevHref={pagination.prevHref}
+					prevLabel={t(lang, "blog.pagination.prev")}
+					summaryLabel={t(lang, "blog.pagination.summary")
+						.replace("{page}", String(pagination.currentPage))
+						.replace("{total}", String(pagination.totalPages))}
+					totalPages={pagination.totalPages}
+				/>
+			)}
+		</div>
+		{
+			hasTaxonomyGroups && (
+				<aside class="space-y-4">
+					{taxonomyGroups.map((group) => (
+						<BlogTaxonomyList items={group.items} title={group.title} />
+					))}
+				</aside>
+			)
+		}
+	</div>
+</PageSection>

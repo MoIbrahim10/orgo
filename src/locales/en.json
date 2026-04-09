@@ -7,6 +7,7 @@
 		"logo": "Orgo",
 		"links": {
 			"about": "About",
+			"teams": "Teams",
 			"pricing": "Pricing",
 			"blog": "Blog",
 			"contact": "Contact"
@@ -191,6 +192,19 @@
 		"index_description": "Explore the latest articles, product notes, and practical planning ideas from Orgo.",
 		"rss_label": "RSS feed",
 		"featured_topics": "Featured topics",
+		"categories_title": "Categories",
+		"topics_title": "Topics",
+		"archive_page_title": "Blog archive — Page {page}",
+		"archive_page_description": "Browse page {page} of the Orgo journal archive.",
+		"category_page_title": "Category: {label}",
+		"category_page_description": "Explore every Orgo article filed under {label}.",
+		"tag_page_title": "Topic: {label}",
+		"tag_page_description": "Browse every Orgo article tagged with {label}.",
+		"pagination": {
+			"prev": "Newer posts",
+			"next": "Older posts",
+			"summary": "Page {page} of {total}"
+		},
 		"read_article": "Read article",
 		"related_posts": "Related posts",
 		"back_to_blog": "Back to blog",

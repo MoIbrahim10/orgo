@@ -1,8 +1,14 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
 import { getSiteTranslations } from "../../data/translations/site";
+import {
+	getBlogEntrySlug,
+	getBlogIndexPath,
+	getBlogPostPath,
+	getPublishedBlogEntries,
+} from "../../utils/blog";
 import { t } from "../../utils/i18n";
-import { getLanguageFromParams, getLocaleStaticPaths, getLocalizedPath } from "../../utils/routing";
+import { getLanguageFromParams, getLocaleStaticPaths } from "../../utils/routing";
 
 const rssHeader = `<?xml version="1.0" encoding="UTF-8"?>`;
 
@@ -24,18 +30,14 @@ export const GET: APIRoute = async ({ params, site }) => {
 	const siteTranslations = getSiteTranslations(lang);
 	const feedTitle = `${t(lang, "blog.index_title")} | ${siteTranslations.title}`;
 	const feedDescription = t(lang, "blog.index_description");
-	const feedLink = site
-		? new URL(getLocalizedPath(lang, "/blog"), site).toString()
-		: getLocalizedPath(lang, "/blog");
-	const posts = (
-		await getCollection("blog", ({ data }) => data.language === lang && !data.isDraft)
-	).sort((left, right) => right.data.publishDate.getTime() - left.data.publishDate.getTime());
+	const feedLink = site ? new URL(getBlogIndexPath(lang), site).toString() : getBlogIndexPath(lang);
+	const posts = getPublishedBlogEntries(await getCollection("blog"), lang);
 
 	const items = posts
 		.map((post) => {
 			const postLink = site
-				? new URL(getLocalizedPath(lang, `/blog/${post.data.slug ?? post.id}`), site).toString()
-				: getLocalizedPath(lang, `/blog/${post.data.slug ?? post.id}`);
+				? new URL(getBlogPostPath(lang, getBlogEntrySlug(post)), site).toString()
+				: getBlogPostPath(lang, getBlogEntrySlug(post));
 
 			return `    <item>\n      <title>${escapeXml(post.data.title)}</title>\n      <description>${escapeXml(post.data.metaDescription ?? post.data.title)}</description>\n      <link>${escapeXml(postLink)}</link>\n      <guid>${escapeXml(postLink)}</guid>\n      <pubDate>${post.data.publishDate.toUTCString()}</pubDate>\n    </item>`;
 		})

@@ -1,13 +1,17 @@
 ---
 import "../styles/global.css";
 
+import AnalyticsScripts from "../components/common/AnalyticsScripts.astro";
+import SiteVerificationMeta from "../components/common/SiteVerificationMeta.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/header.astro";
 import LocaleSuggestionBanner from "../components/LocaleSuggestionBanner.astro";
 import {
+	featureFlags,
 	getHtmlLanguage,
 	getLocaleCode,
 	getLocaleConfig,
+	metadataConfig,
 	siteConfig,
 } from "../data/site";
 import { getSiteTranslations } from "../data/translations/site";
@@ -29,10 +33,13 @@ interface Props {
 	rssFeedTitle?: string;
 	rssFeedUrl?: string;
 	noIndex?: boolean;
+	openGraphType?: "article" | "website";
 	localeAlternates?: LocalePathMap;
 	localeSwitcherPaths?: LocalePathMap;
 	showLocaleSuggestion?: boolean;
 	structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
+	paginationPrevUrl?: string;
+	paginationNextUrl?: string;
 	hideHeader?: boolean;
 	hideFooter?: boolean;
 }
@@ -46,10 +53,13 @@ const {
 	rssFeedTitle,
 	rssFeedUrl,
 	noIndex = false,
+	openGraphType = metadataConfig.openGraphType,
 	localeAlternates,
 	localeSwitcherPaths,
-	showLocaleSuggestion = true,
+	showLocaleSuggestion = featureFlags.localeSuggestionBanner,
 	structuredData,
+	paginationPrevUrl,
+	paginationNextUrl,
 	hideHeader = false,
 	hideFooter = false,
 } = Astro.props as Props;
@@ -57,7 +67,7 @@ const {
 const siteTranslations = getSiteTranslations(lang);
 const localeConfig = getLocaleConfig(lang);
 const metaTitle = pageTitle ?? siteTranslations.title;
-const metaDescription = pageDescription ?? siteTranslations.description;
+const metaDescription = pageDescription ?? siteTranslations.description ?? metadataConfig.description;
 
 function resolveAbsoluteUrl(urlOrPath?: string): string | undefined {
 	if (!urlOrPath) {
@@ -75,6 +85,8 @@ const resolvedCanonicalUrl =
 	canonicalUrl ?? (Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined);
 const resolvedOgImage = resolveAbsoluteUrl(ogImage ?? siteConfig.defaultOgImage);
 const resolvedRssFeedUrl = resolveAbsoluteUrl(rssFeedUrl);
+const resolvedPaginationPrevUrl = resolveAbsoluteUrl(paginationPrevUrl);
+const resolvedPaginationNextUrl = resolveAbsoluteUrl(paginationNextUrl);
 const isLocalizedPath =
 	Astro.url.pathname === `/${lang}` || Astro.url.pathname.startsWith(`/${lang}/`);
 const pathWithoutLocale = isLocalizedPath ? stripLocaleFromPath(Astro.url.pathname) : "/";
@@ -137,21 +149,28 @@ const structuredDataItems = [
 		<meta name="generator" content={Astro.generator} />
 		<meta content="strict-origin-when-cross-origin" name="referrer" />
 		<meta content={siteConfig.themeColor} name="theme-color" />
+		<SiteVerificationMeta />
 		<title>{metaTitle}</title>
 		<meta content={metaDescription} name="description" />
-		<meta content={noIndex ? "noindex, nofollow" : "index, follow"} name="robots" />
+		<meta
+			content={
+				noIndex
+					? "noindex, nofollow"
+					: `${metadataConfig.robots.index ? "index" : "noindex"}, ${metadataConfig.robots.follow ? "follow" : "nofollow"}`
+			}
+			name="robots"
+		/>
 		<meta content={metaTitle} property="og:title" />
 		<meta content={metaDescription} property="og:description" />
 		<meta content={siteConfig.name} property="og:site_name" />
-		<meta content="website" property="og:type" />
+		<meta content={openGraphType} property="og:type" />
 		<meta content={getLocaleCode(lang)} property="og:locale" />
-		<meta
-			content={resolvedOgImage ? "summary_large_image" : "summary"}
-			name="twitter:card"
-		/>
+		<meta content={resolvedOgImage ? metadataConfig.twitterCard : "summary"} name="twitter:card" />
 		<meta content={metaTitle} name="twitter:title" />
 		<meta content={metaDescription} name="twitter:description" />
 		{resolvedCanonicalUrl && <link href={resolvedCanonicalUrl} rel="canonical" />}
+		{resolvedPaginationPrevUrl && <link href={resolvedPaginationPrevUrl} rel="prev" />}
+		{resolvedPaginationNextUrl && <link href={resolvedPaginationNextUrl} rel="next" />}
 		{resolvedRssFeedUrl && (
 			<link
 				href={resolvedRssFeedUrl}
@@ -192,5 +211,6 @@ const structuredDataItems = [
 			<slot />
 		</main>
 		{!hideFooter && <Footer lang={lang} />}
+		<AnalyticsScripts />
 	</body>
 </html>

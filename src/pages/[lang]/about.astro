@@ -3,8 +3,8 @@ import ActionLink from "../../components/ui/ActionLink.astro";
 import Container from "../../components/ui/Container.astro";
 import SectionIntro from "../../components/ui/SectionIntro.astro";
 import Layout from "../../layouts/Layout.astro";
-import { getSiteTranslations } from "../../data/translations/site";
 import { t } from "../../utils/i18n";
+import { createMarketingMetadata } from "../../utils/metadata";
 import {
 	getLanguageFromParams,
 	getLocalizedPath,
@@ -12,20 +12,19 @@ import {
 } from "../../utils/routing";
 
 const lang = getLanguageFromParams(Astro.params.lang);
-const siteTranslations = getSiteTranslations(lang);
 const contactHref = getLocalizedPath(lang, "/contact");
 const blogHref = getLocalizedPath(lang, "/blog");
+const metadata = createMarketingMetadata(lang, {
+	description: t(lang, "pages.about.description"),
+	title: t(lang, "pages.about.meta_title"),
+});
 
 export function getStaticPaths() {
 	return getLocaleStaticPaths();
 }
 ---
 
-<Layout
-	lang={lang}
-	pageDescription={t(lang, "pages.about.description")}
-	pageTitle={`${t(lang, "pages.about.meta_title")} | ${siteTranslations.title}`}
->
+<Layout {...metadata}>
 	<section class="py-16">
 			<Container size="narrow">
 				<SectionIntro

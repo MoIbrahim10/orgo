@@ -71,6 +71,7 @@ describe("translations", () => {
 	test("maps translated navigation labels", () => {
 		expect(getHeaderTranslations("en").links).toEqual([
 			{ href: "/about", label: "About" },
+			{ href: "/teams", label: "Teams" },
 			{ href: "/pricing", label: "Pricing" },
 			{ href: "/blog", label: "Blog" },
 			{ href: "/contact", label: "Contact" },

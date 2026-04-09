@@ -7,6 +7,7 @@
 		"logo": "Orgo",
 		"links": {
 			"about": "من نحن",
+			"teams": "الفرق",
 			"pricing": "التسعير",
 			"blog": "المدونة",
 			"contact": "تواصل"
@@ -191,6 +192,19 @@
 		"index_description": "استكشف أحدث المقالات وملاحظات المنتج والأفكار العملية من Orgo.",
 		"rss_label": "خلاصة RSS",
 		"featured_topics": "مواضيع بارزة",
+		"categories_title": "التصنيفات",
+		"topics_title": "الموضوعات",
+		"archive_page_title": "أرشيف المدوّنة — الصفحة {page}",
+		"archive_page_description": "تصفح الصفحة {page} من أرشيف Orgo.",
+		"category_page_title": "التصنيف: {label}",
+		"category_page_description": "استكشف جميع مقالات Orgo ضمن تصنيف {label}.",
+		"tag_page_title": "الموضوع: {label}",
+		"tag_page_description": "تصفح جميع مقالات Orgo الموسومة بـ {label}.",
+		"pagination": {
+			"prev": "مقالات أحدث",
+			"next": "مقالات أقدم",
+			"summary": "الصفحة {page} من {total}"
+		},
 		"read_article": "اقرأ المقال",
 		"related_posts": "مقالات ذات صلة",
 		"back_to_blog": "العودة إلى المدونة",

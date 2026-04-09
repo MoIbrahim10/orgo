@@ -1,139 +1,72 @@
 ---
-import { Picture } from "astro:assets";
 import { getCollection, getEntries } from "astro:content";
-import ActionLink from "../../../components/ui/ActionLink.astro";
-import Container from "../../../components/ui/Container.astro";
-import SectionIntro from "../../../components/ui/SectionIntro.astro";
+import BlogArchiveView from "../../../components/blog/BlogArchiveView.astro";
 import { getBlogCoverImage } from "../../../data/media";
-import { formatLocalizedDate } from "../../../data/site";
-import { getSiteTranslations } from "../../../data/translations/site";
 import Layout from "../../../layouts/Layout.astro";
+import { supportedLanguages, type Language } from "../../../types/translations";
+import { getBlogIndexPath, getCategorySummaries, getPaginatedItems, getPaginationState, getPublishedBlogEntries, getTagSummaries } from "../../../utils/blog";
 import { t } from "../../../utils/i18n";
-import {
-	getLanguageFromParams,
-	getLocaleStaticPaths,
-	getLocalizedPath,
-} from "../../../utils/routing";
+import { createArchiveMetadata } from "../../../utils/metadata";
+import { getLanguageFromParams, getLocaleStaticPaths, getLocalizedPath } from "../../../utils/routing";
 
 export function getStaticPaths() {
 	return getLocaleStaticPaths();
 }
 
 const lang = getLanguageFromParams(Astro.params.lang);
-const siteTranslations = getSiteTranslations(lang);
-const posts = (
-	await getCollection("blog", ({ data }) => data.language === lang && !data.isDraft)
-).sort((left, right) => right.data.publishDate.getTime() - left.data.publishDate.getTime());
+const allEntries = await getCollection("blog");
+const publishedPosts = getPublishedBlogEntries(allEntries, lang);
+const posts = getPaginatedItems(publishedPosts, 1);
 const authors = await getEntries(posts.map((post) => post.data.author));
-const authorsByPostId = new Map(posts.map((post, index) => [post.id, authors[index]?.data]));
-const allTags = [...new Set(posts.flatMap((post) => post.data.tags ?? []))];
-
-const blogLabel = t(lang, "blog.index_title");
-const blogEyebrow = t(lang, "blog.eyebrow");
+const authorsByPostId = Object.fromEntries(
+	posts.map((post, index) => [post.id, authors[index]?.data.name]),
+) as Record<string, string | undefined>;
+const categories = getCategorySummaries(allEntries, lang).map((summary) => ({
+	...summary,
+	active: false,
+}));
+const tags = getTagSummaries(allEntries, lang).map((summary) => ({
+	...summary,
+	active: false,
+}));
+const pageTitle = t(lang, "blog.index_title");
+const pageDescription = t(lang, "blog.index_description");
 const rssFeedUrl = getLocalizedPath(lang, "/rss.xml");
-const metaTitle = `${blogLabel} | ${siteTranslations.title}`;
-const metaDescription = t(lang, "blog.index_description");
-const ogImage = getBlogCoverImage(posts[0]?.data.translationGroup ?? "introduction").src;
+const pagination = getPaginationState({
+	currentPage: 1,
+	pathForPage: (page) => getBlogIndexPath(lang, page),
+	totalItems: publishedPosts.length,
+});
+const localeAlternates = Object.fromEntries(
+	supportedLanguages.map((language) => [language, getBlogIndexPath(language)]),
+) as Record<Language, string>;
+const ogImage = getBlogCoverImage(publishedPosts[0]?.data.translationGroup ?? "introduction").src;
+const metadata = createArchiveMetadata(lang, {
+	description: pageDescription,
+	localeAlternates,
+	localeSwitcherPaths: localeAlternates,
+	ogImage,
+	paginationNextUrl: pagination.nextPath,
+	paginationPrevUrl: pagination.prevPath,
+	rssFeedTitle: pageTitle,
+	rssFeedUrl,
+	title: pageTitle,
+});
 ---
 
-<Layout
-	lang={lang}
-	ogImage={ogImage}
-	pageDescription={metaDescription}
-	pageTitle={metaTitle}
-	rssFeedTitle={metaTitle}
-	rssFeedUrl={rssFeedUrl}
->
-	<section class="py-16">
-		<Container size="page">
-			<div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-				<SectionIntro
-					description={metaDescription}
-					eyebrow={blogEyebrow}
-					title={blogLabel}
-					titleTag="h1"
-				/>
-				<ActionLink href={rssFeedUrl} variant="secondary">
-					{t(lang, "blog.rss_label")}
-				</ActionLink>
-			</div>
-			{allTags.length > 0 && (
-				<div class="mt-10 space-y-3">
-					<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-						{t(lang, "blog.featured_topics")}
-					</p>
-					<div class="flex flex-wrap gap-2">
-						{allTags.map((tag) => (
-							<span class="rounded-full bg-slate-100 px-3 py-1.5 text-sm text-slate-600">
-								#{tag}
-							</span>
-						))}
-					</div>
-				</div>
-			)}
-			<ul class="mt-12 grid gap-8">
-				{posts.map((post, index) => {
-					const author = authorsByPostId.get(post.id);
-					const href = getLocalizedPath(lang, `/blog/${post.data.slug ?? post.id}`);
-
-					return (
-						<li>
-							<article class="grid gap-6 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.05)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:p-6">
-								<a
-									class="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-50"
-									href={href}
-								>
-									<Picture
-										alt={post.data.image.alt}
-										class="h-full w-full object-cover"
-										loading={index === 0 ? "eager" : "lazy"}
-										sizes="(max-width: 1024px) 100vw, 420px"
-										src={getBlogCoverImage(post.data.translationGroup)}
-										widths={[480, 720, 960]}
-									/>
-								</a>
-								<div class="flex flex-col justify-between gap-5">
-									<div class="space-y-4">
-										<div class="flex flex-wrap items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-											<span class="rounded-full bg-slate-950 px-3 py-1 text-white">
-												{post.data.category}
-											</span>
-											<time datetime={post.data.publishDate.toISOString()}>
-												{formatLocalizedDate(lang, post.data.publishDate, { dateStyle: "medium" })}
-											</time>
-										</div>
-										<h2 class="font-display text-3xl font-semibold leading-tight text-slate-950">
-											<a class="transition hover:text-slate-700" href={href}>
-												{post.data.title}
-											</a>
-										</h2>
-										<p class="text-base leading-7 text-slate-600">
-											{post.data.metaDescription}
-										</p>
-										{post.data.tags && post.data.tags.length > 0 && (
-											<div class="flex flex-wrap gap-2">
-												{post.data.tags.map((tag) => (
-													<span class="rounded-full bg-slate-100 px-3 py-1.5 text-sm text-slate-600">
-														#{tag}
-													</span>
-												))}
-											</div>
-										)}
-									</div>
-									<div class="flex flex-col gap-4 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
-										<p class="text-sm text-slate-500">
-											{author?.name ?? t(lang, "blog.unknown_author")}
-										</p>
-										<ActionLink href={href} size="sm" variant="subtle">
-											{t(lang, "blog.read_article")}
-										</ActionLink>
-									</div>
-								</div>
-							</article>
-						</li>
-					);
-				})}
-			</ul>
-		</Container>
-	</section>
+<Layout {...metadata}>
+	<BlogArchiveView
+		authorsByPostId={authorsByPostId}
+		description={pageDescription}
+		eyebrow={t(lang, "blog.eyebrow")}
+		lang={lang}
+		pagination={pagination}
+		posts={posts}
+		rssFeedUrl={rssFeedUrl}
+		taxonomyGroups={[
+			{ title: t(lang, "blog.categories_title"), items: categories },
+			{ title: t(lang, "blog.topics_title"), items: tags },
+		]}
+		title={pageTitle}
+	/>
 </Layout>

@@ -1,0 +1,12 @@
+---
+import { verificationConfig } from "../../data/site";
+---
+
+{
+	verificationConfig.googleSiteVerificationId && (
+		<meta
+			content={verificationConfig.googleSiteVerificationId}
+			name="google-site-verification"
+		/>
+	)
+}

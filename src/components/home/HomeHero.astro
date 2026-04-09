@@ -1,6 +1,6 @@
 ---
-import { Picture } from "astro:assets";
 import { homeSpotlightImage } from "../../data/media";
+import ResponsiveMedia from "../common/ResponsiveMedia.astro";
 import ActionLink from "../ui/ActionLink.astro";
 import type { HomePageContent } from "../../types/home";
 import HomeHeroScene from "./HomeHeroScene.astro";
@@ -45,10 +45,10 @@ const { content, primaryHref, secondaryHref } = Astro.props as Props;
 			<div class="relative">
 				<div class="pointer-events-none absolute inset-x-6 top-6 h-40 rounded-full bg-[radial-gradient(circle,_rgba(255,237,213,0.95),_transparent_68%)] blur-3xl"></div>
 				<div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[2rem]">
-					<Picture
+					<ResponsiveMedia
 						alt=""
-						aria-hidden="true"
-						class="h-full w-full object-cover opacity-20"
+						ariaHidden={true}
+						imgClass="h-full w-full object-cover opacity-20"
 						loading="eager"
 						sizes="(max-width: 1024px) 100vw, 540px"
 						src={homeSpotlightImage}
