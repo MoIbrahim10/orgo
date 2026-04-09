@@ -1,6 +1,7 @@
 ---
 isDraft: false
 title: "Deep Dive: How Orgo Works"
+category: "Architecture"
 translationGroup: "architecture"
 author: "jane-doe"
 image:

@@ -1,4 +1,6 @@
 ---
+import ActionLink from "./ui/ActionLink.astro";
+import Container from "./ui/Container.astro";
 import LocaleSwitcher from "./LocaleSwitcher.astro";
 import { getHeaderTranslations } from "../data/translations/header";
 import type { Language } from "../types/translations";
@@ -15,23 +17,56 @@ const ctaHref = getLocalizedPath(lang, "/pricing");
 ---
 
 <header class="border-b border-slate-200 bg-white/90 backdrop-blur">
-	<div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
-		<a class="text-lg font-semibold text-slate-900" href={homeHref}>{headerTranslations.logo}</a>
-		<div class="flex flex-1 flex-wrap items-center justify-end gap-3">
-			<nav aria-label="Primary" class="flex items-center gap-4 text-sm text-slate-600">
-				{headerTranslations.links.map((link) => (
-					<a class="transition hover:text-slate-900" href={getLocalizedPath(lang, link.href)}>
-						{link.label}
-					</a>
-				))}
-			</nav>
-			<LocaleSwitcher lang={lang} paths={localeSwitcherPaths} />
-			<a
-				class="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
-				href={ctaHref}
-			>
-				{headerTranslations.cta}
+	<Container class="py-4">
+		<div class="flex items-center justify-between gap-4">
+			<a class="font-display text-lg font-semibold text-slate-900" href={homeHref}>
+				{headerTranslations.logo}
 			</a>
+			<div class="hidden flex-1 items-center justify-end gap-3 md:flex">
+				<nav aria-label="Primary" class="flex items-center gap-4 text-sm text-slate-600">
+					{headerTranslations.links.map((link) => (
+						<a class="transition hover:text-slate-900" href={getLocalizedPath(lang, link.href)}>
+							{link.label}
+						</a>
+					))}
+				</nav>
+				<LocaleSwitcher lang={lang} paths={localeSwitcherPaths} />
+				<ActionLink href={ctaHref} size="sm" variant="primary">
+					{headerTranslations.cta}
+				</ActionLink>
+			</div>
+				<details class="group relative md:hidden">
+				<summary
+					aria-label={headerTranslations.menuLabel}
+					class="flex cursor-pointer list-none items-center justify-center rounded-full border border-slate-200 bg-white p-3 text-slate-900 marker:hidden"
+				>
+					<span class="flex flex-col gap-1.5">
+						<span class="h-0.5 w-5 rounded-full bg-current"></span>
+						<span class="h-0.5 w-5 rounded-full bg-current"></span>
+						<span class="h-0.5 w-5 rounded-full bg-current"></span>
+					</span>
+				</summary>
+				<div class="absolute inset-x-0 top-full z-40 mt-3 px-6">
+					<div class="mx-auto max-w-6xl rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-[0_24px_70px_rgba(15,23,42,0.12)]">
+						<nav aria-label="Mobile primary" class="grid gap-2 text-base text-slate-700">
+							{headerTranslations.links.map((link) => (
+								<a
+									class="rounded-2xl px-4 py-3 transition hover:bg-slate-100 hover:text-slate-950"
+									href={getLocalizedPath(lang, link.href)}
+								>
+									{link.label}
+								</a>
+							))}
+						</nav>
+						<div class="mt-4 grid gap-3 border-t border-slate-200 pt-4">
+							<LocaleSwitcher lang={lang} paths={localeSwitcherPaths} />
+							<ActionLink block href={ctaHref} size="md" variant="primary">
+								{headerTranslations.cta}
+							</ActionLink>
+						</div>
+					</div>
+				</div>
+			</details>
 		</div>
-	</div>
+	</Container>
 </header>

@@ -1,4 +1,7 @@
 ---
+import { Picture } from "astro:assets";
+import { homeSpotlightImage } from "../../data/media";
+import ActionLink from "../ui/ActionLink.astro";
 import type { HomePageContent } from "../../types/home";
 import HomeHeroScene from "./HomeHeroScene.astro";
 
@@ -18,23 +21,17 @@ const { content, primaryHref, secondaryHref } = Astro.props as Props;
 			<h1 class="mt-6 max-w-3xl text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl lg:text-[4.3rem] lg:leading-[1.02]">
 				{content.title}
 			</h1>
-			<p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">
-				{content.description}
-			</p>
-			<div class="mt-8 flex flex-wrap gap-4">
-				<a
-					class="inline-flex items-center justify-center rounded-full bg-slate-950 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
-					href={primaryHref}
-				>
-					{content.primaryCta}
-				</a>
-				<a
-					class="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/80 px-6 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-900 hover:text-slate-900"
-					href={secondaryHref}
-				>
-					{content.secondaryCta}
-				</a>
-			</div>
+				<p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">
+					{content.description}
+				</p>
+				<div class="mt-8 flex flex-wrap gap-4">
+					<ActionLink href={primaryHref} size="lg" variant="primary">
+						{content.primaryCta}
+					</ActionLink>
+					<ActionLink href={secondaryHref} size="lg" variant="secondary">
+						{content.secondaryCta}
+					</ActionLink>
+				</div>
 			<ul class="mt-10 flex flex-wrap gap-3 text-sm text-slate-600">
 				{
 					content.badges.map((badge) => (
@@ -44,10 +41,21 @@ const { content, primaryHref, secondaryHref } = Astro.props as Props;
 					))
 				}
 			</ul>
+			</div>
+			<div class="relative">
+				<div class="pointer-events-none absolute inset-x-6 top-6 h-40 rounded-full bg-[radial-gradient(circle,_rgba(255,237,213,0.95),_transparent_68%)] blur-3xl"></div>
+				<div class="pointer-events-none absolute inset-0 overflow-hidden rounded-[2rem]">
+					<Picture
+						alt=""
+						aria-hidden="true"
+						class="h-full w-full object-cover opacity-20"
+						loading="eager"
+						sizes="(max-width: 1024px) 100vw, 540px"
+						src={homeSpotlightImage}
+						widths={[480, 720, 960]}
+					/>
+				</div>
+				<HomeHeroScene cards={content.visualCards} />
+			</div>
 		</div>
-		<div class="relative">
-			<div class="pointer-events-none absolute inset-x-6 top-6 h-40 rounded-full bg-[radial-gradient(circle,_rgba(255,237,213,0.95),_transparent_68%)] blur-3xl"></div>
-			<HomeHeroScene cards={content.visualCards} />
-		</div>
-	</div>
-</section>
+	</section>

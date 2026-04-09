@@ -8,6 +8,8 @@
 		sans-serif;
 	--font-sans-arabic:
 		"Noto Sans Arabic", "Noto Naskh Arabic", "Geeza Pro", "Tahoma", "Segoe UI", sans-serif;
+	--font-display-latin: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", georgia, serif;
+	--font-display-arabic: "Noto Naskh Arabic", "Amiri", "Geeza Pro", serif;
 	--brand-ink: #0f172a;
 	--brand-line: rgb(148 163 184 / 18%);
 	--brand-mint: #ecfdf5;
@@ -39,11 +41,23 @@ body.locale-latin {
 	font-family: var(--font-sans-latin);
 }
 
+body.locale-latin .font-display {
+	font-family: var(--font-display-latin);
+}
+
+body.locale-arabic .font-display {
+	font-family: var(--font-display-arabic);
+}
+
 button,
 input,
 select,
 textarea {
 	font: inherit;
+}
+
+img {
+	content-visibility: auto;
 }
 
 ::selection {
@@ -72,4 +86,110 @@ textarea {
 	letter-spacing: 0.22em;
 	padding: 0.45rem 0.9rem;
 	text-transform: uppercase;
+}
+
+.blog-prose {
+	color: #334155;
+	font-size: 1.06rem;
+	line-height: 1.95;
+}
+
+.blog-prose > * + * {
+	margin-top: 1.35rem;
+}
+
+.blog-prose :is(h2, h3, h4) {
+	color: #0f172a;
+	font-family: var(--font-display-latin);
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	line-height: 1.2;
+	margin-top: 2.5rem;
+}
+
+body.locale-arabic .blog-prose :is(h2, h3, h4) {
+	font-family: var(--font-display-arabic);
+}
+
+.blog-prose h2 {
+	font-size: 2rem;
+}
+
+.blog-prose h3 {
+	font-size: 1.55rem;
+}
+
+.blog-prose h4 {
+	font-size: 1.2rem;
+}
+
+.blog-prose p,
+.blog-prose ul,
+.blog-prose ol,
+.blog-prose blockquote,
+.blog-prose pre {
+	max-width: 70ch;
+}
+
+.blog-prose a {
+	color: #0f172a;
+	text-decoration: underline;
+	text-decoration-color: rgb(148 163 184 / 70%);
+	text-decoration-thickness: 0.08em;
+	text-underline-offset: 0.2em;
+}
+
+.blog-prose strong {
+	color: #0f172a;
+	font-weight: 600;
+}
+
+.blog-prose blockquote {
+	border-inline-start: 3px solid #cbd5e1;
+	color: #475569;
+	font-style: italic;
+	padding-inline-start: 1rem;
+}
+
+.blog-prose :is(ul, ol) {
+	padding-inline-start: 1.2rem;
+}
+
+.blog-prose li + li {
+	margin-top: 0.55rem;
+}
+
+.blog-prose hr {
+	border: 0;
+	border-top: 1px solid #e2e8f0;
+	margin: 2.5rem 0;
+}
+
+.blog-prose code {
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 0.5rem;
+	color: #0f172a;
+	font-size: 0.92em;
+	padding: 0.15rem 0.4rem;
+}
+
+.blog-prose pre {
+	background: #0f172a;
+	border-radius: 1.5rem;
+	color: #e2e8f0;
+	overflow-x: auto;
+	padding: 1.25rem 1.4rem;
+}
+
+.blog-prose pre code {
+	background: transparent;
+	border: 0;
+	color: inherit;
+	padding: 0;
+}
+
+.blog-prose img {
+	border: 1px solid #e2e8f0;
+	border-radius: 1.5rem;
 }

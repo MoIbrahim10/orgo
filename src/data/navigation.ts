@@ -5,10 +5,12 @@ export const navigation: NavigationConfig = {
 		{ key: "about", href: "/about" },
 		{ key: "pricing", href: "/pricing" },
 		{ key: "blog", href: "/blog" },
+		{ key: "contact", href: "/contact" },
 	],
 	footer: [
 		{ key: "about", href: "/about" },
 		{ key: "pricing", href: "/pricing" },
 		{ key: "blog", href: "/blog" },
+		{ key: "contact", href: "/contact" },
 	],
 };

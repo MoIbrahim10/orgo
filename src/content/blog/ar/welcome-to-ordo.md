@@ -1,6 +1,7 @@
 ---
 isDraft: false
 title: "مرحبًا بك في Orgo"
+category: "المنتج"
 translationGroup: "introduction"
 author: "ahmed-ali"
 image:

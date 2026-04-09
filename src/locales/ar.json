@@ -8,9 +8,11 @@
 		"links": {
 			"about": "من نحن",
 			"pricing": "التسعير",
-			"blog": "المدونة"
+			"blog": "المدونة",
+			"contact": "تواصل"
 		},
-		"cta": "ابدأ الآن"
+		"cta": "ابدأ الآن",
+		"menu_label": "فتح القائمة"
 	},
 	"locale": {
 		"switcher_label": "اللغة",
@@ -154,6 +156,23 @@
 				}
 			}
 		},
+		"contact": {
+			"meta_title": "تواصل",
+			"title": "تواصل مع Orgo",
+			"description": "تواصل معنا إذا رغبت في مناقشة توجه المنتج أو الوصول المبكر أو أساليب التخطيط الهادئة.",
+			"intro": "أسهل طريقة للتواصل مع Orgo حالياً هي البريد الإلكتروني. إذا كنت تستكشف كيف يمكن للمنتج أن ينسجم مع روتينك، يسعدنا سماعك.",
+			"card_title": "ابقَ على تواصل",
+			"email_label": "البريد الإلكتروني",
+			"email_value": "hello@orgo.app",
+			"github_label": "جيت هب",
+			"github_value": "https://github.com/MoIbrahim10/orgo",
+			"availability_label": "مناسب من أجل",
+			"availability_value": "ملاحظات المنتج، والاهتمام بالوصول المبكر، وحوارات التصميم، وطرق التخطيط الواعية.",
+			"response_label": "إيقاع الرد",
+			"response_value": "الردود عادة متأنية وغير فورية بطبيعتها.",
+			"primary_cta": "راجع التسعير",
+			"secondary_cta": "اقرأ المجلة"
+		},
 		"errors": {
 			"not_found": {
 				"title": "الصفحة غير موجودة",
@@ -171,7 +190,12 @@
 		"index_title": "المدونة",
 		"index_description": "استكشف أحدث المقالات وملاحظات المنتج والأفكار العملية من Orgo.",
 		"rss_label": "خلاصة RSS",
+		"featured_topics": "مواضيع بارزة",
+		"read_article": "اقرأ المقال",
 		"related_posts": "مقالات ذات صلة",
+		"back_to_blog": "العودة إلى المدونة",
+		"about_author": "عن الكاتب",
+		"contact_author": "تواصل مع الكاتب",
 		"unknown_author": "كاتب غير معروف",
 		"by": "بقلم",
 		"translation_label": "الترجمات",

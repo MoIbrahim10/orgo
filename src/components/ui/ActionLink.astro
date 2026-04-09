@@ -1,0 +1,47 @@
+---
+interface Props {
+	block?: boolean;
+	class?: string;
+	href: string;
+	size?: "lg" | "md" | "sm";
+	variant?: "ghost" | "inverted" | "primary" | "secondary" | "subtle";
+	[x: string]: unknown;
+}
+
+const {
+	block = false,
+	class: className,
+	href,
+	size = "md",
+	variant = "primary",
+	...rest
+} = Astro.props as Props;
+
+const sizeClasses = {
+	lg: "px-6 py-3.5 text-sm",
+	md: "px-5 py-3 text-sm",
+	sm: "px-4 py-2.5 text-sm",
+} as const;
+
+const variantClasses = {
+	ghost: "bg-transparent text-slate-700 hover:text-slate-950",
+	inverted: "bg-white text-slate-950 hover:bg-slate-100",
+	primary: "bg-slate-950 text-white hover:bg-slate-800",
+	secondary: "border border-slate-300 bg-white/80 text-slate-700 hover:border-slate-900 hover:text-slate-900",
+	subtle: "bg-slate-100 text-slate-800 hover:bg-slate-200",
+} as const;
+---
+
+<a
+	{...rest}
+	class:list={[
+		"inline-flex items-center justify-center gap-2 rounded-full font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950/20 focus-visible:ring-offset-2",
+		block && "w-full",
+		sizeClasses[size],
+		variantClasses[variant],
+		className,
+	]}
+	href={href}
+>
+	<slot />
+</a>

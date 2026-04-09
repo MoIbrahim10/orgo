@@ -26,3 +26,11 @@ export function formatLocaleList(lang: Language, languages: Language[]): string 
 
 	return formatter.format(languages.map((language) => getLocaleConfig(language).nativeLabel));
 }
+
+export function formatLocalizedDate(
+	lang: Language,
+	date: Date,
+	options: Intl.DateTimeFormatOptions = { dateStyle: "long" },
+): string {
+	return date.toLocaleDateString(getLocaleConfig(lang).dateLocale, options);
+}

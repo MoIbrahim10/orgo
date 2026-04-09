@@ -3,6 +3,7 @@ import type { Language } from "./translations";
 export interface BlogPost {
 	isDraft: boolean;
 	title: string;
+	category: string;
 	translationGroup: string;
 	author: Author;
 	date: Date;

@@ -1,4 +1,5 @@
 ---
+import ActionLink from "../../components/ui/ActionLink.astro";
 import HomeFeatureStory from "../../components/home/HomeFeatureStory.astro";
 import HomeHero from "../../components/home/HomeHero.astro";
 import HomeJumpNav from "../../components/home/HomeJumpNav.astro";
@@ -121,17 +122,13 @@ const aboutHref = getLocalizedPath(lang, "/about");
 										))
 									}
 								</ul>
-								<a
-									class:list={[
-										"mt-8 inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-medium transition",
-										plan.accent === "dark"
-											? "bg-white text-slate-950 hover:bg-slate-100"
-											: "bg-slate-950 text-white hover:bg-slate-800",
-									]}
+								<ActionLink
+									class="mt-8"
 									href={plan.href}
+									variant={plan.accent === "dark" ? "inverted" : "primary"}
 								>
 									{plan.cta}
-								</a>
+								</ActionLink>
 							</article>
 						))
 					}
@@ -178,21 +175,15 @@ const aboutHref = getLocalizedPath(lang, "/about");
 						<p class="mt-5 text-lg leading-8 text-slate-600">{homeContent.cta.description}</p>
 					</div>
 					<div class="flex flex-wrap gap-4">
-						<a
-							class="inline-flex items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
-							href={pricingHref}
-						>
-							{homeContent.cta.primaryCta}
-						</a>
-						<a
-							class="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/80 px-5 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-900 hover:text-slate-900"
-							href={aboutHref}
-						>
-							{homeContent.cta.secondaryCta}
-						</a>
+							<ActionLink href={pricingHref} variant="primary">
+								{homeContent.cta.primaryCta}
+							</ActionLink>
+							<ActionLink href={aboutHref} variant="secondary">
+								{homeContent.cta.secondaryCta}
+							</ActionLink>
+						</div>
 					</div>
 				</div>
-			</div>
 		</section>
 	</div>
 </Layout>

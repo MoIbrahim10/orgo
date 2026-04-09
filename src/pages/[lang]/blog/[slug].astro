@@ -1,15 +1,18 @@
 ---
+import { Image, Picture } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { getCollection, getEntries, getEntry, render } from "astro:content";
 import TranslationAvailabilityNotice from "../../../components/TranslationAvailabilityNotice.astro";
-import { getLocaleConfig } from "../../../data/site";
+import ActionLink from "../../../components/ui/ActionLink.astro";
+import Container from "../../../components/ui/Container.astro";
+import { getAuthorAvatarImage, getBlogCoverImage } from "../../../data/media";
+import { formatLocalizedDate } from "../../../data/site";
 import Layout from "../../../layouts/BlogLayout.astro";
 import {
 	getBlogLocaleAlternates,
 	getBlogLocaleSwitcherPaths,
 	getBlogTranslationEntries,
 } from "../../../utils/blog";
-import { getPublicAssetPath } from "../../../utils/assets";
 import { t } from "../../../utils/i18n";
 import { getLanguageFromParams, getLocalizedPath } from "../../../utils/routing";
 
@@ -32,21 +35,20 @@ const relatedPosts = (await getEntries(page.data.relatedPosts)).filter(
 const translationEntries = getBlogTranslationEntries(page, allPosts);
 const localeAlternates = getBlogLocaleAlternates(translationEntries);
 const localeSwitcherPaths = getBlogLocaleSwitcherPaths(localeAlternates);
-
-const formattedDate = page.data.publishDate.toLocaleDateString(getLocaleConfig(lang).dateLocale, {
-	dateStyle: "long",
-});
+const coverImage = getBlogCoverImage(page.data.translationGroup);
+const authorAvatar = getAuthorAvatarImage(author?.id ?? authorEntry?.id);
+const formattedDate = formatLocalizedDate(lang, page.data.publishDate);
 const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined;
-const heroImage = getPublicAssetPath(page.data.image.src);
-const ogImage = getPublicAssetPath(page.data.ogImage, "/og.png");
+const ogImage = coverImage.src;
 const rssFeedUrl = getLocalizedPath(lang, "/rss.xml");
-const structuredDataImage =
-	Astro.site && ogImage ? new URL(ogImage, Astro.site).toString() : undefined;
+const structuredDataImage = Astro.site ? new URL(coverImage.src, Astro.site).toString() : undefined;
 const structuredData = {
 	"@context": "https://schema.org",
 	"@type": "BlogPosting",
 	headline: page.data.metaTitle ?? page.data.title,
 	description: page.data.metaDescription ?? page.data.title,
+	articleSection: page.data.category,
+	keywords: page.data.tags?.join(", "),
 	datePublished: page.data.publishDate.toISOString(),
 	dateModified: page.data.updatedDate.toISOString(),
 	inLanguage: lang,
@@ -64,6 +66,7 @@ const structuredData = {
 };
 const { Content } = await render(page);
 ---
+
 <Layout
 	canonicalUrl={canonicalUrl}
 	lang={lang}
@@ -76,48 +79,114 @@ const { Content } = await render(page);
 	rssFeedUrl={rssFeedUrl}
 	structuredData={structuredData}
 >
-	<article class="mx-auto flex max-w-3xl flex-col gap-10 px-6 py-16">
-		<header class="space-y-4">
-			<p class="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
-				{formattedDate}
-			</p>
-			<h1 class="text-4xl font-bold tracking-tight text-slate-950">{page.data.title}</h1>
-			<p class="text-lg text-slate-600">
-				{t(lang, "blog.by")} {author?.name ?? t(lang, "blog.unknown_author")}
-			</p>
-			{heroImage && (
-				<img
-					alt={page.data.image.alt}
-					class="rounded-3xl border border-slate-200 object-cover"
-					height="720"
-					loading="eager"
-					src={heroImage}
-					width="1280"
-				/>
-			)}
-		</header>
-		<TranslationAvailabilityNotice availablePaths={localeAlternates} lang={lang} />
-		<section class="space-y-6 leading-8 text-slate-700">
-			<Content />
-		</section>
-		{relatedPosts.length > 0 && (
-			<section class="space-y-4 border-t border-slate-200 pt-8">
-				<h2 class="text-2xl font-semibold tracking-tight text-slate-950">
-					{t(lang, "blog.related_posts")}
-				</h2>
-				<ul class="space-y-3">
-					{relatedPosts.map((post) => (
-						<li>
-							<a
-								class="text-slate-700 transition hover:text-slate-950"
-								href={getLocalizedPath(lang, `/blog/${post.data.slug ?? post.id}`)}
-							>
-								{post.data.title}
-							</a>
-						</li>
-					))}
-				</ul>
-			</section>
-			)}
-		</article>
+	<section class="py-16">
+		<Container size="article">
+			<article class="space-y-10">
+				<header class="space-y-6">
+					<div class="flex flex-wrap items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
+						<span class="rounded-full bg-slate-950 px-3 py-1 text-white">{page.data.category}</span>
+						<time datetime={page.data.publishDate.toISOString()}>{formattedDate}</time>
+					</div>
+					<h1 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl sm:leading-tight">
+						{page.data.title}
+					</h1>
+					<p class="text-lg leading-8 text-slate-600">
+						{page.data.metaDescription ?? page.data.title}
+					</p>
+					{page.data.tags && page.data.tags.length > 0 && (
+						<div class="flex flex-wrap gap-2">
+							{page.data.tags.map((tag) => (
+								<span class="rounded-full bg-slate-100 px-3 py-1.5 text-sm text-slate-600">
+									#{tag}
+								</span>
+							))}
+						</div>
+					)}
+					<div class="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
+						<div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+							<div class="flex items-center gap-4">
+								{authorAvatar && (
+									<Image
+										alt={author?.image?.alt ?? author?.name ?? t(lang, "blog.unknown_author")}
+										class="h-16 w-16 rounded-full border border-slate-200 bg-slate-50"
+										height={64}
+										src={authorAvatar}
+										width={64}
+									/>
+								)}
+								<div class="min-w-0">
+									<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
+										{t(lang, "blog.about_author")}
+									</p>
+									<p class="mt-1 text-lg font-medium text-slate-950">
+										{author?.name ?? t(lang, "blog.unknown_author")}
+									</p>
+									{author?.bio && <p class="mt-2 text-sm leading-6 text-slate-600">{author.bio}</p>}
+								</div>
+							</div>
+							{author?.email && (
+								<ActionLink href={`mailto:${author.email}`} size="sm" variant="secondary">
+									{t(lang, "blog.contact_author")}
+								</ActionLink>
+							)}
+						</div>
+					</div>
+					<div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
+						<Picture
+							alt={page.data.image.alt}
+							class="h-full w-full object-cover"
+							loading="eager"
+							sizes="(max-width: 768px) 100vw, 768px"
+							src={coverImage}
+							widths={[640, 960, 1280]}
+						/>
+					</div>
+				</header>
+				<TranslationAvailabilityNotice availablePaths={localeAlternates} lang={lang} />
+				<section class="blog-prose">
+					<Content />
+				</section>
+				{relatedPosts.length > 0 && (
+					<section class="space-y-5 border-t border-slate-200 pt-8">
+						<h2 class="font-display text-2xl font-semibold tracking-tight text-slate-950">
+							{t(lang, "blog.related_posts")}
+						</h2>
+						<div class="grid gap-5">
+							{relatedPosts.map((post) => (
+								<a
+									class="grid gap-4 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-[0_18px_50px_rgba(15,23,42,0.05)] sm:grid-cols-[12rem_minmax(0,1fr)]"
+									href={getLocalizedPath(lang, `/blog/${post.data.slug ?? post.id}`)}
+								>
+									<div class="overflow-hidden rounded-[1.25rem] border border-slate-200 bg-slate-50">
+										<Picture
+											alt={post.data.image.alt}
+											class="h-full w-full object-cover"
+											loading="lazy"
+											sizes="(max-width: 640px) 100vw, 192px"
+											src={getBlogCoverImage(post.data.translationGroup)}
+											widths={[320, 480]}
+										/>
+									</div>
+									<div class="space-y-3">
+										<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
+											{post.data.category} • {formatLocalizedDate(lang, post.data.publishDate, { dateStyle: "medium" })}
+										</p>
+										<h3 class="font-display text-xl font-semibold text-slate-950">
+											{post.data.title}
+										</h3>
+										<p class="text-sm leading-6 text-slate-600">{post.data.metaDescription}</p>
+									</div>
+								</a>
+							))}
+						</div>
+					</section>
+				)}
+				<div class="flex justify-center border-t border-slate-200 pt-8">
+					<ActionLink href={getLocalizedPath(lang, "/blog")} variant="secondary">
+						{t(lang, "blog.back_to_blog")}
+					</ActionLink>
+				</div>
+			</article>
+		</Container>
+	</section>
 </Layout>

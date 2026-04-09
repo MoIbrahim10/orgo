@@ -1,6 +1,7 @@
 ---
 isDraft: false
 title: "التصميم للتركيز والبساطة"
+category: "التصميم"
 translationGroup: "focus"
 author: "ahmed-ali"
 image:

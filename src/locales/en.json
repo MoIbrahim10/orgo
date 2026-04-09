@@ -8,9 +8,11 @@
 		"links": {
 			"about": "About",
 			"pricing": "Pricing",
-			"blog": "Blog"
+			"blog": "Blog",
+			"contact": "Contact"
 		},
-		"cta": "Get Started"
+		"cta": "Get Started",
+		"menu_label": "Open menu"
 	},
 	"locale": {
 		"switcher_label": "Language",
@@ -154,6 +156,23 @@
 				}
 			}
 		},
+		"contact": {
+			"meta_title": "Contact",
+			"title": "Contact Orgo",
+			"description": "Reach out if you want to talk about the product direction, early access, or thoughtful planning workflows.",
+			"intro": "The simplest way to reach Orgo right now is by email. If you're exploring how the product could fit your routine, we'd love to hear from you.",
+			"card_title": "Get in touch",
+			"email_label": "Email",
+			"email_value": "hello@orgo.app",
+			"github_label": "GitHub",
+			"github_value": "https://github.com/MoIbrahim10/orgo",
+			"availability_label": "Best for",
+			"availability_value": "Product feedback, early access interest, design conversations, and thoughtful planning workflows.",
+			"response_label": "Response rhythm",
+			"response_value": "Replies are usually thoughtful and asynchronous rather than instant.",
+			"primary_cta": "Review pricing",
+			"secondary_cta": "Read the journal"
+		},
 		"errors": {
 			"not_found": {
 				"title": "Page not found",
@@ -171,7 +190,12 @@
 		"index_title": "Blog",
 		"index_description": "Explore the latest articles, product notes, and practical planning ideas from Orgo.",
 		"rss_label": "RSS feed",
+		"featured_topics": "Featured topics",
+		"read_article": "Read article",
 		"related_posts": "Related posts",
+		"back_to_blog": "Back to blog",
+		"about_author": "About the author",
+		"contact_author": "Contact author",
 		"unknown_author": "Unknown author",
 		"by": "by",
 		"translation_label": "Translations",

@@ -1,6 +1,7 @@
 ---
 isDraft: false
 title: "Designing for Focus"
+category: "Design"
 translationGroup: "focus"
 author: "john-doe"
 image:

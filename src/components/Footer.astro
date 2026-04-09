@@ -1,4 +1,5 @@
 ---
+import Container from "./ui/Container.astro";
 import { getFooterTranslations } from "../data/translations/header";
 import type { Language } from "../types/translations";
 import { getLocalizedPath } from "../utils/routing";
@@ -8,14 +9,14 @@ const footerTranslations = getFooterTranslations(lang);
 ---
 
 <footer class="border-t border-slate-200 bg-slate-50">
-	<div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-6 text-sm text-slate-600">
+	<Container class="flex flex-wrap items-center justify-between gap-4 py-6 text-sm text-slate-600">
 		<p>&copy; {new Date().getFullYear()} Orgo</p>
-		<nav aria-label="Footer" class="flex items-center gap-4">
+		<nav aria-label="Footer" class="flex flex-wrap items-center gap-4">
 			{footerTranslations.links.map((link) => (
 				<a class="transition hover:text-slate-900" href={getLocalizedPath(lang, link.href)}>
 					{link.label}
 				</a>
 			))}
 		</nav>
-	</div>
+	</Container>
 </footer>

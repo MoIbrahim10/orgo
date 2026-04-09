@@ -3,7 +3,7 @@ import { getCollection } from "astro:content";
 import { supportedLanguages, type Language } from "../types/translations";
 import { getLocalizedPath } from "../utils/routing";
 
-const staticRoutes = ["/", "/about", "/pricing", "/blog"] as const;
+const staticRoutes = ["/", "/about", "/pricing", "/blog", "/contact"] as const;
 const sitemapXmlHeader = `<?xml version="1.0" encoding="UTF-8"?>`;
 const emptySitemap = `${sitemapXmlHeader}\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />\n`;
 

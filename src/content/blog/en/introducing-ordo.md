@@ -1,6 +1,7 @@
 ---
 isDraft: false
 title: "Introducing Orgo"
+category: "Product"
 translationGroup: "introduction"
 author: "john-doe"
 image:

@@ -8,6 +8,7 @@ const blog = defineCollection({
 	schema: z.object({
 		isDraft: z.boolean(),
 		title: z.string(),
+		category: z.string(),
 		translationGroup: z.string(),
 		author: reference("authors"),
 		image: z.object({

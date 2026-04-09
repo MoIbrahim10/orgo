@@ -13,6 +13,7 @@ function translateLinks(lang: Language, links: NavLink[]) {
 export const getHeaderTranslations = (lang: Language) => ({
 	logo: t(lang, "header.logo"),
 	cta: t(lang, "header.cta"),
+	menuLabel: t(lang, "header.menu_label" as TranslationKey),
 	links: translateLinks(lang, navigation.header),
 });
 
