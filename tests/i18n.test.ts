@@ -50,12 +50,14 @@ describe("routing helpers", () => {
 
 describe("translations", () => {
 	test("returns translated copy for nested keys", () => {
-		expect(t("en", "hero.title")).toBe("Your Life, Beautifully Organized");
+		expect(t("en", "home.hero.title")).toBe(
+			"Plan clearly. Write intentionally. Move through the week with calm.",
+		);
 		expect(t("ar", "header.links.blog")).toBe("المدونة");
 	});
 
 	test("returns the key when a translation is missing", () => {
-		expect(t("en", "hero.missing" as never)).toBe("hero.missing");
+		expect(t("en", "home.hero.missing" as never)).toBe("home.hero.missing");
 	});
 
 	test("formats translated strings with placeholders", () => {

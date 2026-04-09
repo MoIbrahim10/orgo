@@ -1,0 +1,26 @@
+---
+import type { HomeJumpLink } from "../../types/home";
+
+interface Props {
+	label: string;
+	links: HomeJumpLink[];
+}
+
+const { label, links } = Astro.props as Props;
+---
+
+<nav
+	aria-label={label}
+	class="mx-auto flex max-w-5xl gap-3 overflow-x-auto px-6 pb-6 pt-2 text-sm text-slate-600"
+>
+	{
+		links.map((link) => (
+			<a
+				class="whitespace-nowrap rounded-full border border-slate-200 bg-white/80 px-4 py-2 shadow-[0_12px_24px_rgba(15,23,42,0.04)] transition hover:border-slate-950 hover:text-slate-950"
+				href={link.href}
+			>
+				{link.label}
+			</a>
+		))
+	}
+</nav>

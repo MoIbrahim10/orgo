@@ -8,13 +8,26 @@
 		sans-serif;
 	--font-sans-arabic:
 		"Noto Sans Arabic", "Noto Naskh Arabic", "Geeza Pro", "Tahoma", "Segoe UI", sans-serif;
+	--brand-ink: #0f172a;
+	--brand-line: rgb(148 163 184 / 18%);
+	--brand-mint: #ecfdf5;
+	--brand-rose: #fff1f2;
+	--brand-sky: #eff6ff;
+	--brand-sun: #fff7ed;
 }
 
 html {
 	background: white;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
+}
+
 body {
+	color: var(--brand-ink);
 	font-family: var(--font-sans-latin);
 }
 
@@ -36,4 +49,27 @@ textarea {
 ::selection {
 	background: #0f172a;
 	color: white;
+}
+
+.home-shell {
+	background:
+		radial-gradient(circle at top left, rgb(255 237 213 / 92%), transparent 28%),
+		radial-gradient(circle at top right, rgb(224 242 254 / 88%), transparent 24%),
+		linear-gradient(180deg, #fffaf5 0%, #fff 34%, #f8fafc 100%);
+}
+
+.marketing-panel {
+	backdrop-filter: blur(16px);
+}
+
+.marketing-eyebrow {
+	border: 1px solid var(--brand-line);
+	background: rgb(255 255 255 / 70%);
+	border-radius: 9999px;
+	display: inline-flex;
+	font-size: 0.72rem;
+	font-weight: 600;
+	letter-spacing: 0.22em;
+	padding: 0.45rem 0.9rem;
+	text-transform: uppercase;
 }

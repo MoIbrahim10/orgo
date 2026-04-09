@@ -1,0 +1,53 @@
+---
+import type { HomePageContent } from "../../types/home";
+import HomeHeroScene from "./HomeHeroScene.astro";
+
+interface Props {
+	content: HomePageContent["hero"];
+	primaryHref: string;
+	secondaryHref: string;
+}
+
+const { content, primaryHref, secondaryHref } = Astro.props as Props;
+---
+
+<section class="relative overflow-hidden px-6 pb-14 pt-12 sm:pb-18 sm:pt-16">
+	<div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)] lg:items-center">
+		<div class="relative z-10 max-w-3xl">
+			<p class="marketing-eyebrow">{content.eyebrow}</p>
+			<h1 class="mt-6 max-w-3xl text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl lg:text-[4.3rem] lg:leading-[1.02]">
+				{content.title}
+			</h1>
+			<p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">
+				{content.description}
+			</p>
+			<div class="mt-8 flex flex-wrap gap-4">
+				<a
+					class="inline-flex items-center justify-center rounded-full bg-slate-950 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+					href={primaryHref}
+				>
+					{content.primaryCta}
+				</a>
+				<a
+					class="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/80 px-6 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-900 hover:text-slate-900"
+					href={secondaryHref}
+				>
+					{content.secondaryCta}
+				</a>
+			</div>
+			<ul class="mt-10 flex flex-wrap gap-3 text-sm text-slate-600">
+				{
+					content.badges.map((badge) => (
+						<li class="rounded-full border border-slate-200 bg-white/80 px-4 py-2 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
+							{badge}
+						</li>
+					))
+				}
+			</ul>
+		</div>
+		<div class="relative">
+			<div class="pointer-events-none absolute inset-x-6 top-6 h-40 rounded-full bg-[radial-gradient(circle,_rgba(255,237,213,0.95),_transparent_68%)] blur-3xl"></div>
+			<HomeHeroScene cards={content.visualCards} />
+		</div>
+	</div>
+</section>
