@@ -1,4 +1,10 @@
-import { featureFlags, getHtmlLanguage, getLocaleCode, metadataConfig, siteConfig } from "../data/site";
+import {
+	featureFlags,
+	getHtmlLanguage,
+	getLocaleCode,
+	metadataConfig,
+	siteConfig,
+} from "../data/site";
 import { getSiteTranslations } from "../data/translations/site";
 import { defaultLang, type Language } from "../types/translations";
 import type { LayoutMetadataProps } from "./metadata";
@@ -61,7 +67,9 @@ function resolveLocalePaths({
 }: LocalePathResolutionInput) {
 	const isLocalizedPath = pathname === `/${lang}` || pathname.startsWith(`/${lang}/`);
 	const pathWithoutLocale = isLocalizedPath ? stripLocaleFromPath(pathname) : "/";
-	const defaultLocalePaths: LocalePathMap = isLocalizedPath ? buildLocalePathMap(pathWithoutLocale) : {};
+	const defaultLocalePaths: LocalePathMap = isLocalizedPath
+		? buildLocalePathMap(pathWithoutLocale)
+		: {};
 	const resolvedLocaleAlternates = localeAlternates ?? defaultLocalePaths;
 	const resolvedLocaleSwitcherPaths =
 		localeSwitcherPaths ??
@@ -118,13 +126,15 @@ export function resolveHeadMetadata({
 }: ResolveHeadMetadataInput) {
 	const siteTranslations = getSiteTranslations(lang);
 	const metaTitle = pageTitle ?? siteTranslations.title;
-	const metaDescription = pageDescription ?? siteTranslations.description ?? metadataConfig.description;
+	const metaDescription =
+		pageDescription ?? siteTranslations.description ?? metadataConfig.description;
 	const { resolvedLocaleAlternates } = resolveLocalePaths({
 		lang,
 		localeAlternates,
 		pathname,
 	});
-	const resolvedCanonicalUrl = canonicalUrl ?? (site ? new URL(pathname, site).toString() : undefined);
+	const resolvedCanonicalUrl =
+		canonicalUrl ?? (site ? new URL(pathname, site).toString() : undefined);
 	const resolvedOgImage = resolveAbsoluteUrl(site, ogImage ?? siteConfig.defaultOgImage);
 	const resolvedRssFeedUrl = resolveAbsoluteUrl(site, rssFeedUrl);
 	const resolvedPaginationPrevUrl = resolveAbsoluteUrl(site, paginationPrevUrl);
@@ -161,11 +171,7 @@ export function resolveHeadMetadata({
 			name: metaTitle,
 			url: resolvedCanonicalUrl,
 		},
-		...(Array.isArray(structuredData)
-			? structuredData
-			: structuredData
-				? [structuredData]
-				: []),
+		...(Array.isArray(structuredData) ? structuredData : structuredData ? [structuredData] : []),
 	].filter((item): item is Record<string, unknown> => Boolean(item));
 
 	return {
