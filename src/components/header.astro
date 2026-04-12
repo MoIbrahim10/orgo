@@ -1,9 +1,9 @@
 ---
-import ActionLink from "./ui/ActionLink.astro";
 import Container from "./ui/Container.astro";
 import Logo from "./ui/Logo.astro";
 import LocaleSwitcher from "./LocaleSwitcher.astro";
 import ThemeToggle from "./ThemeToggle.astro";
+import ActionLink from "./ui/ActionLink.astro";
 import { getHeaderTranslations } from "../data/translations/header";
 import type { Language } from "../types/translations";
 import type { LocalePathMap } from "../utils/routing";
@@ -16,53 +16,81 @@ const { lang, localeSwitcherPaths } = Astro.props as {
 const headerTranslations = getHeaderTranslations(lang);
 const homeHref = getLocalizedPath(lang);
 const ctaHref = getLocalizedPath(lang, "/pricing");
+const normalizePath = (path: string) => (path.length > 1 ? path.replace(/\/$/, "") : path);
+const currentPath = normalizePath(Astro.url.pathname);
+const isActivePath = (href: string) => {
+	const normalizedHref = normalizePath(href);
+
+	return currentPath === normalizedHref || currentPath.startsWith(`${normalizedHref}/`);
+};
+const navLinks = headerTranslations.links.map((link) => {
+	const href = getLocalizedPath(lang, link.href);
+
+	return {
+		...link,
+		href,
+		isActive: isActivePath(href),
+	};
+});
+const isCtaActive = isActivePath(ctaHref);
 ---
 
-<header class="border-b border-slate-200 bg-white/90 backdrop-blur">
-	<Container class="py-4">
-		<div class="flex items-center justify-between gap-4">
+<header class="site-header">
+	<Container class="site-header-container" size="navbar">
+		<div class="navbar-shell">
 			<Logo alt={headerTranslations.logo} href={homeHref} />
-			<div class="hidden flex-1 items-center justify-end gap-3 md:flex">
-				<nav aria-label="Primary" class="flex items-center gap-4 text-sm text-slate-600">
-					{headerTranslations.links.map((link) => (
-						<a class="transition hover:text-slate-900" href={getLocalizedPath(lang, link.href)}>
+			<div class="navbar-actions">
+				<nav aria-label="Primary" class="navbar-nav">
+					{navLinks.map((link) => (
+						<a
+							aria-current={link.isActive ? "page" : undefined}
+							class="navbar-link"
+							href={link.href}
+						>
 							{link.label}
 						</a>
 					))}
 				</nav>
 				<LocaleSwitcher lang={lang} paths={localeSwitcherPaths} />
-				<ThemeToggle lang={lang} />
-				<ActionLink href={ctaHref} size="sm" variant="primary">
+				<ThemeToggle class="nav-icon-button" lang={lang} />
+				<ActionLink
+					aria-current={isCtaActive ? "page" : undefined}
+					href={ctaHref}
+					variant="secondary"
+				>
 					{headerTranslations.cta}
 				</ActionLink>
 			</div>
-			<details class="group relative md:hidden">
-				<summary
-					aria-label={headerTranslations.menuLabel}
-					class="flex cursor-pointer list-none items-center justify-center rounded-full border border-slate-200 bg-white p-3 text-slate-900 marker:hidden"
-				>
-					<span class="flex flex-col gap-1.5">
-						<span class="h-0.5 w-5 rounded-full bg-current"></span>
-						<span class="h-0.5 w-5 rounded-full bg-current"></span>
-						<span class="h-0.5 w-5 rounded-full bg-current"></span>
+			<details class="navbar-mobile-menu" data-orgo-mobile-menu>
+				<summary aria-label={headerTranslations.menuLabel} class="nav-menu-button">
+					<span aria-hidden="true" class="nav-menu-button-lines">
+						<span></span>
+						<span></span>
+						<span></span>
 					</span>
 				</summary>
-				<div class="absolute inset-x-0 top-full z-40 mt-3 px-6">
-					<div class="mx-auto max-w-6xl rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-[0_24px_70px_rgba(15,23,42,0.12)]">
-						<nav aria-label="Mobile primary" class="grid gap-2 text-base text-slate-700">
-							{headerTranslations.links.map((link) => (
+				<div class="navbar-mobile-panel">
+					<div class="navbar-mobile-panel-inner">
+						<nav aria-label="Mobile primary" class="navbar-mobile-nav">
+							{navLinks.map((link) => (
 								<a
-									class="rounded-2xl px-4 py-3 transition hover:bg-slate-100 hover:text-slate-950"
-									href={getLocalizedPath(lang, link.href)}
+									aria-current={link.isActive ? "page" : undefined}
+									class="navbar-mobile-link"
+									href={link.href}
 								>
 									{link.label}
 								</a>
 							))}
 						</nav>
-						<div class="mt-4 grid gap-3 border-t border-slate-200 pt-4">
+						<div class="navbar-mobile-controls">
 							<LocaleSwitcher lang={lang} paths={localeSwitcherPaths} />
-							<ThemeToggle lang={lang} />
-							<ActionLink block href={ctaHref} size="md" variant="primary">
+							<ThemeToggle class="nav-icon-button" lang={lang} />
+							<ActionLink
+								aria-current={isCtaActive ? "page" : undefined}
+								block
+								href={ctaHref}
+								variant="secondary"
+							>
 								{headerTranslations.cta}
 							</ActionLink>
 						</div>
@@ -72,3 +100,329 @@ const ctaHref = getLocalizedPath(lang, "/pricing");
 		</div>
 	</Container>
 </header>
+
+<script is:inline>
+	(() => {
+		const mobileMenus = document.querySelectorAll("[data-orgo-mobile-menu]");
+		const closeDelay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 160;
+
+		for (const mobileMenu of mobileMenus) {
+			if (!(mobileMenu instanceof HTMLDetailsElement)) {
+				continue;
+			}
+
+			if (mobileMenu.dataset.bound === "true") {
+				continue;
+			}
+
+			const menuButton = mobileMenu.querySelector("summary");
+			if (!menuButton) {
+				continue;
+			}
+
+			mobileMenu.dataset.bound = "true";
+			menuButton.addEventListener("click", (event) => {
+				if (!mobileMenu.open || mobileMenu.dataset.closing === "true") {
+					return;
+				}
+
+				event.preventDefault();
+				mobileMenu.dataset.closing = "true";
+
+				window.setTimeout(() => {
+					mobileMenu.open = false;
+					delete mobileMenu.dataset.closing;
+				}, closeDelay);
+			});
+		}
+	})();
+</script>
+
+<style>
+	.site-header {
+		--navbar-mobile-panel-gap: 10px;
+		--navbar-mobile-panel-top: calc(
+			var(--page-shell-padding) + 4.875rem + var(--navbar-mobile-panel-gap) +
+			env(safe-area-inset-top)
+		);
+
+		background: var(--page-bg);
+		position: relative;
+		z-index: var(--layer-navbar-menu);
+	}
+
+	.site-header-container {
+		padding-block: 1rem;
+	}
+
+	.navbar-shell,
+	.navbar-actions,
+	.navbar-nav,
+	.navbar-mobile-controls {
+		align-items: center;
+		display: flex;
+	}
+
+	.navbar-shell {
+		gap: 1rem;
+		justify-content: space-between;
+		min-height: 2.875rem;
+	}
+
+	.navbar-actions {
+		display: none;
+		flex: 1;
+		gap: 0.75rem;
+		justify-content: flex-end;
+	}
+
+	.navbar-nav {
+		gap: 0.125rem;
+	}
+
+	.navbar-link,
+	.navbar-mobile-link {
+		border-radius: var(--control-radius);
+		color: var(--nav-link-text);
+		font-family: var(--font-ui);
+		font-size: var(--control-font-size);
+		font-weight: var(--control-font-weight);
+		line-height: 1.25;
+		outline: none;
+		position: relative;
+		text-decoration: none;
+		transition:
+			color var(--control-transition),
+			opacity var(--control-transition);
+	}
+
+	.navbar-link::after {
+		background: var(--nav-link-accent);
+		block-size: 1px;
+		content: "";
+		inline-size: calc(100% - 1.25rem);
+		inset-block-end: 0.375rem;
+		inset-inline-start: 0.625rem;
+		opacity: 0;
+		position: absolute;
+		transform: scaleX(0.35);
+		transform-origin: center;
+		transition:
+			opacity var(--control-transition),
+			transform var(--control-transition);
+	}
+
+	.navbar-link {
+		padding: 0.625rem;
+	}
+
+	.navbar-mobile-link {
+		display: flex;
+		justify-content: space-between;
+		padding: 0.875rem 1rem;
+	}
+
+	.navbar-link:hover,
+	.navbar-mobile-link:hover {
+		color: var(--nav-link-text-hover);
+	}
+
+	.navbar-link:active,
+	.navbar-mobile-link:active {
+		opacity: 0.78;
+	}
+
+	.navbar-link:hover::after {
+		opacity: 0.45;
+		transform: scaleX(1);
+	}
+
+	.navbar-link[aria-current="page"],
+	.navbar-mobile-link[aria-current="page"] {
+		color: var(--nav-link-text-active);
+	}
+
+	.navbar-mobile-link[aria-current="page"] {
+		font-weight: 600;
+	}
+
+	.navbar-link[aria-current="page"]::after {
+		background: var(--nav-link-accent-active);
+		opacity: 1;
+		transform: scaleX(1);
+	}
+
+	.nav-menu-button {
+		align-items: center;
+		background: transparent;
+		border: 1px solid transparent;
+		border-radius: var(--control-radius);
+		box-shadow: none;
+		color: var(--nav-control-text);
+		cursor: pointer;
+		display: inline-flex;
+		flex-shrink: 0;
+		height: 2.5rem;
+		justify-content: center;
+		list-style: none;
+		outline: none;
+		transition:
+			color var(--control-transition),
+			transform var(--control-transition);
+		width: 2.75rem;
+	}
+
+	.nav-menu-button::-webkit-details-marker {
+		display: none;
+	}
+
+	.nav-menu-button:hover {
+		color: var(--nav-control-text-hover);
+		transform: translateY(-1px);
+	}
+
+	.nav-menu-button:active {
+		transform: translateY(0) scale(0.98);
+	}
+
+	.navbar-link:focus-visible,
+	.navbar-mobile-link:focus-visible,
+	.nav-menu-button:focus-visible {
+		box-shadow:
+			0 0 0 2px var(--page-bg),
+			0 0 0 4px var(--focus-ring-color);
+	}
+
+	.navbar-mobile-menu[open] .nav-menu-button {
+		color: var(--nav-control-text-hover);
+	}
+
+	.nav-menu-button-lines {
+		display: grid;
+		height: 1.875rem;
+		place-items: center;
+		position: relative;
+		width: 1.25rem;
+	}
+
+	.nav-menu-button-lines span {
+		background: var(--surface-canvas-inverse);
+		border-radius: 9px;
+		height: 3px;
+		position: absolute;
+		transform-origin: center;
+		transition:
+			opacity var(--control-transition),
+			transform var(--control-transition);
+		width: 100%;
+	}
+
+	.nav-menu-button-lines span:nth-child(1) {
+		transform: translateY(-0.5rem);
+	}
+
+	.nav-menu-button-lines span:nth-child(3) {
+		transform: translateY(0.5rem);
+	}
+
+	.navbar-mobile-menu[open] .nav-menu-button-lines span:nth-child(1) {
+		transform: translateY(0) rotate(45deg);
+	}
+
+	.navbar-mobile-menu[open] .nav-menu-button-lines span:nth-child(2) {
+		opacity: 0;
+		transform: scaleX(0.35);
+	}
+
+	.navbar-mobile-menu[open] .nav-menu-button-lines span:nth-child(3) {
+		transform: translateY(0) rotate(-45deg);
+	}
+
+	.navbar-mobile-menu[data-closing="true"] .nav-menu-button-lines span:nth-child(1) {
+		transform: translateY(-0.5rem);
+	}
+
+	.navbar-mobile-menu[data-closing="true"] .nav-menu-button-lines span:nth-child(2) {
+		opacity: 1;
+		transform: scaleX(1);
+	}
+
+	.navbar-mobile-menu[data-closing="true"] .nav-menu-button-lines span:nth-child(3) {
+		transform: translateY(0.5rem);
+	}
+
+	.navbar-mobile-menu {
+		display: block;
+	}
+
+	.navbar-mobile-panel {
+		inset-block-start: var(--navbar-mobile-panel-top);
+		inset-inline: var(--layout-gutter);
+		opacity: 0;
+		position: fixed;
+		transform: translateY(-0.5rem) scale(0.985);
+		transform-origin: top center;
+		transition:
+			opacity var(--control-transition),
+			transform var(--control-transition);
+		z-index: var(--layer-navbar-menu);
+	}
+
+	.navbar-mobile-menu[open] .navbar-mobile-panel {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+
+	.navbar-mobile-menu[data-closing="true"] .navbar-mobile-panel {
+		opacity: 0;
+		transform: translateY(-0.5rem) scale(0.985);
+	}
+
+	.navbar-mobile-panel-inner {
+		background: var(--header-panel-surface);
+		border: 1px solid var(--header-panel-border);
+		border-radius: 0.75rem;
+		box-shadow: var(--header-panel-shadow);
+		margin-inline: auto;
+		max-width: var(--layout-width-navbar);
+		padding: 0.75rem;
+	}
+
+	.navbar-mobile-nav {
+		display: grid;
+		gap: 0.125rem;
+	}
+
+	.navbar-mobile-controls {
+		border-block-start: 1px solid var(--header-panel-border);
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin-block-start: 0.75rem;
+		padding-block-start: 0.75rem;
+	}
+
+	.navbar-mobile-controls :global(.locale-switcher) {
+		flex: 1 1 10rem;
+	}
+
+	@media (width >= 48rem) {
+		.navbar-actions {
+			display: flex;
+		}
+
+		.navbar-mobile-menu {
+			display: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.navbar-link,
+		.navbar-link::after,
+		.navbar-mobile-link,
+		.nav-menu-button,
+		.nav-menu-button-lines span,
+		.navbar-mobile-panel {
+			transition: none;
+		}
+	}
+</style>

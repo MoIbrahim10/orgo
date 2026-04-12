@@ -17,7 +17,7 @@ const switchToLightLabel = t(lang, "theme.switch_to_light");
 	aria-label={switchToDarkLabel}
 	aria-pressed="false"
 	class:list={[
-		"theme-toggle inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-900 shadow-(--theme-shadow-soft) backdrop-blur transition hover:border-slate-300",
+		"theme-toggle",
 		className,
 	]}
 	data-orgo-theme-toggle
@@ -84,8 +84,7 @@ const switchToLightLabel = t(lang, "theme.switch_to_light");
 				dark: themeColorDark,
 				light: themeColorLight,
 			};
-			const transitionDurationMs = 320;
-			let transitionTimeoutId: number | undefined;
+			let transitionFrameId: number | undefined;
 
 			const readPreference = (): ThemePreference => {
 				try {
@@ -127,18 +126,26 @@ const switchToLightLabel = t(lang, "theme.switch_to_light");
 				});
 			};
 
-			const applyTheme = (
-				preference: ThemePreference,
-				{ animate = false }: { animate?: boolean } = {},
-			) => {
+			const disableThemeTransitions = () => {
+				root.classList.add("theme-transition-disabled");
+
+				if (transitionFrameId !== undefined) {
+					window.cancelAnimationFrame(transitionFrameId);
+				}
+
+				transitionFrameId = window.requestAnimationFrame(() => {
+					transitionFrameId = window.requestAnimationFrame(() => {
+						root.classList.remove("theme-transition-disabled");
+						transitionFrameId = undefined;
+					});
+				});
+			};
+
+			const applyTheme = (preference: ThemePreference, { instant = false } = {}) => {
 				const resolvedTheme = resolveTheme(preference);
 
-				if (animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-					root.classList.add("theme-transition");
-					window.clearTimeout(transitionTimeoutId);
-					transitionTimeoutId = window.setTimeout(() => {
-						root.classList.remove("theme-transition");
-					}, transitionDurationMs);
+				if (instant) {
+					disableThemeTransitions();
 				}
 
 				root.dataset.theme = resolvedTheme;
@@ -167,7 +174,7 @@ const switchToLightLabel = t(lang, "theme.switch_to_light");
 				const nextPreference = currentTheme === "dark" ? "light" : "dark";
 
 				storePreference(nextPreference);
-				applyTheme(nextPreference, { animate: true });
+				applyTheme(nextPreference, { instant: true });
 			};
 
 			const bindThemeToggles = () => {
@@ -190,10 +197,57 @@ const switchToLightLabel = t(lang, "theme.switch_to_light");
 					return;
 				}
 
-				applyTheme("system", { animate: true });
+				applyTheme("system", { instant: true });
 			});
 
 			document.addEventListener("astro:page-load", bindThemeToggles);
 		}
 	}
 </script>
+
+<style>
+	.theme-toggle.nav-icon-button {
+		align-items: center;
+		background: var(--nav-control-surface);
+		border: 1px solid var(--nav-control-border);
+		border-radius: var(--control-radius);
+		box-shadow: var(--nav-control-shadow);
+		color: var(--nav-control-text);
+		cursor: pointer;
+		display: inline-flex;
+		flex-shrink: 0;
+		height: 2.75rem;
+		justify-content: center;
+		outline: none;
+		transition:
+			background-color var(--control-transition),
+			border-color var(--control-transition),
+			box-shadow var(--control-transition),
+			color var(--control-transition),
+			transform var(--control-transition);
+		width: 2.75rem;
+	}
+
+	.theme-toggle.nav-icon-button:hover {
+		background: var(--nav-control-surface-hover);
+		border-color: var(--header-panel-border);
+		color: var(--nav-control-text-hover);
+		transform: translateY(-1px);
+	}
+
+	.theme-toggle.nav-icon-button:active {
+		transform: translateY(0) scale(0.98);
+	}
+
+	.theme-toggle.nav-icon-button:focus-visible {
+		box-shadow:
+			0 0 0 2px var(--page-bg),
+			0 0 0 4px var(--focus-ring-color);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.theme-toggle.nav-icon-button {
+			transition: none;
+		}
+	}
+</style>

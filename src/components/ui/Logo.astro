@@ -1,6 +1,4 @@
 ---
-import calendar from "../../assets/calendar.svg";
-
 interface Props {
 	alt: string;
 	class?: string;
@@ -12,30 +10,118 @@ const { alt, class: className, href } = Astro.props as Props;
 
 <a
 	class:list={[
-		"inline-flex shrink-0 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900",
+		"site-logo",
 		className,
 	]}
 	href={href}
 >
-	<div class="flex items-center justify-center overflow-visible">
-		<div class="logo-container flex size-10 items-center justify-center">
-			<img alt={alt} height={18} src={calendar.src} width={18} />
-		</div>
-	</div>
+	<span class="sr-only">{alt}</span>
+	<span aria-hidden="true" class="site-logo-mark">
+		<svg
+			class="site-logo-glyph"
+			fill="none"
+			height="18"
+			viewBox="0 0 18 18"
+			width="18"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<path
+				d="M5.81252 1.5C6.12318 1.5 6.37502 1.75184 6.37502 2.0625V3.04411H11.625V2.0625C11.625 1.75184 11.8769 1.5 12.1875 1.5C12.4982 1.5 12.75 1.75184 12.75 2.0625V3.04411H12.9375C14.3449 3.04411 15.5108 4.07784 15.7175 5.42743L13.6088 5.97225L11.013 5.6021C10.838 5.57713 10.6613 5.63593 10.5362 5.76085L10.0249 6.27131L8.4352 5.63657C8.31182 5.58731 8.17502 5.58329 8.04903 5.62523L5.8931 6.34258L2.30054 5.32322C2.54976 4.025 3.6916 3.04411 5.06252 3.04411H5.25002V2.0625C5.25002 1.75184 5.50187 1.5 5.81252 1.5Z"
+			/>
+			<path
+				d="M2.25 6.47833V12.9375C2.25 14.4909 3.5092 15.75 5.0625 15.75H12.9375C14.4908 15.75 15.75 14.4909 15.75 12.9375V6.581L13.7813 7.08964C13.7095 7.1082 13.6347 7.11236 13.5612 7.10188L11.1322 6.7555L10.5575 7.32915C10.3985 7.4879 10.1602 7.53678 9.9516 7.45344L8.20897 6.75765L6.08384 7.46478C5.97671 7.5004 5.86133 7.50303 5.75271 7.47218L2.25 6.47833Z"
+			/>
+		</svg>
+	</span>
 </a>
 
 <style>
-	.logo-container {
-		box-sizing: border-box;
-		padding: 11px;
+	.site-logo {
+		align-items: center;
+		border-radius: var(--control-radius);
+		color: var(--logo-icon-fill);
+		display: inline-flex;
+		flex-shrink: 0;
+		outline: none;
+	}
+
+	.site-logo-mark {
+		align-items: center;
 		background:
-			linear-gradient(226.81deg, rgba(202, 27, 100, 0.2) 8.14%, rgba(214, 75, 133, 0) 59.82%),
-			linear-gradient(116.57deg, rgba(126, 0, 255, 0.2) 11.89%, rgba(112, 33, 193, 0) 41.67%),
-			linear-gradient(0deg, rgba(214, 94, 14, 0.2) 0%, rgba(231, 130, 62, 0) 46.57%),
-			linear-gradient(278.68deg, #141414 47.91%, #202020 100.04%);
+			linear-gradient(226.81deg, var(--logo-mark-glint-rose) 8.14%, transparent 59.82%),
+			linear-gradient(116.57deg, var(--logo-mark-glint-violet) 11.89%, transparent 41.67%),
+			linear-gradient(0deg, var(--logo-mark-glint-ember) 0%, transparent 46.57%),
+			linear-gradient(
+				278.68deg,
+				var(--logo-mark-base-start) 47.91%,
+				var(--logo-mark-base-end) 100.04%
+			);
+		border-radius: 9999px;
 		box-shadow:
-			0px 0px 0px 3px rgba(255, 255, 255, 0.03),
-			inset 0px 1px 6px rgba(255, 255, 255, 0.19);
-		border-radius: 29px;
+			0 0 0 3px var(--logo-ring),
+			inset 0 1px 6px var(--logo-inset-highlight);
+		display: inline-flex;
+		isolation: isolate;
+		justify-content: center;
+		min-height: 2.5rem;
+		min-width: 2.5rem;
+		overflow: hidden;
+		padding: 0.6875rem;
+		position: relative;
+		transition: color var(--control-transition);
+	}
+
+	.site-logo-mark::after {
+		background:
+			linear-gradient(226.81deg, var(--logo-mark-hover-glint-rose) 8.14%, transparent 59.82%),
+			linear-gradient(116.57deg, var(--logo-mark-hover-glint-violet) 11.89%, transparent 41.67%),
+			linear-gradient(0deg, var(--logo-mark-hover-glint-ember) 0%, transparent 46.57%);
+		content: "";
+		inset: 0;
+		opacity: 0;
+		position: absolute;
+		transition: opacity var(--control-transition);
+		z-index: 0;
+	}
+
+	.site-logo-glyph {
+		fill: currentcolor;
+		height: 1.125rem;
+		position: relative;
+		transition:
+			color var(--control-transition),
+			transform var(--control-transition);
+		width: 1.125rem;
+		z-index: 1;
+	}
+
+	.site-logo:hover .site-logo-mark {
+		color: var(--logo-icon-fill-hover);
+	}
+
+	.site-logo:hover .site-logo-mark::after {
+		opacity: 1;
+	}
+
+	.site-logo:hover .site-logo-glyph {
+		transform: rotate(-8deg) scale(1.06);
+	}
+
+	.site-logo:active .site-logo-glyph {
+		transform: rotate(-4deg) scale(0.98);
+	}
+
+	.site-logo:focus-visible {
+		box-shadow:
+			0 0 0 2px var(--page-bg),
+			0 0 0 4px var(--focus-ring-color);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.site-logo-mark,
+		.site-logo-mark::after,
+		.site-logo-glyph {
+			transition: none;
+		}
 	}
 </style>

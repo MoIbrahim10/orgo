@@ -5,6 +5,8 @@ export const localeRegistry = {
 	en: {
 		label: "English",
 		nativeLabel: "English",
+		code: "EN",
+		flag: "🇺🇸",
 		htmlLang: "en-US",
 		ogLocale: "en_US",
 		dir: "ltr",
@@ -15,6 +17,8 @@ export const localeRegistry = {
 	ar: {
 		label: "Arabic",
 		nativeLabel: "العربية",
+		code: "AR",
+		flag: "🇪🇬",
 		htmlLang: "ar",
 		ogLocale: "ar_EG",
 		dir: "rtl",

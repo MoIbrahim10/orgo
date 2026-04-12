@@ -1,19 +1,21 @@
 ---
 interface Props {
 	class?: string;
-	size?: "article" | "narrow" | "page" | "wide";
+	size?: "article" | "narrow" | "navbar" | "page" | "site" | "wide";
 }
 
-const { class: className, size = "wide" } = Astro.props as Props;
+const { class: className, size = "site" } = Astro.props as Props;
 
 const sizes = {
 	article: "max-w-3xl",
 	narrow: "max-w-4xl",
-	page: "max-w-5xl",
-	wide: "max-w-6xl",
+	navbar: "max-w-(--layout-width-navbar)",
+	page: "max-w-(--layout-width-content)",
+	site: "max-w-(--layout-width-content)",
+	wide: "max-w-(--layout-width-navbar)",
 } as const;
 ---
 
-<div class:list={["mx-auto w-full px-6", sizes[size], className]}>
+<div class:list={["mx-auto w-full py-(--layout-gutter)", sizes[size], className]}>
 	<slot />
 </div>

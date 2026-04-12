@@ -18,25 +18,25 @@ const {
 } = Astro.props as Props;
 
 const sizeClasses = {
-	lg: "px-6 py-3.5 text-sm",
-	md: "px-5 py-3 text-sm",
-	sm: "px-4 py-2.5 text-sm",
+	lg: "action-link--lg",
+	md: "action-link--md",
+	sm: "action-link--sm",
 } as const;
 
 const variantClasses = {
-	ghost: "bg-transparent text-slate-700 hover:text-slate-950",
-	inverted: "bg-white text-slate-950 hover:bg-slate-100",
-	primary: "bg-slate-950 text-white hover:bg-slate-800",
-	secondary: "border border-slate-300 bg-white/80 text-slate-700 hover:border-slate-900 hover:text-slate-900",
-	subtle: "bg-slate-100 text-slate-800 hover:bg-slate-200",
+	ghost: "action-link--ghost",
+	inverted: "action-link--inverted",
+	primary: "action-link--primary",
+	secondary: "action-link--secondary",
+	subtle: "action-link--subtle",
 } as const;
 ---
 
 <a
 	{...rest}
 	class:list={[
-		"inline-flex items-center justify-center gap-2 rounded-full font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950/20 focus-visible:ring-offset-2",
-		block && "w-full",
+		"action-link",
+		block && "action-link--block",
 		sizeClasses[size],
 		variantClasses[variant],
 		className,
@@ -45,3 +45,115 @@ const variantClasses = {
 >
 	<slot />
 </a>
+
+<style>
+	.action-link {
+		align-items: center;
+		border-radius: var(--control-radius);
+		display: inline-flex;
+		flex-direction: row;
+		font-family: var(--font-ui);
+		font-size: var(--control-font-size);
+		font-style: normal;
+		gap: 0.5rem;
+		justify-content: center;
+		line-height: 1.25;
+		min-height: 2.625rem;
+		outline: none;
+		text-decoration: none;
+		transition:
+			background-color var(--control-transition),
+			border-color var(--control-transition),
+			box-shadow var(--control-transition),
+			color var(--control-transition),
+			opacity var(--control-transition),
+			transform var(--control-transition);
+	}
+
+	.action-link--block {
+		width: 100%;
+	}
+
+	.action-link--sm {
+		padding: 0.625rem 1rem;
+	}
+
+	.action-link--md {
+		padding: 0.6875rem 1.125rem;
+	}
+
+	.action-link--lg {
+		padding: 0.875rem 1.5rem;
+	}
+
+	.action-link--primary {
+		background: var(--action-link-primary-bg);
+		box-shadow: var(--action-link-primary-shadow);
+		color: var(--action-link-primary-text);
+		font-weight: 600;
+	}
+
+	.action-link--secondary {
+		background: var(--action-link-secondary-bg);
+		box-shadow: var(--action-link-secondary-shadow);
+		color: var(--action-link-secondary-text);
+		font-weight: var(--control-font-weight);
+	}
+
+	.action-link--ghost {
+		background: transparent;
+		color: var(--page-text-soft);
+		font-weight: var(--control-font-weight);
+	}
+
+	.action-link--inverted {
+		background: var(--action-link-inverted-bg);
+		color: var(--action-link-inverted-text);
+		font-weight: var(--control-font-weight);
+	}
+
+	.action-link--subtle {
+		background: var(--action-link-subtle-bg);
+		color: var(--action-link-subtle-text);
+		font-weight: var(--control-font-weight);
+	}
+
+	.action-link--primary:hover {
+		box-shadow: var(--action-link-primary-shadow-hover);
+		transform: translateY(-1px);
+	}
+
+	.action-link--secondary:hover {
+		box-shadow: var(--action-link-secondary-shadow-hover);
+		transform: translateY(-1px);
+	}
+
+	.action-link--ghost:hover {
+		color: var(--page-text-strong);
+	}
+
+	.action-link--inverted:hover {
+		background: var(--action-link-inverted-bg-hover);
+	}
+
+	.action-link--subtle:hover {
+		background: var(--action-link-subtle-bg-hover);
+		color: var(--page-text-strong);
+	}
+
+	.action-link:active {
+		transform: translateY(0) scale(0.99);
+	}
+
+	.action-link:focus-visible {
+		box-shadow:
+			0 0 0 2px var(--page-bg),
+			0 0 0 4px var(--focus-ring-color);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.action-link {
+			transition: none;
+		}
+	}
+</style>

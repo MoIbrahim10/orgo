@@ -12,56 +12,229 @@ const { lang, paths } = Astro.props as Props;
 const label = t(lang, "locale.switcher_label");
 ---
 
-<label class="inline-flex min-w-40 flex-col gap-1 text-sm text-slate-600">
-	<span class="sr-only">{label}</span>
-	<select
-		aria-label={label}
-		class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm"
-		data-orgo-locale-switcher
-		name="locale"
+<details class="locale-switcher" dir={localeRegistry[lang].dir}>
+	<summary
+		aria-label={`${label}: ${localeRegistry[lang].label}`}
+		class="locale-switcher-trigger"
 	>
+		<span aria-hidden="true" class="locale-switcher-flag">{localeRegistry[lang].flag}</span>
+		<span class="locale-switcher-code" dir="ltr">{localeRegistry[lang].code}</span>
+		<span aria-hidden="true" class="locale-switcher-chevron">
+			<svg fill="none" height="14" viewBox="0 0 14 14" width="14" xmlns="http://www.w3.org/2000/svg">
+				<path
+					d="m3.5 5.25 3.5 3.5 3.5-3.5"
+					stroke="currentColor"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="1.6"
+				/>
+			</svg>
+		</span>
+	</summary>
+	<div aria-label={label} class="locale-switcher-menu">
 		{
-			supportedLanguages.map((language) => (
-				<option
-					data-lang={language}
-					dir={localeRegistry[language].dir}
-					disabled={!paths[language]}
-					selected={language === lang}
-					value={paths[language] ?? ""}
-				>
-					{localeRegistry[language].nativeLabel}
-				</option>
-			))
+			supportedLanguages.map((language) => {
+				const path = paths[language];
+
+				return path ? (
+					<a
+						aria-current={language === lang ? "true" : undefined}
+						aria-label={localeRegistry[language].label}
+						class="locale-switcher-option"
+						data-lang={language}
+						data-orgo-locale-option
+						href={path}
+						lang={localeRegistry[language].htmlLang}
+					>
+						<span aria-hidden="true" class="locale-switcher-flag">{localeRegistry[language].flag}</span>
+						<span class="locale-switcher-code" dir="ltr">{localeRegistry[language].code}</span>
+					</a>
+				) : (
+					<span
+						aria-disabled="true"
+						class="locale-switcher-option locale-switcher-option-disabled"
+						lang={localeRegistry[language].htmlLang}
+					>
+						<span aria-hidden="true" class="locale-switcher-flag">{localeRegistry[language].flag}</span>
+						<span class="locale-switcher-code" dir="ltr">{localeRegistry[language].code}</span>
+					</span>
+				);
+			})
 		}
-	</select>
-</label>
+	</div>
+</details>
 
 <script is:inline>
 	(() => {
-		const localeSwitchers = document.querySelectorAll("[data-orgo-locale-switcher]");
+		const localeOptions = document.querySelectorAll("[data-orgo-locale-option]");
 
-		for (const localeSwitcher of localeSwitchers) {
-			if (localeSwitcher.dataset.bound === "true") {
+		for (const localeOption of localeOptions) {
+			if (localeOption.dataset.bound === "true") {
 				continue;
 			}
 
-			localeSwitcher.dataset.bound = "true";
-			localeSwitcher.addEventListener("change", (event) => {
-				const target = event.currentTarget;
+			localeOption.dataset.bound = "true";
+			localeOption.addEventListener("click", () => {
+				const selectedLanguage = localeOption.dataset.lang;
 
-				if (!(target instanceof HTMLSelectElement) || !target.value) {
+				if (!selectedLanguage) {
 					return;
 				}
 
 				try {
-					const selectedLanguage = target.selectedOptions[0]?.dataset.lang;
-					if (selectedLanguage) {
-						localStorage.setItem("orgo.selectedLang", selectedLanguage);
-					}
+					localStorage.setItem("orgo.selectedLang", selectedLanguage);
 				} catch {}
-
-				window.location.href = target.value;
 			});
 		}
 	})();
 </script>
+
+<style>
+	.locale-switcher {
+		color: var(--nav-control-text);
+		position: relative;
+		width: min(6.5rem, 100%);
+	}
+
+	.locale-switcher-trigger {
+		align-items: center;
+		background: var(--nav-control-surface);
+		border: 1px solid var(--nav-control-border);
+		border-radius: var(--control-radius);
+		box-shadow: var(--nav-control-shadow);
+		color: var(--nav-control-text);
+		cursor: pointer;
+		display: flex;
+		font-family: var(--font-ui);
+		font-size: var(--control-font-size);
+		font-weight: var(--control-font-weight);
+		gap: 0.5rem;
+		line-height: 1.25;
+		list-style: none;
+		min-height: 2.75rem;
+		outline: none;
+		padding-block: 0.6875rem;
+		padding-inline: 1rem 2.25rem;
+		transition:
+			background-color var(--control-transition),
+			border-color var(--control-transition),
+			box-shadow var(--control-transition),
+			color var(--control-transition),
+			transform var(--control-transition);
+		width: 100%;
+	}
+
+	.locale-switcher-trigger::-webkit-details-marker {
+		display: none;
+	}
+
+	.locale-switcher-flag {
+		align-items: center;
+		display: inline-flex;
+		flex: 0 0 1.25rem;
+		font-size: 0.8125rem;
+		height: 1.25rem;
+		justify-content: center;
+		line-height: 1;
+		width: 1.25rem;
+	}
+
+	.locale-switcher-code {
+		font-variant-numeric: tabular-nums;
+		min-width: 0;
+		overflow: hidden;
+		text-align: left;
+		text-overflow: ellipsis;
+		unicode-bidi: isolate-override;
+		white-space: nowrap;
+	}
+
+	.locale-switcher-chevron {
+		align-items: center;
+		display: inline-flex;
+		inset-block: 0;
+		inset-inline-end: 0.75rem;
+		pointer-events: none;
+		position: absolute;
+		transition: transform var(--control-transition);
+		z-index: 1;
+	}
+
+	.locale-switcher[open] .locale-switcher-chevron {
+		transform: rotate(180deg);
+	}
+
+	.locale-switcher-trigger:active {
+		transform: translateY(0) scale(0.99);
+	}
+
+	.locale-switcher-menu {
+		background: var(--header-panel-surface);
+		border: 1px solid var(--header-panel-border);
+		border-radius: 0.625rem;
+		box-shadow: var(--header-panel-shadow);
+		display: grid;
+		gap: 0.125rem;
+		inset-inline: 0;
+		padding: 0.375rem;
+		position: absolute;
+		top: calc(100% + 0.375rem);
+		z-index: calc(var(--layer-navbar-menu) + 1);
+	}
+
+	.locale-switcher-option {
+		align-items: center;
+		border-radius: var(--control-radius);
+		color: var(--nav-control-text);
+		display: flex;
+		font-family: var(--font-ui);
+		font-size: var(--control-font-size);
+		font-weight: var(--control-font-weight);
+		gap: 0.5rem;
+		line-height: 1.25;
+		min-height: 2.25rem;
+		padding: 0.5rem 0.625rem;
+		text-decoration: none;
+		transition:
+			background-color var(--control-transition),
+			color var(--control-transition);
+	}
+
+	.locale-switcher-option:hover,
+	.locale-switcher-option[aria-current="true"] {
+		background: var(--nav-link-accent);
+		color: var(--nav-control-text-hover);
+	}
+
+	.locale-switcher-option-disabled {
+		opacity: 0.45;
+		pointer-events: none;
+	}
+
+	.locale-switcher-trigger:focus-visible {
+		box-shadow:
+			0 0 0 2px var(--page-bg),
+			0 0 0 4px var(--focus-ring-color);
+	}
+
+	.locale-switcher:hover .locale-switcher-trigger {
+		background: var(--nav-control-surface-hover);
+		border-color: var(--header-panel-border);
+		color: var(--nav-control-text-hover);
+		transform: translateY(-1px);
+	}
+
+	.locale-switcher[open] .locale-switcher-trigger {
+		background: var(--nav-control-surface-hover);
+		border-color: var(--header-panel-border);
+		color: var(--nav-control-text-hover);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.locale-switcher-trigger,
+		.locale-switcher-chevron,
+		.locale-switcher-option {
+			transition: none;
+		}
+	}
+</style>
