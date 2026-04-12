@@ -5,13 +5,22 @@ pre-commit:
       run: bun run check:i18n
     oxfmt:
       glob: "*.{js,ts,tsx,jsx,css,scss,json,jsonc,yml,yaml,mdx,md,cjs,mjs}"
+      exclude:
+        - ".agents/**"
+        - ".claude/**"
       run: bunx oxfmt {staged_files}
       stage: true
     oxlint:
       glob: "*.{js,ts,tsx,jsx,mjs,cjs}"
+      exclude:
+        - ".agents/**"
+        - ".claude/**"
       run: bunx oxlint {staged_files}
     stylelint:
       glob: "*.{css,scss}"
+      exclude:
+        - ".agents/**"
+        - ".claude/**"
       run: bunx stylelint --fix {staged_files}
 
 commit-msg:
@@ -25,7 +34,13 @@ pre-push:
       run: bun test
     oxfmt-check:
       glob: "*.{js,ts,tsx,jsx,css,scss,json,jsonc,yml,yaml,mdx,md,cjs,mjs}"
+      exclude:
+        - ".agents/**"
+        - ".claude/**"
       run: bunx oxfmt --check {push_files}
     oxlint-push:
       glob: "*.{js,ts,tsx,jsx,mjs,cjs}"
+      exclude:
+        - ".agents/**"
+        - ".claude/**"
       run: bunx oxlint {push_files}

@@ -9,7 +9,7 @@
 		"builtin": true,
 		"browser": true
 	},
-	"ignorePatterns": [".astro"],
+	"ignorePatterns": [".astro", ".agents/**", ".claude/**"],
 	"overrides": [
 		{
 			"files": ["**/checkTranslations.ts"],
