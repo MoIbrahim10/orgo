@@ -188,6 +188,33 @@ export function getHomePageContent(lang: Language): HomePageContent {
 			description: t(lang, "home.workspace_glance.description"),
 			imageAlt: t(lang, "home.workspace_glance.image_alt"),
 		},
+		benefits: {
+			sectionName: t(lang, "home.benefits.section_name"),
+			headline: t(lang, "home.benefits.headline"),
+			description: t(lang, "home.benefits.description"),
+			cards: [
+				{
+					title: t(lang, "home.benefits.card_calendar_title"),
+					body: t(lang, "home.benefits.card_calendar_body"),
+					imageAlt: t(lang, "home.benefits.card_calendar_image_alt"),
+				},
+				{
+					title: t(lang, "home.benefits.card_journal_title"),
+					body: t(lang, "home.benefits.card_journal_body"),
+					imageAlt: t(lang, "home.benefits.card_journal_image_alt"),
+				},
+				{
+					title: t(lang, "home.benefits.card_tasks_title"),
+					body: t(lang, "home.benefits.card_tasks_body"),
+					imageAlt: t(lang, "home.benefits.card_tasks_image_alt"),
+				},
+				{
+					title: t(lang, "home.benefits.card_integrations_title"),
+					body: t(lang, "home.benefits.card_integrations_body"),
+					imageAlt: t(lang, "home.benefits.card_integrations_image_alt"),
+				},
+			],
+		},
 		connectedTools: {
 			sectionName: t(lang, "home.connected_tools.section_name"),
 			headline: t(lang, "home.connected_tools.headline"),

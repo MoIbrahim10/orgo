@@ -59,6 +59,23 @@
 			"description": "Where plans, notes, and the week ahead come together in one calm view.",
 			"image_alt": "Stacked planner cards showing meetings, a checklist, and weekly notes in one workspace."
 		},
+		"benefits": {
+			"section_name": "Benefits",
+			"headline": "Why choose us?",
+			"description": "Unlock a smarter way to work with powerful tools that simplify your daily tasks and boost productivity.",
+			"card_calendar_title": "Unified calendar views",
+			"card_calendar_body": "Merge personal and professional life in one glance. From meetings to meet-ups, see it all at once.",
+			"card_calendar_image_alt": "Illustration of overlapping planner cards with a highlighted list entry.",
+			"card_journal_title": "Intuitive journaling",
+			"card_journal_body": "Capture thoughts and moments with ease. Reflect, plan, and find joy in your daily journey.",
+			"card_journal_image_alt": "Illustration of linked journaling prompts as glowing pills.",
+			"card_tasks_title": "Task management",
+			"card_tasks_body": "Prioritize, organize, and conquer your to-do list with intelligent suggestions and reminders.",
+			"card_tasks_image_alt": "Illustration of a task list with one highlighted item.",
+			"card_integrations_title": "Integration with tools",
+			"card_integrations_body": "Connect your favorite apps and services to keep notes, events, and tasks in sync.",
+			"card_integrations_image_alt": "Abstract illustration of apps connected along orbital paths."
+		},
 		"connected_tools": {
 			"section_name": "Connected tools",
 			"headline": "Works with your existing setup",

@@ -143,6 +143,8 @@
 	--feature-spotlight-p6-start: #fff;
 	--feature-spotlight-p6-start-opacity: 0.5;
 	--feature-spotlight-p6-end: #ececec;
+	--feature-spotlight-card-surface: linear-gradient(137.06deg, #f3f3f3 24.05%, #ececec 75.84%);
+	--feature-spotlight-card-radius: 7px;
 }
 
 html[data-theme="dark"] {
@@ -239,6 +241,7 @@ html[data-theme="dark"] {
 	--feature-spotlight-p6-start: #fff;
 	--feature-spotlight-p6-start-opacity: 0.78;
 	--feature-spotlight-p6-end: #fff;
+	--feature-spotlight-card-surface: linear-gradient(137.06deg, #141414 24.05%, #0d0d0d 75.84%);
 }
 
 html {
@@ -275,6 +278,31 @@ body.locale-latin :is(h1, h2, .font-display) {
 
 body.locale-arabic :is(h1, h2, h3, h4, h5, h6, .font-display) {
 	font-family: var(--font-display-arabic);
+}
+
+/* Feature spotlight + home benefits cards — shared copy (theme via --foreground-*) */
+.spotlight-surface-card-title {
+	color: var(--foreground-primary);
+	font-family: var(--font-ui);
+	font-size: 16px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 19px;
+	margin: 0;
+}
+
+.spotlight-surface-card-desc {
+	color: var(--foreground-secondary);
+	font-family: var(--font-ui);
+	font-size: 16px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 19px;
+	margin: 0;
+}
+
+body.locale-arabic :is(.spotlight-surface-card-title, .spotlight-surface-card-desc) {
+	font-family: var(--font-sans-arabic);
 }
 
 button,

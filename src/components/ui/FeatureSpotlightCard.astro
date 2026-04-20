@@ -48,8 +48,8 @@ const glyphHoverFillRule = FEATURE_SPOTLIGHT_GLYPH_HOVER_FILL_RULE[icon];
 	</FeatureSpotlightIconSvg>
 	<div class="body">
 		<div class="text-stack">
-			<h3 class="title">{title}</h3>
-			<p class="desc">{description}</p>
+			<h3 class="spotlight-surface-card-title">{title}</h3>
+			<p class="spotlight-surface-card-desc">{description}</p>
 		</div>
 	</div>
 </article>
@@ -57,8 +57,8 @@ const glyphHoverFillRule = FEATURE_SPOTLIGHT_GLYPH_HOVER_FILL_RULE[icon];
 <style>
 	.card {
 		align-items: flex-start;
-		background: linear-gradient(137.06deg, #f3f3f3 24.05%, #ececec 75.84%);
-		border-radius: 7px;
+		background: var(--feature-spotlight-card-surface);
+		border-radius: var(--feature-spotlight-card-radius);
 		display: flex;
 		flex-direction: column;
 		gap: 21px;
@@ -82,29 +82,5 @@ const glyphHoverFillRule = FEATURE_SPOTLIGHT_GLYPH_HOVER_FILL_RULE[icon];
 		flex-direction: column;
 		gap: 6px;
 		padding: 0;
-	}
-
-	.title {
-		color: var(--foreground-primary);
-		font-family: var(--font-ui);
-		font-size: 16px;
-		font-style: normal;
-		font-weight: 500;
-		line-height: 19px;
-		margin: 0;
-	}
-
-	.desc {
-		color: var(--foreground-secondary);
-		font-family: var(--font-ui);
-		font-size: 16px;
-		font-style: normal;
-		font-weight: 400;
-		line-height: 19px;
-		margin: 0;
-	}
-
-	:global(html[data-theme='dark']) .card {
-		background: linear-gradient(137.06deg, #141414 24.05%, #0d0d0d 75.84%);
 	}
 </style>

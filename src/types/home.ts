@@ -99,6 +99,16 @@ export type HomePageContent = {
 		imageAlt: string;
 		sectionName: string;
 	};
+	benefits: {
+		cards: Array<{
+			body: string;
+			imageAlt: string;
+			title: string;
+		}>;
+		description: string;
+		headline: string;
+		sectionName: string;
+	};
 	connectedTools: {
 		description: string;
 		headline: string;
