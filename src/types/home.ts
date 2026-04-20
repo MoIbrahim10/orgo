@@ -29,35 +29,9 @@ export type HomeFeatureSpotlightItem = {
 	title: string;
 };
 
-export type HomeFeatureHighlight = {
-	body: string;
-	icon: HomeIconName;
-	title: string;
-};
-
-export type HomeFeatureStory = {
-	description: string;
-	eyebrow: string;
-	highlights: HomeFeatureHighlight[];
-	id: string;
-	reverse?: boolean;
-	scene: "capture" | "journal" | "rhythm";
-	title: string;
-};
-
 export type HomeWorkflowStep = {
 	body: string;
 	icon: HomeIconName;
-	title: string;
-};
-
-export type HomeCaseStudy = {
-	body: string;
-	cta?: string;
-	href?: string;
-	icon: HomeIconName;
-	label: string;
-	outcome: string;
 	title: string;
 };
 
@@ -114,7 +88,6 @@ export type HomePageContent = {
 		headline: string;
 		sectionName: string;
 	};
-	features: HomeFeatureStory[];
 	hero: {
 		badges: string[];
 		description: string;
@@ -154,13 +127,6 @@ export type HomePageContent = {
 		points: string[];
 		primaryCta: string;
 		secondaryCta: string;
-		title: string;
-	};
-	stories: {
-		cards: HomeCaseStudy[];
-		description: string;
-		eyebrow: string;
-		outcomeLabel: string;
 		title: string;
 	};
 	workflow: {

@@ -1,6 +1,5 @@
 ---
 import ActionLink from '../../components/ui/ActionLink.astro';
-import HomeFeatureStory from '../../components/home/HomeFeatureStory.astro';
 import HomeHero from '../../components/home/HomeHero.astro';
 import HomeFeatureSpotlightSection from '../../components/home/HomeFeatureSpotlightSection.astro';
 import HomeBenefitsSection from '../../components/home/HomeBenefitsSection.astro';
@@ -10,7 +9,6 @@ import HomeSocialProofSection from '../../components/home/HomeSocialProofSection
 import HomeWorkspaceGlanceSection from '../../components/home/HomeWorkspaceGlanceSection.astro';
 import HomePerspectivesSection from '../../components/home/HomePerspectivesSection.astro';
 import HomeProposalSection from '../../components/home/HomeProposalSection.astro';
-import HomeStoriesSection from '../../components/home/HomeStoriesSection.astro';
 import HomeWorkflowSection from '../../components/home/HomeWorkflowSection.astro';
 import MarketingEyebrow from '../../components/ui/MarketingEyebrow.astro';
 import PageSection from '../../components/ui/PageSection.astro';
@@ -53,9 +51,7 @@ const bilingualPlanningHref = getLocalizedPath(lang, '/bilingual-planning');
       <HomePricingSection content={homeContent.pricing} lang={lang} />
       <HomeSocialProofSection content={homeContent.socialProof} />
 
-      {homeContent.features.map((story) => <HomeFeatureStory story={story} />)}
       <HomeWorkflowSection content={homeContent.workflow} />
-      <HomeStoriesSection content={homeContent.stories} />
       <HomeProposalSection
         content={homeContent.proposal}
         primaryHref={pricingHref}

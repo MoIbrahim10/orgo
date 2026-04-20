@@ -94,41 +94,6 @@
 			},
 			"visual_alt": "Calendar and planning preview"
 		},
-		"features": {
-			"capture": {
-				"eyebrow": "A clearer starting point",
-				"title": "The work behind the work finally has a home",
-				"description": "Planning is rarely just tasks. Orgo gives calendars, loose notes, and priorities one calm surface so context stops leaking between apps.",
-				"point_one_title": "Capture now, sort later",
-				"point_one_body": "Quick notes, ideas, and reminders land somewhere trustworthy before they disappear.",
-				"point_two_title": "Separate signal from noise",
-				"point_two_body": "Keep today, this week, and later work visible without overwhelming the page.",
-				"point_three_title": "Use language intentionally",
-				"point_three_body": "Localized experiences help bilingual teams and personal routines feel natural."
-			},
-			"rhythm": {
-				"eyebrow": "A better weekly rhythm",
-				"title": "Build a week that feels deliberate instead of reactive",
-				"description": "Move from rough capture to a clear weekly plan, then back into reflection without losing the thread of what changed.",
-				"point_one_title": "Reset the week",
-				"point_one_body": "Start from a lightweight review instead of reopening a dozen tabs.",
-				"point_two_title": "Protect focus blocks",
-				"point_two_body": "Make room for deep work, admin, and recovery before the week runs away from you.",
-				"point_three_title": "Review with memory",
-				"point_three_body": "Notes stay close to plans so reflection turns into better decisions."
-			},
-			"journal": {
-				"eyebrow": "Notes that keep moving",
-				"title": "Writing and execution belong closer together",
-				"description": "Journaling is more useful when it can shape the next decision. Orgo keeps writing reflective without isolating it from action.",
-				"point_one_title": "From thought to next step",
-				"point_one_body": "Turn a line in your journal into a commitment worth tracking.",
-				"point_two_title": "Keep decisions searchable",
-				"point_two_body": "Important reasoning stays attached to the plan it influenced.",
-				"point_three_title": "End the day cleanly",
-				"point_three_body": "Capture what shifted, what shipped, and what deserves tomorrow's attention."
-			}
-		},
 		"workflow": {
 			"eyebrow": "A weekly rhythm",
 			"title": "A calmer operating system for the days that matter",

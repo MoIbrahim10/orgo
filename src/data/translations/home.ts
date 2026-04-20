@@ -18,47 +18,11 @@ function getSocialProofTestimonials(lang: Language) {
 
 const homeEnhancements: Record<
 	Language,
-	Pick<HomePageContent, "proposal" | "stories"> & {
+	Pick<HomePageContent, "proposal"> & {
 		perspectivesFocusLabel: string;
 	}
 > = {
 	en: {
-		stories: {
-			eyebrow: "Workflow proof",
-			title: "Three ways a calmer system shows up in real work.",
-			description:
-				"These are not abstract personas. They are the kinds of planning situations Orgo is being shaped to support from week to week.",
-			outcomeLabel: "What shifts",
-			cards: [
-				{
-					icon: "calendar",
-					label: "Founder weekly review",
-					title: "Close the week without reconstructing it from memory.",
-					body: "A founder can gather loose notes, shipment decisions, and next-week priorities into one review instead of bouncing between chat, docs, and a half-updated list.",
-					outcome: "The week ends with a sharper reset and fewer invisible leftovers.",
-					cta: "See the teams page",
-					href: getLocalizedPath("en", "/teams"),
-				},
-				{
-					icon: "globe",
-					label: "Bilingual team planning",
-					title: "Keep English and Arabic planning in the same operating rhythm.",
-					body: "Mixed-language teams can keep updates, planning notes, and shared rituals aligned without forcing everyone into a single linguistic compromise.",
-					outcome: "More shared context, less translation overhead at the edges of the week.",
-					cta: "Explore bilingual planning",
-					href: getLocalizedPath("en", "/bilingual-planning"),
-				},
-				{
-					icon: "journal",
-					label: "Journal into action",
-					title: "Let reflection change tomorrow instead of staying trapped in a note.",
-					body: "A personal planner can use end-of-day writing to surface what changed, what still matters, and what deserves a cleaner decision next.",
-					outcome: "Writing stays reflective, but the next step becomes easier to trust.",
-					cta: "Explore features",
-					href: getLocalizedPath("en", "/features"),
-				},
-			],
-		},
 		proposal: {
 			eyebrow: "Why switch now",
 			title:
@@ -76,42 +40,6 @@ const homeEnhancements: Record<
 		perspectivesFocusLabel: "What they are trying to protect",
 	},
 	ar: {
-		stories: {
-			eyebrow: "إثبات سير العمل",
-			title: "ثلاث طرق يظهر بها النظام الهادئ في العمل الحقيقي.",
-			description:
-				"هذه ليست شخصيات تسويقية مجردة، بل مواقف تخطيط فعلية يُصاغ Orgo لدعمها أسبوعاً بعد أسبوع.",
-			outcomeLabel: "ما الذي يتغيّر",
-			cards: [
-				{
-					icon: "calendar",
-					label: "مراجعة أسبوعية للمؤسس",
-					title: "اختم الأسبوع دون أن تعيد بناءه من الذاكرة.",
-					body: "يمكن للمؤسس أن يجمع الملاحظات المتفرقة وقرارات الشحن وأولويات الأسبوع القادم في مراجعة واحدة بدلاً من التنقل بين المحادثات والمستندات والقوائم غير المكتملة.",
-					outcome: "ينتهي الأسبوع بإعادة ضبط أوضح وبقايا أقل تختبئ خارج النظام.",
-					cta: "اطّلع على صفحة الفرق",
-					href: getLocalizedPath("ar", "/teams"),
-				},
-				{
-					icon: "globe",
-					label: "تخطيط ثنائي اللغة للفريق",
-					title: "أبقِ التخطيط العربي والإنجليزي ضمن الإيقاع نفسه.",
-					body: "يمكن للفرق المختلطة اللغة أن تحافظ على التحديثات وملاحظات التخطيط والطقوس المشتركة من دون إجبار الجميع على تنازل لغوي واحد.",
-					outcome: "سياق مشترك أكبر، وجهد أقل للترجمة على أطراف الأسبوع.",
-					cta: "استكشف التخطيط الثنائي اللغة",
-					href: getLocalizedPath("ar", "/bilingual-planning"),
-				},
-				{
-					icon: "journal",
-					label: "من اليوميات إلى الفعل",
-					title: "اجعل التأمل يغيّر الغد بدلاً من أن يبقى داخل ملاحظة.",
-					body: "يمكن للمخطط الشخصي أن يستخدم كتابة نهاية اليوم لاكتشاف ما تغيّر وما لا يزال مهماً وما يستحق قراراً أوضح في اليوم التالي.",
-					outcome: "تبقى الكتابة تأملية، لكن الخطوة التالية تصبح أوثق وأسهل.",
-					cta: "استكشف المزايا",
-					href: getLocalizedPath("ar", "/features"),
-				},
-			],
-		},
 		proposal: {
 			eyebrow: "لماذا الآن",
 			title: "إذا كان التخطيط موزعاً بين الملاحظات والاجتماعات والذاكرة، يستطيع Orgo جمعه من جديد.",
@@ -226,81 +154,6 @@ export function getHomePageContent(lang: Language): HomePageContent {
 			description: t(lang, "home.social_proof.description"),
 			testimonials: getSocialProofTestimonials(lang),
 		},
-		features: [
-			{
-				id: "features",
-				scene: "capture",
-				eyebrow: t(lang, "home.features.capture.eyebrow"),
-				title: t(lang, "home.features.capture.title"),
-				description: t(lang, "home.features.capture.description"),
-				highlights: [
-					{
-						icon: "spark",
-						title: t(lang, "home.features.capture.point_one_title"),
-						body: t(lang, "home.features.capture.point_one_body"),
-					},
-					{
-						icon: "layers",
-						title: t(lang, "home.features.capture.point_two_title"),
-						body: t(lang, "home.features.capture.point_two_body"),
-					},
-					{
-						icon: "globe",
-						title: t(lang, "home.features.capture.point_three_title"),
-						body: t(lang, "home.features.capture.point_three_body"),
-					},
-				],
-			},
-			{
-				id: "rhythm",
-				scene: "rhythm",
-				reverse: true,
-				eyebrow: t(lang, "home.features.rhythm.eyebrow"),
-				title: t(lang, "home.features.rhythm.title"),
-				description: t(lang, "home.features.rhythm.description"),
-				highlights: [
-					{
-						icon: "calendar",
-						title: t(lang, "home.features.rhythm.point_one_title"),
-						body: t(lang, "home.features.rhythm.point_one_body"),
-					},
-					{
-						icon: "focus",
-						title: t(lang, "home.features.rhythm.point_two_title"),
-						body: t(lang, "home.features.rhythm.point_two_body"),
-					},
-					{
-						icon: "wave",
-						title: t(lang, "home.features.rhythm.point_three_title"),
-						body: t(lang, "home.features.rhythm.point_three_body"),
-					},
-				],
-			},
-			{
-				id: "journal",
-				scene: "journal",
-				eyebrow: t(lang, "home.features.journal.eyebrow"),
-				title: t(lang, "home.features.journal.title"),
-				description: t(lang, "home.features.journal.description"),
-				highlights: [
-					{
-						icon: "journal",
-						title: t(lang, "home.features.journal.point_one_title"),
-						body: t(lang, "home.features.journal.point_one_body"),
-					},
-					{
-						icon: "compass",
-						title: t(lang, "home.features.journal.point_two_title"),
-						body: t(lang, "home.features.journal.point_two_body"),
-					},
-					{
-						icon: "sunrise",
-						title: t(lang, "home.features.journal.point_three_title"),
-						body: t(lang, "home.features.journal.point_three_body"),
-					},
-				],
-			},
-		],
 		workflow: {
 			eyebrow: t(lang, "home.workflow.eyebrow"),
 			title: t(lang, "home.workflow.title"),
@@ -328,7 +181,6 @@ export function getHomePageContent(lang: Language): HomePageContent {
 				},
 			],
 		},
-		stories: enhancements.stories,
 		proposal: enhancements.proposal,
 		pricing: {
 			eyebrow: t(lang, "home.pricing.eyebrow"),

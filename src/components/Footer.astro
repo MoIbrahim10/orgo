@@ -8,7 +8,7 @@ const { lang } = Astro.props as { lang: Language };
 const footerTranslations = getFooterTranslations(lang);
 ---
 
-<footer class="border-t border-slate-200 bg-slate-50">
+<footer class="border-t">
 	<Container class="py-10 text-sm text-slate-600" size="site">
 		<div class="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,0.8fr)]">
 			<div class="max-w-md">

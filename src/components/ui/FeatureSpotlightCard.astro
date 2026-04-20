@@ -60,9 +60,11 @@ const glyphHoverFillRule = FEATURE_SPOTLIGHT_GLYPH_HOVER_FILL_RULE[icon];
 		background: var(--feature-spotlight-card-surface);
 		border-radius: var(--feature-spotlight-card-radius);
 		display: flex;
+		flex: 1 1 auto;
 		flex-direction: column;
 		gap: 21px;
-		justify-content: center;
+		justify-content: flex-start;
+		min-height: 0;
 		overflow: visible;
 		padding: 24px;
 	}
