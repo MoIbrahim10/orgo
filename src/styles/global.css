@@ -325,6 +325,10 @@ img {
 	margin-top: 1.35rem;
 }
 
+.blog-article-body .blog-prose > :first-child {
+	margin-top: 0;
+}
+
 .blog-prose :is(h2, h3, h4) {
 	color: var(--page-text-strong);
 	font-weight: 600;

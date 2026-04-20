@@ -112,7 +112,7 @@ describe("blog helpers", () => {
 				entry: current,
 				explicitEntries: [explicit],
 			}).map((entry) => entry.id),
-		).toEqual(["explicit", "close-match"]);
+		).toEqual(["explicit", "close-match", "weak-match"]);
 	});
 
 	test("returns pagination state with neighboring links", () => {

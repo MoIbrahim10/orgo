@@ -1,0 +1,67 @@
+---
+import type { Language } from "../../types/translations";
+import { t } from "../../utils/i18n";
+
+interface Props {
+	categoryCount: number;
+	lang: Language;
+	postCount: number;
+	topicCount: number;
+}
+
+const { categoryCount, lang, postCount, topicCount } = Astro.props as Props;
+const metrics = [
+	{ value: postCount, label: t(lang, "blog.index_metric_posts_label") },
+	{ value: categoryCount, label: t(lang, "blog.index_metric_categories_label") },
+	{ value: topicCount, label: t(lang, "blog.index_metric_topics_label") },
+];
+---
+
+<div class="blog-index-stats" role="group" aria-label={t(lang, "blog.index_stats_aria")}>
+	{metrics.map((metric) => (
+		<div class="blog-index-stats__item">
+			<p class="blog-index-stats__value">{metric.value}</p>
+			<p class="blog-index-stats__label">{metric.label}</p>
+		</div>
+	))}
+</div>
+
+<style>
+	.blog-index-stats {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.blog-index-stats__item {
+		border-top: 1px solid color-mix(in srgb, var(--page-border) 58%, transparent);
+		display: grid;
+		gap: 0.35rem;
+		padding-top: 0.9rem;
+	}
+
+	.blog-index-stats__value {
+		color: var(--page-text-strong);
+		font-family: var(--font-display-latin), var(--font-display-arabic), serif;
+		font-size: clamp(2rem, 4vw, 2.8rem);
+		font-variant-numeric: tabular-nums;
+		font-weight: 600;
+		line-height: 0.9;
+		margin: 0;
+	}
+
+	.blog-index-stats__label {
+		color: var(--page-text-muted);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		line-height: 1.45;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	@media (min-width: 720px) {
+		.blog-index-stats {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+</style>

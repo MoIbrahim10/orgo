@@ -1,0 +1,206 @@
+---
+import type { BlogTaxonomyLink } from "./BlogTaxonomyList.astro";
+import type { Language } from "../../types/translations";
+import { t } from "../../utils/i18n";
+
+export type TaxonomyAsideGroup = {
+	title: string;
+	items: BlogTaxonomyLink[];
+	mode?: "list" | "chips";
+};
+
+interface Props {
+	groups: TaxonomyAsideGroup[];
+	lang: Language;
+}
+
+const { groups, lang } = Astro.props as Props;
+const visibleGroups = groups.filter((group) => group.items.length > 0);
+---
+
+{
+	visibleGroups.length > 0 && (
+		<section class="blog-taxonomy-aside" aria-labelledby="blog-taxonomy-aside-heading">
+			<header class="blog-taxonomy-aside__header">
+				<p class="blog-taxonomy-aside__eyebrow">{t(lang, "blog.sidebar_title")}</p>
+				<h2 class="blog-taxonomy-aside__title" id="blog-taxonomy-aside-heading">
+					{t(lang, "blog.sidebar_title")}
+				</h2>
+				<p class="blog-taxonomy-aside__hint">{t(lang, "blog.sidebar_hint")}</p>
+			</header>
+
+			{visibleGroups.map((group, index) => (
+				<section class="blog-taxonomy-aside__group" aria-labelledby={`taxonomy-group-${index}`}>
+					<h3 class="blog-taxonomy-aside__group-title" id={`taxonomy-group-${index}`}>
+						{group.title}
+					</h3>
+					{group.mode === "chips" ? (
+						<ul class="blog-taxonomy-aside__chips">
+							{group.items.map((item) => (
+								<li>
+									<a
+										class:list={[
+											"blog-taxonomy-aside__chip",
+											item.active && "is-active",
+										]}
+										href={item.href}
+									>
+										<span>{item.label}</span>
+										<span class="blog-taxonomy-aside__count">{item.count}</span>
+									</a>
+								</li>
+							))}
+						</ul>
+					) : (
+						<ul class="blog-taxonomy-aside__list">
+							{group.items.map((item) => (
+								<li>
+									<a
+										class:list={["blog-taxonomy-aside__row", item.active && "is-active"]}
+										href={item.href}
+									>
+										<span>{item.label}</span>
+										<span class="blog-taxonomy-aside__count">{item.count}</span>
+									</a>
+								</li>
+							))}
+						</ul>
+					)}
+				</section>
+			))}
+		</section>
+	)
+}
+
+<style>
+	.blog-taxonomy-aside {
+		display: grid;
+		gap: 1.5rem;
+		padding-top: 0.35rem;
+	}
+
+	.blog-taxonomy-aside__header,
+	.blog-taxonomy-aside__group {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	.blog-taxonomy-aside__group {
+		border-top: 1px solid color-mix(in srgb, var(--page-border) 56%, transparent);
+		padding-top: 1rem;
+	}
+
+	.blog-taxonomy-aside__eyebrow,
+	.blog-taxonomy-aside__group-title {
+		color: var(--page-text-muted);
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		line-height: 1.4;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.blog-taxonomy-aside__title {
+		color: var(--page-text-strong);
+		font-family: var(--font-display-latin), var(--font-display-arabic), serif;
+		font-size: 1.5rem;
+		font-weight: 600;
+		line-height: 1.1;
+		margin: 0;
+	}
+
+	.blog-taxonomy-aside__hint {
+		color: var(--page-text-soft);
+		font-size: 0.95rem;
+		line-height: 1.72;
+		margin: 0;
+	}
+
+	.blog-taxonomy-aside__list {
+		display: grid;
+		gap: 0.4rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.blog-taxonomy-aside__row {
+		align-items: baseline;
+		color: var(--page-text);
+		display: flex;
+		gap: 0.85rem;
+		justify-content: space-between;
+		padding-block: 0.15rem;
+		text-decoration: none;
+		transition: color 160ms ease, transform 160ms ease;
+	}
+
+	.blog-taxonomy-aside__row:hover,
+	.blog-taxonomy-aside__row:focus-visible,
+	.blog-taxonomy-aside__chip:hover,
+	.blog-taxonomy-aside__chip:focus-visible {
+		color: var(--page-text-strong);
+		outline: none;
+		transform: translateX(1px);
+	}
+
+	.blog-taxonomy-aside__chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.55rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.blog-taxonomy-aside__chip {
+		align-items: center;
+		background: color-mix(in srgb, var(--page-surface-muted) 72%, var(--page-bg));
+		border-radius: 999px;
+		color: var(--page-text-soft);
+		display: inline-flex;
+		gap: 0.45rem;
+		padding: 0.45rem 0.8rem;
+		text-decoration: none;
+		transition:
+			background-color 160ms ease,
+			color 160ms ease,
+			transform 160ms ease;
+	}
+
+	.blog-taxonomy-aside__count {
+		color: var(--page-text-muted);
+		font-size: 0.74rem;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.blog-taxonomy-aside__row.is-active,
+	.blog-taxonomy-aside__chip.is-active {
+		color: var(--page-text-strong);
+	}
+
+	.blog-taxonomy-aside__chip.is-active {
+		background: color-mix(in srgb, var(--page-surface-strong) 88%, var(--page-bg));
+		color: var(--theme-button-primary-text);
+	}
+
+	.blog-taxonomy-aside__chip.is-active .blog-taxonomy-aside__count {
+		color: color-mix(in srgb, var(--theme-button-primary-text) 74%, transparent);
+	}
+
+	@media (max-width: 1023px) {
+		.blog-taxonomy-aside {
+			border-top: 1px solid color-mix(in srgb, var(--page-border) 58%, transparent);
+			margin-top: 0.5rem;
+			padding-top: 1.5rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.blog-taxonomy-aside__row,
+		.blog-taxonomy-aside__chip {
+			transition: none;
+		}
+	}
+</style>

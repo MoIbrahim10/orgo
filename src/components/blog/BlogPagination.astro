@@ -3,32 +3,37 @@ import ActionLink from "../ui/ActionLink.astro";
 
 interface Props {
 	currentPage: number;
-	totalPages: number;
-	prevHref?: string;
 	nextHref?: string;
-	prevLabel: string;
 	nextLabel: string;
+	prevHref?: string;
+	prevLabel: string;
 	summaryLabel: string;
+	totalPages: number;
 }
 
-const { nextHref, nextLabel, prevHref, prevLabel, summaryLabel, totalPages } = Astro.props as Props;
+const { currentPage, nextHref, nextLabel, prevHref, prevLabel, summaryLabel, totalPages } =
+	Astro.props as Props;
 ---
 
 {
 	totalPages > 1 && (
-		<nav
-			aria-label={summaryLabel}
-			class="mt-10 flex flex-col gap-4 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between"
-		>
-			<p class="text-sm text-slate-500">{summaryLabel}</p>
-			<div class="flex flex-wrap gap-3">
+		<nav class="blog-pagination" aria-label={summaryLabel}>
+			<div class="blog-pagination__edge">
 				{prevHref && (
-					<ActionLink href={prevHref} size="sm" variant="secondary">
+					<ActionLink href={prevHref} size="sm" variant="subtle">
 						{prevLabel}
 					</ActionLink>
 				)}
+			</div>
+			<p class="blog-pagination__summary">
+				<span>{summaryLabel}</span>
+				<span>
+					{currentPage} / {totalPages}
+				</span>
+			</p>
+			<div class="blog-pagination__edge blog-pagination__edge--end">
 				{nextHref && (
-					<ActionLink href={nextHref} size="sm" variant="subtle">
+					<ActionLink href={nextHref} size="sm" variant="secondary">
 						{nextLabel}
 					</ActionLink>
 				)}
@@ -36,3 +41,52 @@ const { nextHref, nextLabel, prevHref, prevLabel, summaryLabel, totalPages } = A
 		</nav>
 	)
 }
+
+<style>
+	.blog-pagination {
+		align-items: center;
+		border-top: 1px solid color-mix(in srgb, var(--page-border) 58%, transparent);
+		display: grid;
+		gap: 1rem;
+		padding-top: 1.75rem;
+	}
+
+	.blog-pagination__edge {
+		display: flex;
+	}
+
+	.blog-pagination__edge--end {
+		justify-content: flex-start;
+	}
+
+	.blog-pagination__summary {
+		color: var(--page-text-muted);
+		display: grid;
+		gap: 0.2rem;
+		margin: 0;
+		text-align: center;
+	}
+
+	.blog-pagination__summary span:first-child {
+		font-size: 0.86rem;
+		line-height: 1.6;
+	}
+
+	.blog-pagination__summary span:last-child {
+		color: var(--page-text-soft);
+		font-size: 0.8rem;
+		font-variant-numeric: tabular-nums;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	@media (min-width: 720px) {
+		.blog-pagination {
+			grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+		}
+
+		.blog-pagination__edge--end {
+			justify-content: flex-end;
+		}
+	}
+</style>

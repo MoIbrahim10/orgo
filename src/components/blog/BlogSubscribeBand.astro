@@ -1,0 +1,277 @@
+---
+import { getContactPageContent } from "../../data/translations/contact";
+import type { Language } from "../../types/translations";
+import { t } from "../../utils/i18n";
+import { getEditorialArchiveCopy } from "../../utils/blogVariants";
+
+interface Props {
+	lang: Language;
+	rssHref: string;
+}
+
+const { lang, rssHref } = Astro.props as Props;
+const contact = getContactPageContent(lang);
+const copy = getEditorialArchiveCopy(lang);
+const mailtoBase = `mailto:${contact.emailValue}`;
+---
+
+<section class="blog-subscribe-band" aria-labelledby="blog-subscribe-heading">
+	<div class="blog-subscribe-band__copy">
+		<p class="blog-subscribe-band__eyebrow">{t(lang, "blog.newsletter_title")}</p>
+		<h2 class="blog-subscribe-band__title" id="blog-subscribe-heading">
+			{t(lang, "blog.newsletter_title")}
+		</h2>
+		<p class="blog-subscribe-band__lede">{t(lang, "blog.newsletter_description")}</p>
+		<ul class="blog-subscribe-band__points">
+			{copy.newsletterPoints.map((point) => (
+				<li>{point}</li>
+			))}
+		</ul>
+	</div>
+
+	<div class="blog-subscribe-band__panel">
+		<form
+			class="blog-subscribe-band__form"
+			data-blog-subscribe
+			data-mail-body={t(lang, "blog.newsletter_mail_body")}
+			data-mail-subject={t(lang, "blog.newsletter_mail_subject")}
+			data-mailto-base={mailtoBase}
+			novalidate
+		>
+			<label class="blog-subscribe-band__label" for="blog-subscribe-email">
+				{t(lang, "blog.newsletter_placeholder")}
+			</label>
+			<div class="blog-subscribe-band__field-row">
+				<input
+					autocomplete="email"
+					class="blog-subscribe-band__input"
+					id="blog-subscribe-email"
+					inputmode="email"
+					name="email"
+					placeholder={t(lang, "blog.newsletter_placeholder")}
+					required
+					type="email"
+				/>
+				<button class="blog-subscribe-band__submit" type="submit">
+					{t(lang, "blog.newsletter_cta")}
+				</button>
+			</div>
+		</form>
+		<p class="blog-subscribe-band__note">{copy.newsletterNote}</p>
+		<p class="blog-subscribe-band__fine">
+			{t(lang, "blog.newsletter_fine_print")}{" "}
+			<a class="blog-subscribe-band__rss" href={rssHref}>{t(lang, "blog.newsletter_rss_link")}</a>
+		</p>
+	</div>
+</section>
+
+<script>
+	function bindBlogNewsletterForms() {
+		const forms = document.querySelectorAll<HTMLFormElement>("[data-blog-subscribe]");
+		for (const form of forms) {
+			if (form.dataset.blogNewsletterBound === "1") {
+				continue;
+			}
+			form.dataset.blogNewsletterBound = "1";
+			form.addEventListener("submit", (event) => {
+				event.preventDefault();
+				const data = new FormData(form);
+				const email = String(data.get("email") ?? "").trim();
+				if (!email) {
+					return;
+				}
+				const subject = form.dataset.mailSubject ?? "";
+				const bodyTemplate = form.dataset.mailBody ?? "";
+				const body = bodyTemplate.replaceAll("{email}", email);
+				const action = form.dataset.mailtoBase;
+				if (!action) {
+					return;
+				}
+				window.location.href = `${action}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+			});
+		}
+	}
+
+	bindBlogNewsletterForms();
+	document.addEventListener("astro:page-load", bindBlogNewsletterForms);
+</script>
+
+<style>
+	.blog-subscribe-band {
+		background:
+			radial-gradient(
+				circle at top right,
+				color-mix(in srgb, var(--action-link-primary-gradient-start) 18%, transparent),
+				transparent 36%
+			),
+			radial-gradient(
+				circle at bottom left,
+				color-mix(in srgb, var(--action-link-primary-gradient-end) 14%, transparent),
+				transparent 42%
+			),
+			linear-gradient(
+				180deg,
+				color-mix(in srgb, var(--page-surface-strong) 96%, #030303),
+				color-mix(in srgb, var(--page-surface-strong-muted) 88%, #030303)
+			);
+		border-radius: 0.5rem;
+		color: oklch(97% 0.01 285deg);
+		display: grid;
+		gap: 1.75rem;
+		padding: clamp(1.5rem, 4vw, 2.25rem);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.blog-subscribe-band__copy,
+	.blog-subscribe-band__panel,
+	.blog-subscribe-band__form {
+		display: grid;
+		gap: 0.95rem;
+		position: relative;
+		z-index: 1;
+	}
+
+	.blog-subscribe-band__eyebrow,
+	.blog-subscribe-band__label {
+		color: oklch(78% 0.05 342deg);
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		line-height: 1.4;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.blog-subscribe-band__title {
+		font-family: var(--font-display-latin), var(--font-display-arabic), serif;
+		font-size: clamp(2rem, 4vw, 3.1rem);
+		font-weight: 600;
+		line-height: 0.98;
+		margin: 0;
+		max-width: 10ch;
+	}
+
+	.blog-subscribe-band__lede,
+	.blog-subscribe-band__note,
+	.blog-subscribe-band__fine,
+	.blog-subscribe-band__points li {
+		color: oklch(88% 0.01 285deg / 0.92);
+		font-size: 0.98rem;
+		line-height: 1.76;
+		margin: 0;
+	}
+
+	.blog-subscribe-band__points {
+		display: grid;
+		gap: 0.7rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.blog-subscribe-band__points li {
+		display: grid;
+		gap: 0.45rem;
+		grid-template-columns: auto 1fr;
+	}
+
+	.blog-subscribe-band__points li::before {
+		background: oklch(78% 0.05 342deg);
+		border-radius: 999px;
+		content: "";
+		height: 0.38rem;
+		margin-top: 0.65rem;
+		width: 0.38rem;
+	}
+
+	.blog-subscribe-band__panel {
+		background: oklch(100% 0 0deg / 0.06);
+		border-radius: 0.5rem;
+		padding: 1rem;
+	}
+
+	.blog-subscribe-band__field-row {
+		display: grid;
+		gap: 0.7rem;
+	}
+
+	.blog-subscribe-band__input {
+		background: oklch(100% 0 0deg / 0.08);
+		border: 1px solid oklch(100% 0 0deg / 0.1);
+		border-radius: 0.5rem;
+		color: oklch(98% 0 0deg);
+		font-size: 1rem;
+		min-width: 0;
+		outline: none;
+		padding: 0.9rem 1rem;
+	}
+
+	.blog-subscribe-band__input::placeholder {
+		color: oklch(82% 0.01 285deg / 0.55);
+	}
+
+	.blog-subscribe-band__input:focus-visible {
+		border-color: oklch(100% 0 0deg / 0.3);
+		box-shadow: 0 0 0 2px oklch(100% 0 0deg / 0.06);
+	}
+
+	.blog-subscribe-band__submit {
+		background: linear-gradient(
+			135deg,
+			var(--action-link-primary-gradient-start),
+			var(--action-link-primary-gradient-middle),
+			var(--action-link-primary-gradient-end)
+		);
+		border: 0;
+		border-radius: 0.5rem;
+		color: oklch(98% 0 0deg);
+		cursor: pointer;
+		font-size: 0.95rem;
+		font-weight: 600;
+		min-height: 3rem;
+		padding: 0.9rem 1.2rem;
+		transition: transform 160ms ease, filter 160ms ease;
+	}
+
+	.blog-subscribe-band__submit:hover,
+	.blog-subscribe-band__submit:focus-visible {
+		filter: brightness(1.05);
+		outline: none;
+		transform: translateY(-1px);
+	}
+
+	.blog-subscribe-band__submit:active {
+		transform: translateY(0);
+	}
+
+	.blog-subscribe-band__rss {
+		color: oklch(96% 0.01 285deg);
+		text-decoration: underline;
+		text-decoration-color: oklch(96% 0.01 285deg / 0.4);
+		text-underline-offset: 0.18em;
+	}
+
+	.blog-subscribe-band__rss:hover,
+	.blog-subscribe-band__rss:focus-visible {
+		text-decoration-color: currentColor;
+	}
+
+	@media (min-width: 860px) {
+		.blog-subscribe-band {
+			align-items: start;
+			grid-template-columns: minmax(0, 1.05fr) minmax(19rem, 0.95fr);
+		}
+
+		.blog-subscribe-band__field-row {
+			grid-template-columns: minmax(0, 1fr) auto;
+			align-items: end;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.blog-subscribe-band__submit {
+			transition: none;
+		}
+	}
+</style>

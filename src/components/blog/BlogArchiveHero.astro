@@ -1,0 +1,675 @@
+---
+import { getLocaleConfig } from "../../data/site";
+import type { Language } from "../../types/translations";
+import type { EditorialArchiveCopy, EditorialPost } from "../../utils/blogVariants";
+import { t } from "../../utils/i18n";
+import type { BreadcrumbItem } from "../ui/Breadcrumbs.astro";
+import ActionLink from "../ui/ActionLink.astro";
+import BlogCoverMedia from "./BlogCoverMedia.astro";
+
+interface Props {
+	breadcrumbs?: BreadcrumbItem[];
+	compare?: boolean;
+	copy: EditorialArchiveCopy;
+	description: string;
+	eyebrow?: string;
+	featuredStory?: EditorialPost;
+	lang: Language;
+	metrics?: {
+		categoryCount: number;
+		postCount: number;
+		topicCount: number;
+	};
+	paginationSummary?: string;
+	rssFeedUrl?: string;
+	title: string;
+}
+
+const {
+	breadcrumbs = [],
+	compare = false,
+	copy,
+	description,
+	eyebrow,
+	featuredStory,
+	lang,
+	metrics,
+	paginationSummary,
+	rssFeedUrl,
+	title,
+} = Astro.props as Props;
+
+const heroPoints = (featuredStory?.highlights ?? copy.heroSummaryItems).slice(0, 3);
+const panelTitle = featuredStory?.label ?? copy.curatedLabel;
+const numberFormatter = new Intl.NumberFormat(getLocaleConfig(lang).numberLocale);
+const metricItems = metrics
+	? [
+			{
+				label: t(lang, "blog.index_metric_posts_label"),
+				value: numberFormatter.format(metrics.postCount),
+			},
+			{
+				label: t(lang, "blog.index_metric_categories_label"),
+				value: numberFormatter.format(metrics.categoryCount),
+			},
+			{
+				label: t(lang, "blog.index_metric_topics_label"),
+				value: numberFormatter.format(metrics.topicCount),
+			},
+		]
+	: [];
+const variants = [
+	{ id: "split", name: "Split Editorial", showImage: false },
+	{ id: "ledger", name: "Ledger", showImage: true },
+	{ id: "centered", name: "Centered Feature", showImage: true },
+	{ id: "gallery", name: "Gallery Note", showImage: true },
+	{ id: "dossier", name: "Minimal Dossier", showImage: false },
+] as const;
+const visibleVariants = compare ? variants : variants.slice(0, 1);
+---
+
+{
+	compare ? (
+		<div class="blog-hero-study">
+			<h1 class="sr-only">{title}</h1>
+			{visibleVariants.map((variant, index) => (
+				<section
+					aria-labelledby={`blog-hero-study-${variant.id}`}
+					class:list={["blog-hero-candidate", `blog-hero-candidate--${variant.id}`]}
+				>
+					<div class="blog-hero-candidate__label-bar">
+						<p class="blog-hero-candidate__version">Version {String(index + 1).padStart(2, "0")}</p>
+						<h2 class="blog-hero-candidate__name" id={`blog-hero-study-${variant.id}`}>
+							{variant.name}
+						</h2>
+					</div>
+
+					<div class="blog-hero-candidate__surface">
+						{breadcrumbs.length > 0 && (
+							<nav aria-label="Breadcrumb" class="blog-hero-candidate__breadcrumbs">
+								<ol class="blog-hero-candidate__breadcrumbs-list">
+									{breadcrumbs.map((item, breadcrumbIndex) => (
+										<li class="blog-hero-candidate__breadcrumbs-item">
+											{breadcrumbIndex > 0 && <span aria-hidden="true">/</span>}
+											{item.href ? (
+												<a href={item.href}>{item.label}</a>
+											) : (
+												<span aria-current="page">{item.label}</span>
+											)}
+										</li>
+									))}
+								</ol>
+							</nav>
+						)}
+
+						<div class="blog-hero-candidate__layout">
+							<div class="blog-hero-candidate__main">
+								{eyebrow && <p class="blog-hero-candidate__eyebrow">{eyebrow}</p>}
+								<h3 class="blog-hero-candidate__title">{title}</h3>
+								<p class="blog-hero-candidate__description">{description}</p>
+								{
+									metricItems.length > 0 && (
+										<ul class="blog-hero-candidate__metrics" aria-label="Archive metrics">
+											{metricItems.map((metric) => (
+												<li class="blog-hero-candidate__metric">
+													<p class="blog-hero-candidate__metric-value">{metric.value}</p>
+													<p class="blog-hero-candidate__metric-label">{metric.label}</p>
+												</li>
+											))}
+										</ul>
+									)
+								}
+							</div>
+
+							<div class="blog-hero-candidate__panel">
+								<p class="blog-hero-candidate__panel-eyebrow">{copy.heroSummaryTitle}</p>
+								<h3 class="blog-hero-candidate__panel-title">{panelTitle}</h3>
+								<ul class="blog-hero-candidate__panel-list">
+									{heroPoints.map((point) => (
+										<li>{point}</li>
+									))}
+								</ul>
+								<div class="blog-hero-candidate__actions">
+									{rssFeedUrl && (
+										<ActionLink href={rssFeedUrl} size="sm" variant="secondary">
+											{t(lang, "blog.rss_label")}
+										</ActionLink>
+									)}
+									{paginationSummary && (
+										<p class="blog-hero-candidate__summary">{paginationSummary}</p>
+									)}
+								</div>
+							</div>
+
+							{
+								variant.showImage && featuredStory && (
+									<a class="blog-hero-candidate__media" href={featuredStory.href}>
+										<BlogCoverMedia
+											alt={featuredStory.imageAlt}
+											imgClass="blog-hero-candidate__media-img"
+											loading="lazy"
+											sizes="(max-width: 899px) 100vw, 360px"
+											translationGroup={featuredStory.translationGroup}
+											widths={[480, 720, 960]}
+											wrapperClass="h-full rounded-[inherit]"
+										/>
+									</a>
+								)
+							}
+						</div>
+					</div>
+				</section>
+			))}
+		</div>
+	) : (
+		<section class="blog-hero-single">
+			{breadcrumbs.length > 0 && (
+				<nav aria-label="Breadcrumb" class="blog-hero-single__breadcrumbs">
+					<ol class="blog-hero-single__breadcrumbs-list">
+						{breadcrumbs.map((item, breadcrumbIndex) => (
+							<li class="blog-hero-single__breadcrumbs-item">
+								{breadcrumbIndex > 0 && <span aria-hidden="true">/</span>}
+								{item.href ? (
+									<a href={item.href}>{item.label}</a>
+								) : (
+									<span aria-current="page">{item.label}</span>
+								)}
+							</li>
+						))}
+					</ol>
+				</nav>
+			)}
+			<div class="blog-hero-single__layout">
+				<div class="blog-hero-single__main">
+					{eyebrow && <p class="blog-hero-single__eyebrow">{eyebrow}</p>}
+					<h1 class="blog-hero-single__title">{title}</h1>
+					<p class="blog-hero-single__description">{description}</p>
+					{
+						metricItems.length > 0 && (
+							<ul class="blog-hero-single__metrics" aria-label="Archive metrics">
+								{metricItems.map((metric) => (
+									<li class="blog-hero-single__metric">
+										<p class="blog-hero-single__metric-value">{metric.value}</p>
+										<p class="blog-hero-single__metric-label">{metric.label}</p>
+									</li>
+								))}
+							</ul>
+						)
+					}
+				</div>
+				<div class="blog-hero-single__panel">
+					<p class="blog-hero-single__panel-eyebrow">{copy.heroSummaryTitle}</p>
+					<h2 class="blog-hero-single__panel-title">{panelTitle}</h2>
+					<ul class="blog-hero-single__panel-list">
+						{heroPoints.map((point) => (
+							<li>{point}</li>
+						))}
+					</ul>
+					<div class="blog-hero-single__actions">
+						{rssFeedUrl && (
+							<ActionLink href={rssFeedUrl} size="sm" variant="secondary">
+								{t(lang, "blog.rss_label")}
+							</ActionLink>
+						)}
+						{paginationSummary && <p class="blog-hero-single__summary">{paginationSummary}</p>}
+					</div>
+				</div>
+			</div>
+		</section>
+	)
+}
+
+<style>
+	.blog-hero-study {
+		display: grid;
+		gap: 2rem;
+	}
+
+	.blog-hero-candidate {
+		display: grid;
+		gap: 0.9rem;
+	}
+
+	.blog-hero-candidate__label-bar {
+		align-items: baseline;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.55rem 0.9rem;
+	}
+
+	.blog-hero-candidate__version,
+	.blog-hero-candidate__name,
+	.blog-hero-candidate__eyebrow,
+	.blog-hero-candidate__panel-eyebrow,
+	.blog-hero-candidate__metric-label,
+	.blog-hero-single__eyebrow,
+	.blog-hero-single__panel-eyebrow,
+	.blog-hero-single__metric-label {
+		font-size: 0.78rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		line-height: 1.45;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.blog-hero-candidate__version,
+	.blog-hero-candidate__eyebrow,
+	.blog-hero-candidate__panel-eyebrow,
+	.blog-hero-candidate__metric-label,
+	.blog-hero-single__eyebrow,
+	.blog-hero-single__panel-eyebrow,
+	.blog-hero-single__metric-label {
+		color: var(--page-text-muted);
+	}
+
+	.blog-hero-candidate__name {
+		color: var(--page-text-soft);
+	}
+
+	.blog-hero-candidate__surface,
+	.blog-hero-single {
+		background: color-mix(in srgb, var(--page-surface-solid) 82%, var(--page-bg));
+		border-radius: 0.5rem;
+		display: grid;
+		gap: 1.4rem;
+		padding: 1.4rem;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.blog-hero-candidate__surface::before,
+	.blog-hero-single::before {
+		content: "";
+		inset: 0;
+		position: absolute;
+		pointer-events: none;
+	}
+
+	.blog-hero-candidate__breadcrumbs,
+	.blog-hero-single__breadcrumbs {
+		position: relative;
+		z-index: 1;
+	}
+
+	.blog-hero-candidate__breadcrumbs-list,
+	.blog-hero-single__breadcrumbs-list {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.45rem 0.65rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.blog-hero-candidate__breadcrumbs-item,
+	.blog-hero-single__breadcrumbs-item {
+		align-items: center;
+		color: var(--page-text-muted);
+		display: flex;
+		gap: 0.45rem;
+	}
+
+	.blog-hero-candidate__breadcrumbs-item a,
+	.blog-hero-single__breadcrumbs-item a {
+		color: inherit;
+		text-decoration: none;
+		transition: color 160ms ease;
+	}
+
+	.blog-hero-candidate__breadcrumbs-item a:hover,
+	.blog-hero-candidate__breadcrumbs-item a:focus-visible,
+	.blog-hero-single__breadcrumbs-item a:hover,
+	.blog-hero-single__breadcrumbs-item a:focus-visible {
+		color: var(--page-text-strong);
+		outline: none;
+	}
+
+	.blog-hero-candidate__layout,
+	.blog-hero-single__layout {
+		display: grid;
+		gap: 1.2rem;
+		position: relative;
+		z-index: 1;
+	}
+
+	.blog-hero-candidate__main,
+	.blog-hero-candidate__panel,
+	.blog-hero-single__main,
+	.blog-hero-single__panel {
+		display: grid;
+		gap: 0.95rem;
+	}
+
+	.blog-hero-candidate__title,
+	.blog-hero-single__title {
+		color: var(--page-text-strong);
+		font-family: var(--font-display-latin), var(--font-display-arabic), serif;
+		font-size: 3.6rem;
+		font-weight: 600;
+		letter-spacing: 0;
+		line-height: 0.92;
+		margin: 0;
+		max-width: 10ch;
+		text-wrap: balance;
+	}
+
+	.blog-hero-candidate__description,
+	.blog-hero-single__description,
+	.blog-hero-candidate__summary,
+	.blog-hero-single__summary {
+		color: var(--page-text-soft);
+		font-size: 1.02rem;
+		line-height: 1.72;
+		margin: 0;
+		max-width: 60ch;
+	}
+
+	.blog-hero-candidate__metrics,
+	.blog-hero-single__metrics {
+		display: grid;
+		gap: 0.9rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.blog-hero-candidate__metric,
+	.blog-hero-single__metric {
+		border-top: 1px solid color-mix(in srgb, var(--page-border) 58%, transparent);
+		display: grid;
+		gap: 0.3rem;
+		padding-top: 0.75rem;
+	}
+
+	.blog-hero-candidate__metric-value,
+	.blog-hero-single__metric-value {
+		color: var(--page-text-strong);
+		font-family: var(--font-display-latin), var(--font-display-arabic), serif;
+		font-size: 2.5rem;
+		font-weight: 600;
+		line-height: 0.92;
+		margin: 0;
+	}
+
+	.blog-hero-candidate__panel,
+	.blog-hero-single__panel {
+		background: color-mix(in srgb, var(--page-surface-strong) 22%, var(--page-bg));
+		border-radius: 0.5rem;
+		padding: 1rem;
+	}
+
+	.blog-hero-candidate__panel-title,
+	.blog-hero-single__panel-title {
+		color: var(--page-text-strong);
+		font-family: var(--font-display-latin), var(--font-display-arabic), serif;
+		font-size: 2rem;
+		font-weight: 600;
+		letter-spacing: 0;
+		line-height: 1;
+		margin: 0;
+	}
+
+	.blog-hero-candidate__panel-list,
+	.blog-hero-single__panel-list {
+		display: grid;
+		gap: 0.75rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.blog-hero-candidate__panel-list li,
+	.blog-hero-single__panel-list li {
+		color: var(--page-text-soft);
+		display: grid;
+		gap: 0.45rem;
+		grid-template-columns: auto 1fr;
+		line-height: 1.68;
+	}
+
+	.blog-hero-candidate__panel-list li::before,
+	.blog-hero-single__panel-list li::before {
+		background: color-mix(in srgb, var(--action-link-primary-gradient-middle) 58%, transparent);
+		border-radius: 999px;
+		content: "";
+		height: 0.38rem;
+		margin-top: 0.65rem;
+		width: 0.38rem;
+	}
+
+	.blog-hero-candidate__actions,
+	.blog-hero-single__actions {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem 1rem;
+	}
+
+	.blog-hero-candidate__media {
+		border-radius: 0.5rem;
+		display: block;
+		min-height: 16rem;
+		overflow: hidden;
+		position: relative;
+	}
+
+	.blog-hero-candidate__media::after {
+		background: linear-gradient(
+			180deg,
+			transparent 0%,
+			color-mix(in srgb, var(--page-surface-strong) 46%, transparent) 100%
+		);
+		content: "";
+		inset: 0;
+		position: absolute;
+	}
+
+	.blog-hero-candidate--split .blog-hero-candidate__surface::before,
+	.blog-hero-single::before {
+		background:
+			radial-gradient(
+				circle at 28% 18%,
+				color-mix(in srgb, var(--action-link-primary-gradient-start) 18%, transparent),
+				transparent 34%
+			),
+			radial-gradient(
+				circle at 76% 14%,
+				color-mix(in srgb, var(--action-link-primary-gradient-end) 14%, transparent),
+				transparent 30%
+			);
+	}
+
+	.blog-hero-candidate--ledger .blog-hero-candidate__surface::before {
+		background:
+			linear-gradient(
+				90deg,
+				color-mix(in srgb, var(--page-border) 34%, transparent) 0,
+				color-mix(in srgb, var(--page-border) 34%, transparent) 1px,
+				transparent 1px,
+				transparent 100%
+			),
+			radial-gradient(
+				circle at top right,
+				color-mix(in srgb, var(--action-link-primary-gradient-end) 14%, transparent),
+				transparent 32%
+			);
+		background-size: 8rem 100%, auto;
+	}
+
+	.blog-hero-candidate--centered .blog-hero-candidate__surface::before {
+		background:
+			linear-gradient(
+				180deg,
+				color-mix(in srgb, var(--action-link-primary-gradient-middle) 12%, transparent),
+				transparent 45%
+			),
+			radial-gradient(
+				circle at center top,
+				color-mix(in srgb, var(--action-link-primary-gradient-start) 10%, transparent),
+				transparent 36%
+			);
+	}
+
+	.blog-hero-candidate--gallery .blog-hero-candidate__surface::before {
+		background:
+			linear-gradient(
+				135deg,
+				color-mix(in srgb, var(--page-surface-muted) 65%, transparent),
+				transparent 58%
+			),
+			radial-gradient(
+				circle at 88% 84%,
+				color-mix(in srgb, var(--action-link-primary-gradient-end) 12%, transparent),
+				transparent 28%
+			);
+	}
+
+	.blog-hero-candidate--dossier .blog-hero-candidate__surface::before {
+		background:
+			linear-gradient(
+				180deg,
+				color-mix(in srgb, var(--page-border) 28%, transparent),
+				color-mix(in srgb, var(--page-border) 28%, transparent)
+			);
+		background-position: 0 4.2rem;
+		background-repeat: no-repeat;
+		background-size: 100% 1px;
+	}
+
+	.blog-hero-candidate--centered .blog-hero-candidate__layout {
+		text-align: center;
+	}
+
+	.blog-hero-candidate--centered .blog-hero-candidate__main {
+		justify-items: center;
+	}
+
+	.blog-hero-candidate--centered .blog-hero-candidate__description {
+		max-width: 52ch;
+	}
+
+	.blog-hero-candidate--centered .blog-hero-candidate__panel {
+		background: transparent;
+		padding: 0;
+	}
+
+	.blog-hero-candidate--centered .blog-hero-candidate__panel-list {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.blog-hero-candidate--centered .blog-hero-candidate__panel-list li {
+		background: color-mix(in srgb, var(--page-surface-solid) 72%, var(--page-bg));
+		border-radius: 0.5rem;
+		grid-template-columns: 1fr;
+		padding: 1rem;
+		text-align: start;
+	}
+
+	.blog-hero-candidate--centered .blog-hero-candidate__panel-list li::before {
+		margin-top: 0;
+	}
+
+	.blog-hero-candidate--gallery .blog-hero-candidate__panel {
+		backdrop-filter: blur(14px);
+	}
+
+	.blog-hero-candidate--dossier .blog-hero-candidate__panel {
+		background: transparent;
+		border-left: 1px solid color-mix(in srgb, var(--page-border) 58%, transparent);
+		border-radius: 0;
+		padding: 0 0 0 1rem;
+	}
+
+	.blog-hero-candidate--dossier .blog-hero-candidate__title {
+		font-size: 4.5rem;
+		max-width: 8ch;
+	}
+
+	.blog-hero-single {
+		display: grid;
+		gap: 1.4rem;
+	}
+
+	@media (min-width: 720px) {
+		.blog-hero-candidate__metrics,
+		.blog-hero-single__metrics {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	@media (min-width: 900px) {
+		.blog-hero-candidate__surface,
+		.blog-hero-single {
+			padding: 1.8rem;
+		}
+
+		.blog-hero-candidate--split .blog-hero-candidate__layout,
+		.blog-hero-single__layout {
+			grid-template-columns: minmax(0, 1.1fr) minmax(19rem, 0.9fr);
+			align-items: start;
+		}
+
+		.blog-hero-candidate--ledger .blog-hero-candidate__layout {
+			grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.6fr) minmax(15rem, 0.65fr);
+			align-items: start;
+		}
+
+		.blog-hero-candidate--ledger .blog-hero-candidate__main {
+			grid-column: 1 / 2;
+		}
+
+		.blog-hero-candidate--ledger .blog-hero-candidate__media {
+			grid-column: 3 / 4;
+			grid-row: 1 / 3;
+			min-height: 100%;
+		}
+
+		.blog-hero-candidate--centered .blog-hero-candidate__layout {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.blog-hero-candidate--centered .blog-hero-candidate__media {
+			min-height: 18rem;
+		}
+
+		.blog-hero-candidate--gallery .blog-hero-candidate__layout {
+			grid-template-columns: minmax(18rem, 0.74fr) minmax(0, 1fr);
+			align-items: start;
+		}
+
+		.blog-hero-candidate--gallery .blog-hero-candidate__media {
+			grid-row: 1 / 3;
+			min-height: 22rem;
+			order: 0;
+		}
+
+		.blog-hero-candidate--gallery .blog-hero-candidate__main {
+			order: 1;
+		}
+
+		.blog-hero-candidate--gallery .blog-hero-candidate__panel {
+			order: 2;
+			margin-left: -4rem;
+			max-width: 28rem;
+		}
+
+		.blog-hero-candidate--dossier .blog-hero-candidate__layout {
+			grid-template-columns: minmax(0, 1.08fr) minmax(17rem, 0.92fr);
+			align-items: start;
+		}
+	}
+
+	@media (max-width: 899px) {
+		.blog-hero-candidate--centered .blog-hero-candidate__panel-list {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.blog-hero-candidate--dossier .blog-hero-candidate__panel {
+			border-left: 0;
+			border-top: 1px solid color-mix(in srgb, var(--page-border) 58%, transparent);
+			padding: 1rem 0 0;
+		}
+	}
+</style>

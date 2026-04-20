@@ -1,74 +1,326 @@
 ---
-import type { CollectionEntry } from "astro:content";
-import ResponsiveMedia from "../common/ResponsiveMedia.astro";
+import BlogCoverMedia from "./BlogCoverMedia.astro";
 import ActionLink from "../ui/ActionLink.astro";
-import { getBlogCoverImage } from "../../data/media";
-import { formatLocalizedDate } from "../../data/site";
 import type { Language } from "../../types/translations";
-import {
-	getBlogCategoryPath,
-	getBlogEntrySlug,
-	getBlogPostPath,
-	getCategorySlug,
-} from "../../utils/blog";
 import { t } from "../../utils/i18n";
+import type { EditorialArchiveCopy, EditorialPost } from "../../utils/blogVariants";
 
 interface Props {
-	post: CollectionEntry<"blog">;
+	copy: EditorialArchiveCopy;
 	lang: Language;
-	authorName?: string;
+	story: EditorialPost;
 }
 
-const { authorName, lang, post } = Astro.props as Props;
-const href = getBlogPostPath(lang, getBlogEntrySlug(post));
-const coverImage = getBlogCoverImage(post.data.translationGroup);
+const { copy, lang, story } = Astro.props as Props;
 ---
 
-<article class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
-	<div class="grid gap-0 lg:grid-cols-[minmax(0,1.1fr)_minmax(22rem,0.9fr)]">
-		<a class="min-h-full bg-slate-50" href={href}>
-			<ResponsiveMedia
-				alt={post.data.image.alt}
-				imgClass="h-full w-full object-cover"
+<article class="blog-lead-story">
+	<div class="blog-lead-story__glow" aria-hidden="true"></div>
+	<div class="blog-lead-story__grid">
+		<a class="blog-lead-story__media" href={story.href}>
+			<BlogCoverMedia
+				alt={story.imageAlt}
+				fetchpriority="high"
+				imgClass="blog-lead-story__img"
 				loading="eager"
-				sizes="(max-width: 1024px) 100vw, 720px"
-				src={coverImage}
+				sizes="(max-width: 767px) 100vw, (max-width: 1120px) 56vw, 720px"
+				translationGroup={story.translationGroup}
 				widths={[640, 960, 1280]}
+				wrapperClass="h-full rounded-[inherit]"
 			/>
 		</a>
-		<div class="flex flex-col justify-between gap-6 p-8">
-			<div class="space-y-5">
-				<div class="flex flex-wrap items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-					<a
-						class="rounded-full bg-slate-950 px-3 py-1 text-white transition hover:bg-slate-800"
-						href={getBlogCategoryPath(lang, getCategorySlug(post.data.category))}
-					>
-						{post.data.category}
-					</a>
-					<time datetime={post.data.publishDate.toISOString()}>
-						{formatLocalizedDate(lang, post.data.publishDate, { dateStyle: "medium" })}
-					</time>
-				</div>
-				<h2 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
-					<a class="transition hover:text-slate-700" href={href}>
-						{post.data.title}
+
+		<div class="blog-lead-story__body">
+			<div class="blog-lead-story__meta">
+				<span class="blog-lead-story__label">{story.label}</span>
+				<a class="blog-lead-story__category" href={story.categoryHref}>
+					{story.entry.data.category}
+				</a>
+				<span>{story.readingTimeLabel}</span>
+				<span>
+					{copy.publishedLabel} {story.publishedLabel}
+				</span>
+			</div>
+
+			<div class="blog-lead-story__copy">
+				<p class="blog-lead-story__sequence">{story.sequence}</p>
+				<h2 class="blog-lead-story__title">
+					<a class="blog-lead-story__title-link" href={story.href}>
+						{story.title}
 					</a>
 				</h2>
-				<p class="text-lg leading-8 text-slate-600">{post.data.metaDescription}</p>
+				<p class="blog-lead-story__deck">{story.deck}</p>
+				<p class="blog-lead-story__excerpt">{story.excerpt}</p>
 			</div>
-			<div class="flex flex-col gap-4 border-t border-slate-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
-				<div>
-					<p class="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
-						{t(lang, "blog.by")}
-					</p>
-					<p class="mt-2 text-base font-medium text-slate-900">
-						{authorName ?? t(lang, "blog.unknown_author")}
-					</p>
+
+			<div class="blog-lead-story__details">
+				<div class="blog-lead-story__details-grid">
+					<div>
+						<p class="blog-lead-story__section-label">{copy.authorLabel}</p>
+						<p class="blog-lead-story__detail">{story.authorName}</p>
+					</div>
+					<div>
+						<p class="blog-lead-story__section-label">{copy.contextLabel}</p>
+						<p class="blog-lead-story__detail">{story.context}</p>
+					</div>
 				</div>
-				<ActionLink href={href} variant="primary">
+				<p class="blog-lead-story__takeaway">
+					<span>{copy.keyTakeawayLabel}</span>
+					{story.takeaway}
+				</p>
+			</div>
+
+			{story.tagLinks.length > 0 && (
+				<ul class="blog-lead-story__tags" aria-label={t(lang, "blog.topics_title")}>
+					{story.tagLinks.map((tag) => (
+						<li>
+							<a class="blog-lead-story__tag" href={tag.href}>
+								#{tag.label}
+							</a>
+						</li>
+					))}
+				</ul>
+			)}
+
+			<footer class="blog-lead-story__footer">
+				<div class="blog-lead-story__author-note">
+					{story.authorSummary ?? story.authorRole ?? story.context}
+				</div>
+				<ActionLink href={story.href} variant="secondary">
 					{t(lang, "blog.read_article")}
 				</ActionLink>
-			</div>
+			</footer>
 		</div>
 	</div>
 </article>
+
+<style>
+	.blog-lead-story {
+		position: relative;
+	}
+
+	.blog-lead-story__glow {
+		background:
+			radial-gradient(
+				circle at top left,
+				color-mix(in srgb, var(--action-link-primary-gradient-start) 18%, transparent),
+				transparent 54%
+			),
+			radial-gradient(
+				circle at bottom right,
+				color-mix(in srgb, var(--action-link-primary-gradient-end) 14%, transparent),
+				transparent 58%
+			);
+		inset: -1.5rem -1rem auto;
+		position: absolute;
+		height: 18rem;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	.blog-lead-story__grid {
+		display: grid;
+		gap: clamp(1.2rem, 3vw, 2rem);
+		position: relative;
+		z-index: 1;
+	}
+
+	.blog-lead-story__media {
+		aspect-ratio: 6 / 5;
+		border-radius: 0.5rem;
+		display: block;
+		overflow: hidden;
+		position: relative;
+		transform-origin: center;
+		transition: transform 220ms ease, filter 220ms ease;
+	}
+
+	.blog-lead-story__media:hover,
+	.blog-lead-story__media:focus-visible {
+		filter: saturate(1.03);
+		outline: none;
+		transform: translateY(-2px);
+	}
+
+	.blog-lead-story__body {
+		display: grid;
+		gap: 1.25rem;
+		padding-block: clamp(0.25rem, 1vw, 0.75rem);
+	}
+
+	.blog-lead-story__meta {
+		align-items: center;
+		color: var(--page-text-muted);
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.55rem 0.95rem;
+		font-size: 0.78rem;
+		line-height: 1.55;
+	}
+
+	.blog-lead-story__label,
+	.blog-lead-story__section-label {
+		color: var(--page-text-muted);
+		font-size: 0.74rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		line-height: 1.4;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.blog-lead-story__label {
+		color: var(--page-text-strong);
+	}
+
+	.blog-lead-story__category,
+	.blog-lead-story__tag {
+		align-items: center;
+		color: var(--page-text-soft);
+		display: inline-flex;
+		font-size: 0.84rem;
+		line-height: 1.3;
+		text-decoration: none;
+		transition: color 160ms ease, opacity 160ms ease;
+	}
+
+	.blog-lead-story__category:hover,
+	.blog-lead-story__category:focus-visible,
+	.blog-lead-story__tag:hover,
+	.blog-lead-story__tag:focus-visible {
+		color: var(--page-text-strong);
+		outline: none;
+	}
+
+	.blog-lead-story__copy {
+		display: grid;
+		gap: 0.95rem;
+	}
+
+	.blog-lead-story__sequence {
+		color: color-mix(in srgb, var(--page-text-muted) 24%, transparent);
+		font-family: var(--font-display-latin), var(--font-display-arabic), serif;
+		font-size: clamp(3rem, 9vw, 5.8rem);
+		line-height: 0.8;
+		margin: 0;
+	}
+
+	.blog-lead-story__title {
+		color: var(--page-text-strong);
+		font-family: var(--font-display-latin), var(--font-display-arabic), serif;
+		font-size: clamp(2.7rem, 5.8vw, 5.2rem);
+		font-weight: 600;
+		letter-spacing: -0.035em;
+		line-height: 0.94;
+		margin: 0;
+		max-width: 10ch;
+		text-wrap: balance;
+	}
+
+	.blog-lead-story__title-link {
+		color: inherit;
+		text-decoration: none;
+		transition: color 160ms ease;
+	}
+
+	.blog-lead-story__title-link:hover,
+	.blog-lead-story__title-link:focus-visible {
+		color: var(--page-text);
+		outline: none;
+	}
+
+	.blog-lead-story__deck {
+		color: var(--page-text);
+		font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+		line-height: 1.7;
+		margin: 0;
+		max-width: 42ch;
+	}
+
+	.blog-lead-story__excerpt,
+	.blog-lead-story__detail,
+	.blog-lead-story__author-note {
+		color: var(--page-text-soft);
+		font-size: 1rem;
+		line-height: 1.78;
+		margin: 0;
+		max-width: 64ch;
+	}
+
+	.blog-lead-story__details {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.blog-lead-story__details-grid {
+		display: grid;
+		gap: 0.95rem;
+	}
+
+	.blog-lead-story__takeaway {
+		background: color-mix(in srgb, var(--page-surface-muted) 82%, var(--page-bg));
+		border-radius: 0.5rem;
+		color: var(--page-text);
+		display: grid;
+		gap: 0.35rem;
+		line-height: 1.72;
+		margin: 0;
+		padding: 1rem 1.05rem;
+	}
+
+	.blog-lead-story__takeaway span {
+		color: var(--page-text-muted);
+		font-size: 0.74rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	.blog-lead-story__tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem 1rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.blog-lead-story__footer {
+		align-items: end;
+		border-top: 1px solid color-mix(in srgb, var(--page-border) 58%, transparent);
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem 1.5rem;
+		justify-content: space-between;
+		padding-top: 1.15rem;
+	}
+
+	.blog-lead-story__author-note {
+		max-width: 42ch;
+	}
+
+	@media (min-width: 820px) {
+		.blog-lead-story__grid {
+			align-items: start;
+			grid-template-columns: minmax(0, 1.04fr) minmax(18rem, 0.96fr);
+		}
+
+		.blog-lead-story__media {
+			aspect-ratio: 7 / 8;
+		}
+
+		.blog-lead-story__body {
+			padding-top: clamp(2rem, 5vw, 5rem);
+		}
+
+		.blog-lead-story__details-grid {
+			grid-template-columns: minmax(0, 0.72fr) minmax(0, 1fr);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.blog-lead-story__media {
+			transition: none;
+		}
+	}
+</style>

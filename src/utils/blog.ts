@@ -269,7 +269,6 @@ export function getRelatedBlogPosts({
 				score,
 			};
 		})
-		.filter(({ score }) => score > 0)
 		.sort(
 			(left, right) =>
 				right.score - left.score ||

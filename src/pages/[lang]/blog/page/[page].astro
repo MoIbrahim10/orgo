@@ -1,8 +1,7 @@
 ---
-import { getCollection, getEntries } from "astro:content";
+import { getCollection } from "astro:content";
 import BlogArchiveView from "../../../../components/blog/BlogArchiveView.astro";
-import SiteMainStack from "../../../../components/layout/SiteMainStack.astro";
-import { getBlogCoverImage } from "../../../../data/media";
+import { getBlogCoverOgUrl } from "../../../../data/blogCovers";
 import Layout from "../../../../layouts/Layout.astro";
 import { supportedLanguages, type Language } from "../../../../types/translations";
 import {
@@ -37,10 +36,6 @@ const currentPage = Number(Astro.params.page ?? "1");
 const allEntries = await getCollection("blog");
 const publishedPosts = getPublishedBlogEntries(allEntries, lang);
 const posts = getPaginatedItems(publishedPosts, currentPage);
-const authors = await getEntries(posts.map((post) => post.data.author));
-const authorsByPostId = Object.fromEntries(
-	posts.map((post, index) => [post.id, authors[index]?.data.localized[lang].name]),
-) as Record<string, string | undefined>;
 const categories = getCategorySummaries(allEntries, lang).map((summary) => ({
 	...summary,
 	active: false,
@@ -74,7 +69,7 @@ const breadcrumbs = [
 	{ href: getBlogIndexPath(lang), label: t(lang, "blog.index_title") },
 	{ label: pageTitle },
 ];
-const ogImage = getBlogCoverImage(publishedPosts[0]?.data.translationGroup ?? "introduction").src;
+const ogImage = getBlogCoverOgUrl(publishedPosts[0]?.data.translationGroup ?? "introduction");
 const breadcrumbStructuredData = createBreadcrumbStructuredData(
 	Astro.site,
 	breadcrumbs.map((item) => ({
@@ -95,9 +90,7 @@ const metadata = createArchiveMetadata(lang, {
 ---
 
 <Layout {...metadata}>
-	<SiteMainStack>
 	<BlogArchiveView
-		authorsByPostId={authorsByPostId}
 		breadcrumbs={breadcrumbs}
 		description={pageDescription}
 		eyebrow={t(lang, "blog.eyebrow")}
@@ -105,10 +98,9 @@ const metadata = createArchiveMetadata(lang, {
 		pagination={pagination}
 		posts={posts}
 		taxonomyGroups={[
-			{ title: t(lang, "blog.categories_title"), items: categories },
-			{ title: t(lang, "blog.topics_title"), items: tags },
+			{ title: t(lang, "blog.categories_title"), items: categories, mode: "list" },
+			{ title: t(lang, "blog.topics_title"), items: tags, mode: "chips" },
 		]}
 		title={pageTitle}
 	/>
-	</SiteMainStack>
 </Layout>

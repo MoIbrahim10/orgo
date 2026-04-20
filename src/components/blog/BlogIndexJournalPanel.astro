@@ -1,0 +1,149 @@
+---
+import type { Language } from "../../types/translations";
+import { t } from "../../utils/i18n";
+
+interface Props {
+	lang: Language;
+}
+
+const { lang } = Astro.props as Props;
+const pillars = [
+	{ title: t(lang, "blog.index_pillar_1_title"), body: t(lang, "blog.index_pillar_1_body") },
+	{ title: t(lang, "blog.index_pillar_2_title"), body: t(lang, "blog.index_pillar_2_body") },
+	{ title: t(lang, "blog.index_pillar_3_title"), body: t(lang, "blog.index_pillar_3_body") },
+];
+---
+
+<section class="blog-journal-panel" aria-labelledby="blog-journal-panel-heading">
+	<div class="blog-journal-panel__intro">
+		<p class="blog-journal-panel__eyebrow">{t(lang, "blog.index_panel_title")}</p>
+		<h2 class="blog-journal-panel__title" id="blog-journal-panel-heading">
+			{t(lang, "blog.index_panel_title")}
+		</h2>
+		<p class="blog-journal-panel__lead">{t(lang, "blog.index_panel_lead")}</p>
+	</div>
+
+	<ol class="blog-journal-panel__list">
+		{
+			pillars.map((pillar, index) => (
+				<li class="blog-journal-panel__item">
+					<p class="blog-journal-panel__number">{String(index + 1).padStart(2, "0")}</p>
+					<div class="blog-journal-panel__copy">
+						<h3 class="blog-journal-panel__item-title">{pillar.title}</h3>
+						<p class="blog-journal-panel__item-body">{pillar.body}</p>
+					</div>
+				</li>
+			))
+		}
+	</ol>
+</section>
+
+<style>
+	.blog-journal-panel {
+		background:
+			linear-gradient(
+				180deg,
+				color-mix(in srgb, var(--page-surface-muted) 72%, var(--page-bg)),
+				color-mix(in srgb, var(--page-surface-solid) 88%, var(--page-bg))
+			);
+		border-radius: 0.5rem;
+		display: grid;
+		gap: 1.5rem;
+		padding: clamp(1.25rem, 4vw, 2rem);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.blog-journal-panel::before {
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--action-link-primary-gradient-start) 22%, transparent),
+			color-mix(in srgb, var(--action-link-primary-gradient-end) 16%, transparent)
+		);
+		content: "";
+		height: 14rem;
+		inset: auto -4rem -8rem auto;
+		position: absolute;
+		width: 14rem;
+	}
+
+	.blog-journal-panel__intro,
+	.blog-journal-panel__copy {
+		display: grid;
+		gap: 0.7rem;
+		position: relative;
+		z-index: 1;
+	}
+
+	.blog-journal-panel__eyebrow,
+	.blog-journal-panel__number {
+		color: var(--page-text-muted);
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		line-height: 1.4;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.blog-journal-panel__title {
+		color: var(--page-text-strong);
+		font-family: var(--font-display-latin), var(--font-display-arabic), serif;
+		font-size: clamp(2.2rem, 4vw, 3.3rem);
+		font-weight: 600;
+		line-height: 0.98;
+		margin: 0;
+		max-width: 9ch;
+	}
+
+	.blog-journal-panel__lead,
+	.blog-journal-panel__item-body {
+		color: var(--page-text-soft);
+		font-size: 1rem;
+		line-height: 1.78;
+		margin: 0;
+		max-width: 64ch;
+	}
+
+	.blog-journal-panel__list {
+		display: grid;
+		gap: 1rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		position: relative;
+		z-index: 1;
+	}
+
+	.blog-journal-panel__item {
+		display: grid;
+		gap: 0.5rem;
+		padding-top: 1rem;
+		border-top: 1px solid color-mix(in srgb, var(--page-border) 46%, transparent);
+	}
+
+	.blog-journal-panel__item-title {
+		color: var(--page-text-strong);
+		font-size: 1.08rem;
+		font-weight: 600;
+		line-height: 1.35;
+		margin: 0;
+	}
+
+	@media (min-width: 880px) {
+		.blog-journal-panel {
+			align-items: start;
+			grid-template-columns: minmax(0, 0.78fr) minmax(0, 1fr);
+			gap: 2rem;
+		}
+
+		.blog-journal-panel__list {
+			padding-top: 0.35rem;
+		}
+
+		.blog-journal-panel__item {
+			grid-template-columns: auto minmax(0, 1fr);
+			gap: 1rem;
+		}
+	}
+</style>

@@ -1,239 +1,263 @@
 ---
-import type { CollectionEntry } from "astro:content";
-import { getCollection, getEntry, getEntries, render } from "astro:content";
-import SiteMainStack from "../../../components/layout/SiteMainStack.astro";
-import ResponsiveMedia from "../../../components/common/ResponsiveMedia.astro";
-import TranslationAvailabilityNotice from "../../../components/TranslationAvailabilityNotice.astro";
-import ActionLink from "../../../components/ui/ActionLink.astro";
-import Breadcrumbs from "../../../components/ui/Breadcrumbs.astro";
-import Container from "../../../components/ui/Container.astro";
-import { getAuthorAvatarImage, getBlogCoverImage } from "../../../data/media";
-import { formatLocalizedDate } from "../../../data/site";
-import Layout from "../../../layouts/Layout.astro";
-import {
-	getBlogCategoryPath,
-	getBlogEntrySlug,
-	getBlogIndexPath,
-	getBlogLocaleAlternates,
-	getBlogLocaleSwitcherPaths,
-	getBlogPostPath,
-	getBlogTagPath,
-	getBlogTranslationEntries,
-	getCategorySlug,
-	getRelatedBlogPosts,
-	getTagSlug,
-} from "../../../utils/blog";
-import { t } from "../../../utils/i18n";
-import { createArticleMetadata, createBreadcrumbStructuredData } from "../../../utils/metadata";
-import { getLocalizedPerson } from "../../../utils/people";
-import { getLanguageFromParams, getLocalizedPath } from "../../../utils/routing";
+import type { CollectionEntry } from 'astro:content';
+import { getCollection, getEntry, getEntries, render } from 'astro:content';
+import BlogCoverMedia from '../../../components/blog/BlogCoverMedia.astro';
+import BlogSubscribeBand from '../../../components/blog/BlogSubscribeBand.astro';
+import SiteMainStack from '../../../components/layout/SiteMainStack.astro';
+import ResponsiveMedia from '../../../components/common/ResponsiveMedia.astro';
+import TranslationAvailabilityNotice from '../../../components/TranslationAvailabilityNotice.astro';
+import ActionLink from '../../../components/ui/ActionLink.astro';
+import Breadcrumbs from '../../../components/ui/Breadcrumbs.astro';
+import Container from '../../../components/ui/Container.astro';
+import { getBlogCoverOgUrl } from '../../../data/blogCovers';
+import { getAuthorAvatarImage } from '../../../data/media';
+import { formatLocalizedDate } from '../../../data/site';
+import Layout from '../../../layouts/Layout.astro';
+import { getBlogCategoryPath, getBlogEntrySlug, getBlogIndexPath, getBlogLocaleAlternates, getBlogLocaleSwitcherPaths, getBlogPostPath, getBlogTagPath, getBlogTranslationEntries, getCategorySlug, getRelatedBlogPosts, getTagSlug } from '../../../utils/blog';
+import { t } from '../../../utils/i18n';
+import { createArticleMetadata, createBreadcrumbStructuredData } from '../../../utils/metadata';
+import { getLocalizedPerson } from '../../../utils/people';
+import { getLanguageFromParams, getLocalizedPath } from '../../../utils/routing';
 
 export async function getStaticPaths() {
-	const pages = await getCollection("blog");
-	return pages.map((page) => ({
-		params: {
-			lang: page.data.language,
-			slug: getBlogEntrySlug(page),
-		},
-		props: page,
-	}));
+  const pages = await getCollection('blog');
+  return pages.map((page) => ({
+    params: {
+      lang: page.data.language,
+      slug: getBlogEntrySlug(page),
+    },
+    props: page,
+  }));
 }
 
 const lang = getLanguageFromParams(Astro.params.lang);
-const page = Astro.props as CollectionEntry<"blog">;
-const allPosts = await getCollection("blog", ({ data }) => !data.isDraft);
+const page = Astro.props as CollectionEntry<'blog'>;
+const allPosts = await getCollection('blog', ({ data }) => !data.isDraft);
 const explicitRelatedEntries = await getEntries(page.data.relatedPosts);
 const authorEntry = await getEntry(page.data.author);
 const author = authorEntry ? getLocalizedPerson(authorEntry, lang) : undefined;
 const relatedPosts = getRelatedBlogPosts({
-	entries: allPosts,
-	entry: page,
-	explicitEntries: explicitRelatedEntries,
+  entries: allPosts,
+  entry: page,
+  explicitEntries: explicitRelatedEntries,
 });
 const translationEntries = getBlogTranslationEntries(page, allPosts);
 const localeAlternates = getBlogLocaleAlternates(translationEntries);
 const localeSwitcherPaths = getBlogLocaleSwitcherPaths(localeAlternates);
-const coverImage = getBlogCoverImage(page.data.translationGroup);
 const authorAvatar = getAuthorAvatarImage(author?.id ?? authorEntry?.data.id);
 const formattedDate = formatLocalizedDate(lang, page.data.publishDate);
 const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined;
-const ogImage = coverImage.src;
-const rssFeedUrl = getLocalizedPath(lang, "/rss.xml");
-const structuredDataImage = Astro.site ? new URL(coverImage.src, Astro.site).toString() : undefined;
+const coverOgUrl = getBlogCoverOgUrl(page.data.translationGroup);
+const ogImage = coverOgUrl;
+const rssFeedUrl = getLocalizedPath(lang, '/rss.xml');
+const structuredDataImage = coverOgUrl;
 const breadcrumbItems = [
-	{ href: getLocalizedPath(lang), label: t(lang, "header.logo") },
-	{ href: getBlogIndexPath(lang), label: t(lang, "blog.index_title") },
-	{
-		href: getBlogCategoryPath(lang, getCategorySlug(page.data.category)),
-		label: page.data.category,
-	},
-	{ label: page.data.title },
+  { href: getLocalizedPath(lang), label: t(lang, 'header.logo') },
+  { href: getBlogIndexPath(lang), label: t(lang, 'blog.index_title') },
+  {
+    href: getBlogCategoryPath(lang, getCategorySlug(page.data.category)),
+    label: page.data.category,
+  },
+  { label: page.data.title },
 ];
 const breadcrumbStructuredData = createBreadcrumbStructuredData(
-	Astro.site,
-	breadcrumbItems.map((item) => ({
-		label: item.label,
-		path: item.href,
-	})),
+  Astro.site,
+  breadcrumbItems.map((item) => ({
+    label: item.label,
+    path: item.href,
+  })),
 );
 const structuredData = {
-	"@context": "https://schema.org",
-	"@type": "BlogPosting",
-	headline: page.data.metaTitle ?? page.data.title,
-	description: page.data.metaDescription ?? page.data.title,
-	articleSection: page.data.category,
-	keywords: page.data.tags?.join(", "),
-	datePublished: page.data.publishDate.toISOString(),
-	dateModified: page.data.updatedDate.toISOString(),
-	inLanguage: lang,
-	mainEntityOfPage: canonicalUrl,
-	...(structuredDataImage ? { image: [structuredDataImage] } : {}),
-	...(author
-		? {
-				author: {
-					"@type": "Person",
-					name: author.name,
-					...(author.portfolio ? { url: author.portfolio } : {}),
-				},
-			}
-		: {}),
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: page.data.metaTitle ?? page.data.title,
+  description: page.data.metaDescription ?? page.data.title,
+  articleSection: page.data.category,
+  keywords: page.data.tags?.join(', '),
+  datePublished: page.data.publishDate.toISOString(),
+  dateModified: page.data.updatedDate.toISOString(),
+  inLanguage: lang,
+  mainEntityOfPage: canonicalUrl,
+  ...(structuredDataImage ? { image: [structuredDataImage] } : {}),
+  ...(author
+    ? {
+        author: {
+          '@type': 'Person',
+          name: author.name,
+          ...(author.portfolio ? { url: author.portfolio } : {}),
+        },
+      }
+    : {}),
 };
-const structuredDataItems = [structuredData, breadcrumbStructuredData].filter(Boolean) as Array<
-	Record<string, unknown>
->;
+const structuredDataItems = [structuredData, breadcrumbStructuredData].filter(Boolean) as Array<Record<string, unknown>>;
 const metadata = createArticleMetadata(lang, {
-	canonicalUrl,
-	description: page.data.metaDescription ?? page.data.title,
-	localeAlternates,
-	localeSwitcherPaths,
-	ogImage,
-	rssFeedTitle: page.data.metaTitle ?? page.data.title,
-	rssFeedUrl,
-	structuredData: structuredDataItems,
-	title: page.data.metaTitle ?? page.data.title,
+  canonicalUrl,
+  description: page.data.metaDescription ?? page.data.title,
+  localeAlternates,
+  localeSwitcherPaths,
+  ogImage,
+  rssFeedTitle: page.data.metaTitle ?? page.data.title,
+  rssFeedUrl,
+  structuredData: structuredDataItems,
+  title: page.data.metaTitle ?? page.data.title,
 });
 const { Content } = await render(page);
 ---
 
 <Layout {...metadata}>
-	<SiteMainStack>
-	<section class="contents">
-		<Container size="article">
-			<article class="space-y-10">
-				<header class="space-y-6">
-					<Breadcrumbs items={breadcrumbItems} />
-					<div class="flex flex-wrap items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-						<a
-							class="rounded-full bg-slate-950 px-3 py-1 text-white transition hover:bg-slate-800"
-							href={getBlogCategoryPath(lang, getCategorySlug(page.data.category))}
-						>
-							{page.data.category}
-						</a>
-						<time datetime={page.data.publishDate.toISOString()}>{formattedDate}</time>
-					</div>
-					<h1 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl sm:leading-tight">
-						{page.data.title}
-					</h1>
-					<p class="text-lg leading-8 text-slate-600">{page.data.metaDescription ?? page.data.title}</p>
-					{page.data.tags && page.data.tags.length > 0 && (
-						<div class="flex flex-wrap gap-2">
-							{page.data.tags.map((tag) => (
-								<a
-									class="rounded-full bg-slate-100 px-3 py-1.5 text-sm text-slate-600 transition hover:bg-slate-200 hover:text-slate-900"
-									href={getBlogTagPath(lang, getTagSlug(tag))}
-								>
-									#{tag}
-								</a>
-							))}
-						</div>
-					)}
-					<div class="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
-						<div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-							<div class="flex items-center gap-4">
-								{authorAvatar && (
-									<ResponsiveMedia
-										alt={author?.image?.alt ?? author?.name ?? t(lang, "blog.unknown_author")}
-										height={64}
-										imgClass="h-16 w-16 rounded-full border border-slate-200 bg-slate-50 object-cover"
-										mode="image"
-										src={authorAvatar}
-										width={64}
-									/>
-								)}
-								<div class="min-w-0">
-									<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-										{t(lang, "blog.about_author")}
-									</p>
-									<p class="mt-1 text-lg font-medium text-slate-950">
-										{author?.name ?? t(lang, "blog.unknown_author")}
-									</p>
-									{author?.bio && <p class="mt-2 text-sm leading-6 text-slate-600">{author.bio}</p>}
-								</div>
-							</div>
-							{author?.email && (
-								<ActionLink href={`mailto:${author.email}`} size="sm" variant="secondary">
-									{t(lang, "blog.contact_author")}
-								</ActionLink>
-							)}
-						</div>
-					</div>
-					<div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
-						<ResponsiveMedia
-							alt={page.data.image.alt}
-							imgClass="h-full w-full object-cover"
-							loading="eager"
-							sizes="(max-width: 768px) 100vw, 768px"
-							src={coverImage}
-							widths={[640, 960, 1280]}
-						/>
-					</div>
-				</header>
-				<TranslationAvailabilityNotice availablePaths={localeAlternates} lang={lang} />
-				<section class="blog-prose">
-					<Content />
-				</section>
-				{relatedPosts.length > 0 && (
-					<section class="space-y-5 border-t border-slate-200 pt-8">
-						<h2 class="font-display text-2xl font-semibold tracking-tight text-slate-950">
-							{t(lang, "blog.related_posts")}
-						</h2>
-						<div class="grid gap-5">
-							{relatedPosts.map((post) => (
-								<a
-									class="grid gap-4 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-[0_18px_50px_rgba(15,23,42,0.05)] sm:grid-cols-[12rem_minmax(0,1fr)]"
-									href={getBlogPostPath(lang, getBlogEntrySlug(post))}
-								>
-									<ResponsiveMedia
-										alt={post.data.image.alt}
-										imgClass="h-full w-full object-cover"
-										loading="lazy"
-										sizes="(max-width: 640px) 100vw, 192px"
-										src={getBlogCoverImage(post.data.translationGroup)}
-										wrapperClass="overflow-hidden rounded-[1.25rem] border border-slate-200 bg-slate-50"
-										widths={[320, 480]}
-									/>
-									<div class="space-y-3">
-										<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-											{post.data.category} •{" "}
-											{formatLocalizedDate(lang, post.data.publishDate, { dateStyle: "medium" })}
-										</p>
-										<h3 class="font-display text-xl font-semibold text-slate-950">
-											{post.data.title}
-										</h3>
-										<p class="text-sm leading-6 text-slate-600">{post.data.metaDescription}</p>
-									</div>
-								</a>
-							))}
-						</div>
-					</section>
-				)}
-				<div class="flex justify-center border-t border-slate-200 pt-8">
-					<ActionLink href={getBlogIndexPath(lang)} variant="secondary">
-						{t(lang, "blog.back_to_blog")}
-					</ActionLink>
-				</div>
-			</article>
-		</Container>
-	</section>
-	</SiteMainStack>
+  <SiteMainStack>
+    <section class="blog-article contents">
+      <Container size="article">
+        <article class="blog-article__inner space-y-12 pb-4">
+          <header class="blog-article__hero space-y-8">
+            <Breadcrumbs items={breadcrumbItems} />
+            <div class="flex flex-wrap items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-(--page-text-muted)">
+              <a
+                class="rounded-full bg-(--page-surface-strong) px-3 py-1 text-(--theme-button-primary-text) transition hover:opacity-90"
+                href={getBlogCategoryPath(lang, getCategorySlug(page.data.category))}>
+                {page.data.category}
+              </a>
+              <time datetime={page.data.publishDate.toISOString()}>{formattedDate}</time>
+            </div>
+            <div class="space-y-4">
+              <h1 class="font-display text-4xl font-semibold tracking-tight text-(--page-text-strong) sm:text-5xl sm:leading-[1.08]">
+                {page.data.title}
+              </h1>
+              <p class="text-lg leading-8 text-(--page-text-soft)">
+                {page.data.metaDescription ?? page.data.title}
+              </p>
+            </div>
+            {
+              page.data.tags && page.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-2">
+                  {page.data.tags.map((tag) => (
+                    <a
+                      class="rounded-full border border-(--page-border) bg-(--page-surface-muted) px-3 py-1.5 text-sm text-(--page-text-soft) transition hover:border-(--page-border-strong) hover:text-(--page-text-strong)"
+                      href={getBlogTagPath(lang, getTagSlug(tag))}>
+                      #{tag}
+                    </a>
+                  ))}
+                </div>
+              )
+            }
+            <div class="rounded-[1.75rem] border border-(--page-border) bg-(--page-surface-solid) p-5 shadow-(--theme-shadow-soft)">
+              <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex items-center gap-4">
+                  {
+                    authorAvatar && (
+                      <ResponsiveMedia
+                        alt={author?.image?.alt ?? author?.name ?? t(lang, 'blog.unknown_author')}
+                        height={64}
+                        imgClass="h-16 w-16 rounded-full border border-(--page-border) bg-(--page-surface-muted) object-cover"
+                        mode="image"
+                        src={authorAvatar}
+                        width={64}
+                      />
+                    )
+                  }
+                  <div class="min-w-0">
+                    <p class="text-xs font-medium uppercase tracking-[0.2em] text-(--page-text-muted)">
+                      {t(lang, 'blog.about_author')}
+                    </p>
+                    <p class="mt-1 text-lg font-medium text-(--page-text-strong)">
+                      {author?.name ?? t(lang, 'blog.unknown_author')}
+                    </p>
+                    {author?.bio && <p class="mt-2 text-sm leading-6 text-(--page-text-soft)">{author.bio}</p>}
+                  </div>
+                </div>
+                {
+                  author?.email && (
+                    <ActionLink
+                      href={`mailto:${author.email}`}
+                      size="sm"
+                      variant="secondary">
+                      {t(lang, 'blog.contact_author')}
+                    </ActionLink>
+                  )
+                }
+              </div>
+            </div>
+            <div class="overflow-hidden rounded-4xl border border-(--page-border) bg-(--page-surface-muted) shadow-(--theme-shadow-panel)">
+              <BlogCoverMedia
+                alt={page.data.image.alt}
+                fetchpriority="high"
+                loading="eager"
+                sizes="(max-width: 768px) 100vw, 768px"
+                translationGroup={page.data.translationGroup}
+                widths={[640, 960, 1280]}
+                wrapperClass="aspect-[16/9] w-full rounded-[inherit] sm:aspect-[2/1]"
+              />
+            </div>
+          </header>
+          <TranslationAvailabilityNotice
+            availablePaths={localeAlternates}
+            lang={lang}
+          />
+          <div class="blog-article-body border-t border-(--page-border) pt-10">
+            <section class="blog-prose">
+              <Content />
+            </section>
+          </div>
+          {
+            relatedPosts.length > 0 && (
+              <section
+                class="blog-article__related space-y-6"
+                aria-labelledby="related-posts-heading">
+                <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                  <h2
+                    class="font-display text-2xl font-semibold tracking-tight text-(--page-text-strong) sm:text-3xl"
+                    id="related-posts-heading">
+                    {t(lang, 'blog.related_posts')}
+                  </h2>
+                  <p class="text-sm text-(--page-text-muted)">{t(lang, 'blog.related_posts_sub')}</p>
+                </div>
+                <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {relatedPosts.map((post) => (
+                    <li>
+                      <a
+                        class="group flex h-full flex-col overflow-hidden rounded-3xl border border-(--page-border) bg-(--page-surface-solid) shadow-(--theme-shadow-soft) transition hover:border-(--page-border-strong) hover:shadow-(--theme-shadow-panel)"
+                        href={getBlogPostPath(lang, getBlogEntrySlug(post))}>
+                        <div class="aspect-16/10 overflow-hidden border-b border-(--page-border) bg-(--page-surface-muted)">
+                          <BlogCoverMedia
+                            alt={post.data.image.alt}
+                            imgClass="min-h-full transition duration-500 group-hover:scale-[1.03]"
+                            loading="lazy"
+                            sizes="(max-width: 1024px) 50vw, 320px"
+                            translationGroup={post.data.translationGroup}
+                            widths={[320, 480, 640]}
+                            wrapperClass="h-full rounded-none"
+                          />
+                        </div>
+                        <div class="flex flex-1 flex-col gap-2 p-4">
+                          <p class="text-[0.65rem] font-medium uppercase tracking-[0.18em] text-(--page-text-muted)">
+                            {post.data.category} ·{' '}
+                            {formatLocalizedDate(lang, post.data.publishDate, {
+                              dateStyle: 'medium',
+                            })}
+                          </p>
+                          <h3 class="font-display text-lg font-semibold leading-snug text-(--page-text-strong)">{post.data.title}</h3>
+                          <p class="line-clamp-3 text-sm leading-relaxed text-(--page-text-soft)">{post.data.metaDescription}</p>
+                        </div>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
+          <BlogSubscribeBand
+            lang={lang}
+            rssHref={rssFeedUrl}
+          />
+          <div class="flex justify-center border-t border-(--page-border) pt-10">
+            <ActionLink
+              href={getBlogIndexPath(lang)}
+              variant="secondary">
+              {t(lang, 'blog.back_to_blog')}
+            </ActionLink>
+          </div>
+        </article>
+      </Container>
+    </section>
+  </SiteMainStack>
 </Layout>

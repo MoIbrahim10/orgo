@@ -91,7 +91,7 @@ export const blogConfig: BlogConfig = {
 	enabled: true,
 	pathname: "blog",
 	paginationSegment: "page",
-	postsPerPage: 2,
+	postsPerPage: 7,
 	relatedPostsCount: 3,
 	listRobots: {
 		index: true,

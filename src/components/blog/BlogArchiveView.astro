@@ -1,91 +1,181 @@
 ---
-import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
 import type { BreadcrumbItem } from "../ui/Breadcrumbs.astro";
+import BlogArchiveHero from "./BlogArchiveHero.astro";
 import BlogLeadStory from "./BlogLeadStory.astro";
 import type { Language } from "../../types/translations";
 import { t } from "../../utils/i18n";
 import BlogPagination from "./BlogPagination.astro";
 import BlogPostCard from "./BlogPostCard.astro";
-import BlogTaxonomyList, { type BlogTaxonomyLink } from "./BlogTaxonomyList.astro";
-import ActionLink from "../ui/ActionLink.astro";
-import Breadcrumbs from "../ui/Breadcrumbs.astro";
+import BlogTaxonomyAside, { type TaxonomyAsideGroup } from "./BlogTaxonomyAside.astro";
 import PageSection from "../ui/PageSection.astro";
-import SectionIntro from "../ui/SectionIntro.astro";
+import {
+	createEditorialPosts,
+	getEditorialArchiveCopy,
+} from "../../utils/blogVariants";
 
 interface Props {
-	lang: Language;
-	title: string;
+	breadcrumbs?: BreadcrumbItem[];
 	description: string;
 	eyebrow?: string;
-	posts: CollectionEntry<"blog">[];
-	authorsByPostId: Record<string, string | undefined>;
-	breadcrumbs?: BreadcrumbItem[];
-	rssFeedUrl?: string;
-	featuredPost?: CollectionEntry<"blog">;
-	featuredAuthorName?: string;
+	featuredPost?: import("astro:content").CollectionEntry<"blog">;
+	heroComparison?: boolean;
+	heroMetrics?: {
+		categoryCount: number;
+		postCount: number;
+		topicCount: number;
+	};
+	introTitleSize?: "default" | "display";
+	lang: Language;
 	pagination?: {
 		currentPage: number;
-		totalPages: number;
-		prevHref?: string;
 		nextHref?: string;
+		prevHref?: string;
+		totalPages: number;
 	};
-	taxonomyGroups?: Array<{
-		title: string;
-		items: BlogTaxonomyLink[];
-	}>;
+	posts: import("astro:content").CollectionEntry<"blog">[];
+	rssFeedUrl?: string;
+	sectionBackdrop?: "none" | "grid" | "glow";
+	sectionTone?: "default" | "soft" | "contrast" | "transparent" | "warm";
+	taxonomyGroups?: TaxonomyAsideGroup[];
+	title: string;
 }
 
 const {
-	authorsByPostId,
 	breadcrumbs = [],
 	description,
 	eyebrow,
-	featuredAuthorName,
 	featuredPost,
+	heroComparison = false,
+	heroMetrics,
 	lang,
 	pagination,
 	posts,
 	rssFeedUrl,
+	sectionBackdrop,
+	sectionTone,
 	taxonomyGroups = [],
 	title,
 } = Astro.props as Props;
+
+const people = await getCollection("people");
+const copy = getEditorialArchiveCopy(lang);
+const visibleEntries = featuredPost ? [featuredPost, ...posts] : posts;
+const visibleStories = createEditorialPosts({ entries: visibleEntries, lang, people });
+const featuredStory = featuredPost
+	? visibleStories.find((story) => story.id === featuredPost.id)
+	: undefined;
+const archiveStories = featuredStory
+	? visibleStories.filter((story) => story.id !== featuredStory.id)
+	: visibleStories;
+const highlightStories = archiveStories.slice(0, 2);
+const riverStories = archiveStories.slice(2);
 const hasTaxonomyGroups = taxonomyGroups.some((group) => group.items.length > 0);
+const resolvedBackdrop = sectionBackdrop ?? (featuredStory ? "glow" : "none");
+const resolvedTone = sectionTone ?? "transparent";
+const hasBelowFold = Astro.slots.has("belowFold");
+const paginationSummary =
+	pagination && pagination.totalPages > 1
+		? t(lang, "blog.pagination.summary")
+				.replace("{page}", String(pagination.currentPage))
+				.replace("{total}", String(pagination.totalPages))
+		: undefined;
+
+function getRiverTone(index: number): "note" | "river" {
+	return index % 3 === 2 ? "note" : "river";
+}
+
+function getRiverReverse(index: number): boolean {
+	return index % 2 === 1 && getRiverTone(index) === "river";
+}
 ---
 
-<PageSection backdrop={featuredPost ? "grid" : "none"} layout={hasTaxonomyGroups ? "split" : "default"}>
-	<div slot="intro" class="space-y-6">
-		<Breadcrumbs items={breadcrumbs} />
-		<div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-			<SectionIntro description={description} eyebrow={eyebrow} title={title} titleTag="h1" />
-			{rssFeedUrl && (
-				<ActionLink href={rssFeedUrl} variant="secondary">
-					{t(lang, "blog.rss_label")}
-				</ActionLink>
-			)}
-		</div>
+<PageSection
+	backdrop={resolvedBackdrop}
+	layout={hasTaxonomyGroups ? "split" : "default"}
+	size="wide"
+	tone={resolvedTone}
+>
+	<div slot="intro">
+		<BlogArchiveHero
+			breadcrumbs={breadcrumbs}
+			compare={heroComparison}
+			copy={copy}
+			description={description}
+			eyebrow={eyebrow}
+			featuredStory={featuredStory}
+			lang={lang}
+			metrics={heroMetrics}
+			paginationSummary={paginationSummary}
+			rssFeedUrl={rssFeedUrl}
+			title={title}
+		/>
 	</div>
-	<div class="space-y-8">
+
+	<div class="blog-archive-main">
 		{
-			featuredPost && (
-				<BlogLeadStory
-					authorName={featuredAuthorName ?? authorsByPostId[featuredPost.id]}
-					lang={lang}
-					post={featuredPost}
-				/>
+			featuredStory && (
+				<section class="blog-archive-section" aria-labelledby="blog-featured-story">
+					<div class="blog-archive-section__header">
+						<p class="blog-archive-section__eyebrow">{copy.featuredLabel}</p>
+						<h2 class="blog-archive-section__title" id="blog-featured-story">
+							{featuredStory.title}
+						</h2>
+					</div>
+					<BlogLeadStory copy={copy} lang={lang} story={featuredStory} />
+				</section>
 			)
 		}
-		<ul class="grid gap-8">
-			{posts.map((post, index) => (
-				<li>
-					<BlogPostCard
-						authorName={authorsByPostId[post.id]}
-						lang={lang}
-						post={post}
-						priority={!featuredPost && index === 0}
-					/>
-				</li>
-			))}
-		</ul>
+
+		{
+			highlightStories.length > 0 && (
+				<section class="blog-archive-section" aria-labelledby="blog-highlight-stories">
+					<div class="blog-archive-section__header">
+						<p class="blog-archive-section__eyebrow">
+							{featuredStory ? copy.recentLabel : copy.allStoriesLabel}
+						</p>
+						<h2 class="blog-archive-section__title" id="blog-highlight-stories">
+							{featuredStory ? copy.recentLabel : copy.allStoriesLabel}
+						</h2>
+					</div>
+					<div class="blog-archive-highlights">
+						{highlightStories.map((story, index) => (
+							<BlogPostCard
+								copy={copy}
+								lang={lang}
+								story={story}
+								tone={index === 0 ? "spotlight" : "note"}
+							/>
+						))}
+					</div>
+				</section>
+			)
+		}
+
+		{
+			riverStories.length > 0 && (
+				<section class="blog-archive-section" aria-labelledby="blog-archive-river">
+					<div class="blog-archive-section__header">
+						<p class="blog-archive-section__eyebrow">{copy.archiveLabel}</p>
+						<h2 class="blog-archive-section__title" id="blog-archive-river">
+							{copy.archiveLabel}
+						</h2>
+					</div>
+					<div class="blog-archive-river">
+						{riverStories.map((story, index) => (
+							<BlogPostCard
+								copy={copy}
+								lang={lang}
+								reverse={getRiverReverse(index)}
+								story={story}
+								tone={getRiverTone(index)}
+							/>
+						))}
+					</div>
+				</section>
+			)
+		}
+
 		{pagination && (
 			<BlogPagination
 				currentPage={pagination.currentPage}
@@ -99,14 +189,78 @@ const hasTaxonomyGroups = taxonomyGroups.some((group) => group.items.length > 0)
 				totalPages={pagination.totalPages}
 			/>
 		)}
+
+		{
+			hasBelowFold && (
+				<div class="blog-archive-below-fold">
+					<slot name="belowFold" />
+				</div>
+			)
+		}
 	</div>
+
 	{
 		hasTaxonomyGroups && (
-			<div slot="aside" class="space-y-4">
-				{taxonomyGroups.map((group) => (
-					<BlogTaxonomyList items={group.items} title={group.title} />
-				))}
+			<div slot="aside">
+				<BlogTaxonomyAside groups={taxonomyGroups} lang={lang} />
 			</div>
 		)
 	}
 </PageSection>
+
+<style>
+	.blog-archive-main,
+	.blog-archive-section {
+		display: grid;
+		gap: clamp(1.4rem, 3vw, 2rem);
+	}
+
+	.blog-archive-section__header {
+		display: grid;
+		gap: 0.9rem;
+	}
+
+	.blog-archive-section__eyebrow {
+		color: var(--page-text-muted);
+		font-size: 0.74rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		line-height: 1.4;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.blog-archive-section__title {
+		color: var(--page-text-strong);
+		font-family: var(--font-display-latin), var(--font-display-arabic), serif;
+		font-weight: 600;
+		letter-spacing: -0.035em;
+		line-height: 0.94;
+		margin: 0;
+		text-wrap: balance;
+	}
+
+	.blog-archive-section__title {
+		font-size: clamp(1.6rem, 2.4vw, 2rem);
+	}
+
+	.blog-archive-highlights,
+	.blog-archive-river,
+	.blog-archive-below-fold {
+		display: grid;
+		gap: clamp(1rem, 2vw, 1.5rem);
+	}
+
+	.blog-archive-section + .blog-archive-section,
+	.blog-archive-below-fold {
+		border-top: 1px solid color-mix(in srgb, var(--page-border) 52%, transparent);
+		padding-top: clamp(1.5rem, 3vw, 2.25rem);
+	}
+
+	@media (min-width: 900px) {
+		.blog-archive-highlights {
+			grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+			align-items: start;
+		}
+	}
+</style>
