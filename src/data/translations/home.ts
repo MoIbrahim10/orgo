@@ -5,33 +5,11 @@ import { getLocalizedPath } from "../../utils/routing";
 
 const homeEnhancements: Record<
 	Language,
-	Pick<HomePageContent, "processSignals" | "proposal" | "stories"> & {
+	Pick<HomePageContent, "proposal" | "stories"> & {
 		perspectivesFocusLabel: string;
 	}
 > = {
 	en: {
-		processSignals: [
-			{
-				label: "One weekly rhythm",
-				value: "Capture, clarify, commit, and reflect in the same flow.",
-				tone: "sun",
-			},
-			{
-				label: "Bilingual by design",
-				value: "English and Arabic experiences can stay close without feeling improvised.",
-				tone: "sky",
-			},
-			{
-				label: "Notes near action",
-				value: "Journal entries, decisions, and next steps do not drift into separate systems.",
-				tone: "mint",
-			},
-			{
-				label: "Calm on purpose",
-				value: "The product direction favors clarity, memory, and steadier operating habits.",
-				tone: "rose",
-			},
-		],
 		stories: {
 			eyebrow: "Workflow proof",
 			title: "Three ways a calmer system shows up in real work.",
@@ -85,24 +63,6 @@ const homeEnhancements: Record<
 		perspectivesFocusLabel: "What they are trying to protect",
 	},
 	ar: {
-		processSignals: [
-			{ label: "إيقاع أسبوعي واحد", value: "التقط ووضّح والتزم وراجع ضمن تدفق واحد.", tone: "sun" },
-			{
-				label: "ثنائي اللغة من الأساس",
-				value: "يمكن أن تبقى التجربة العربية والإنجليزية متقاربة من دون حلول مرتجلة.",
-				tone: "sky",
-			},
-			{
-				label: "الملاحظات قريبة من الفعل",
-				value: "لا تتبعثر اليوميات والقرارات والخطوات التالية بين أنظمة منفصلة.",
-				tone: "mint",
-			},
-			{
-				label: "الهدوء مقصود",
-				value: "اتجاه المنتج يفضّل الوضوح والذاكرة وعادات العمل الأهدأ.",
-				tone: "rose",
-			},
-		],
 		stories: {
 			eyebrow: "إثبات سير العمل",
 			title: "ثلاث طرق يظهر بها النظام الهادئ في العمل الحقيقي.",
@@ -172,13 +132,43 @@ export function getHomePageContent(lang: Language): HomePageContent {
 				t(lang, "home.hero.badges.reflect"),
 			],
 		},
-		jumpLinksLabel: t(lang, "home.jump_links_label"),
-		jumpLinks: [
-			{ href: "#features", label: t(lang, "home.jump_links.features") },
-			{ href: "#workflow", label: t(lang, "home.jump_links.rhythm") },
-			{ href: "#pricing", label: t(lang, "home.jump_links.pricing") },
-			{ href: "#stories", label: t(lang, "home.jump_links.stories") },
-		],
+		featureSpotlight: {
+			sectionName: t(lang, "home.feature_spotlight.section_name"),
+			headline: t(lang, "home.feature_spotlight.headline"),
+			description: t(lang, "home.feature_spotlight.description"),
+			cards: [
+				{
+					icon: "calendar",
+					title: t(lang, "home.feature_spotlight.card_organization_title"),
+					body: t(lang, "home.feature_spotlight.card_organization_body"),
+				},
+				{
+					icon: "quadrants",
+					title: t(lang, "home.feature_spotlight.card_reflection_title"),
+					body: t(lang, "home.feature_spotlight.card_reflection_body"),
+				},
+				{
+					icon: "journal",
+					title: t(lang, "home.feature_spotlight.card_focus_title"),
+					body: t(lang, "home.feature_spotlight.card_focus_body"),
+				},
+				{
+					icon: "gear",
+					title: t(lang, "home.feature_spotlight.card_productivity_title"),
+					body: t(lang, "home.feature_spotlight.card_productivity_body"),
+				},
+				{
+					icon: "team",
+					title: t(lang, "home.feature_spotlight.card_social_title"),
+					body: t(lang, "home.feature_spotlight.card_social_body"),
+				},
+				{
+					icon: "laurel",
+					title: t(lang, "home.feature_spotlight.card_privacy_title"),
+					body: t(lang, "home.feature_spotlight.card_privacy_body"),
+				},
+			],
+		},
 		features: [
 			{
 				id: "features",
@@ -254,7 +244,6 @@ export function getHomePageContent(lang: Language): HomePageContent {
 				],
 			},
 		],
-		processSignals: enhancements.processSignals,
 		workflow: {
 			eyebrow: t(lang, "home.workflow.eyebrow"),
 			title: t(lang, "home.workflow.title"),

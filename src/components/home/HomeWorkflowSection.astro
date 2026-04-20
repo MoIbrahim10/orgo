@@ -2,6 +2,7 @@
 import type { HomePageContent } from "../../types/home";
 import PageSection from "../ui/PageSection.astro";
 import SectionIntro from "../ui/SectionIntro.astro";
+import HomeRhythmCard from "./HomeRhythmCard.astro";
 import MarketingIcon from "./MarketingIcon.astro";
 
 interface Props {
@@ -21,7 +22,7 @@ const { content } = Astro.props as Props;
 	<div class="mt-10 grid gap-4 lg:grid-cols-4">
 		{
 			content.steps.map((step, index) => (
-				<article class="home-rhythm-card">
+				<HomeRhythmCard>
 					<div class="flex items-center justify-between gap-4">
 						<div class="rounded-2xl bg-white/10 p-2 text-white">
 							<MarketingIcon className="h-5 w-5" name={step.icon} />
@@ -32,7 +33,7 @@ const { content } = Astro.props as Props;
 					</div>
 					<h3 class="mt-5 text-lg font-semibold text-white">{step.title}</h3>
 					<p class="mt-3 text-sm leading-6 text-slate-300">{step.body}</p>
-				</article>
+				</HomeRhythmCard>
 			))
 		}
 	</div>

@@ -1,4 +1,6 @@
 ---
+import MarketingEyebrow from "./MarketingEyebrow.astro";
+
 interface Props {
 	align?: "center" | "start";
 	class?: string;
@@ -32,7 +34,7 @@ const isInverse = tone === "inverse";
 		className,
 	]}
 >
-	{eyebrow && <p class:list={["marketing-eyebrow", isInverse && "marketing-eyebrow-inverse"]}>{eyebrow}</p>}
+	{eyebrow && <MarketingEyebrow inverse={isInverse}>{eyebrow}</MarketingEyebrow>}
 	<Tag
 		class:list={[
 			"font-display font-semibold tracking-tight sm:leading-[1.08]",

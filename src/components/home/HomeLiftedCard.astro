@@ -1,0 +1,22 @@
+---
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props as Props;
+---
+
+<article class:list={["lifted-card", className]}>
+	<slot />
+</article>
+
+<style>
+	.lifted-card {
+		background: var(--page-surface);
+		backdrop-filter: blur(16px);
+		border: 1px solid var(--page-border);
+		border-radius: 1.75rem;
+		box-shadow: var(--theme-shadow-panel);
+		padding: 1.5rem;
+	}
+</style>

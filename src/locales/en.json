@@ -36,12 +36,22 @@
 		"switch_to_light": "Switch to light mode"
 	},
 	"home": {
-		"jump_links_label": "On this page",
-		"jump_links": {
-			"features": "Features",
-			"rhythm": "Rhythm",
-			"pricing": "Pricing",
-			"stories": "Stories"
+		"feature_spotlight": {
+			"section_name": "Features",
+			"headline": "Everything You Need, All in One Place",
+			"description": "Seamlessly manage your tasks, schedules, and notes with features designed to keep you organized and efficient.",
+			"card_organization_title": "Stress-free organization",
+			"card_organization_body": "Say goodbye to the chaos of multiple apps. Streamline your life in a single platform.",
+			"card_reflection_title": "Mindful reflection",
+			"card_reflection_body": "Foster a habit of reflection and gratitude. Capture the beauty in everyday moments.",
+			"card_focus_title": "Enhanced focus",
+			"card_focus_body": "Keep priorities and notes in view so deep work gets fewer interruptions and attention stays where it matters.",
+			"card_productivity_title": "Increased productivity",
+			"card_productivity_body": "Leverage our task management system to break down your goals into actionable steps.",
+			"card_social_title": "Social sync",
+			"card_social_body": "Easily coordinate with friends, family, and colleagues. Share journal entries with just a click.",
+			"card_privacy_title": "Data privacy",
+			"card_privacy_body": "Your information is yours alone. We prioritize your privacy with state-of-the-art encryption."
 		},
 		"hero": {
 			"eyebrow": "All your planning and journaling in one place",

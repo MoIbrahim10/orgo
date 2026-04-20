@@ -1,5 +1,9 @@
 ---
+import HomeLiftedCard from "../../components/home/HomeLiftedCard.astro";
+import HomeRhythmCard from "../../components/home/HomeRhythmCard.astro";
 import ActionLink from "../../components/ui/ActionLink.astro";
+import MarketingEyebrow from "../../components/ui/MarketingEyebrow.astro";
+import MarketingProofChip from "../../components/ui/MarketingProofChip.astro";
 import PageSection from "../../components/ui/PageSection.astro";
 import SectionIntro from "../../components/ui/SectionIntro.astro";
 import { getBilingualPlanningPageContent } from "../../data/translations/bilingualPlanning";
@@ -23,7 +27,7 @@ const metadata = createMarketingMetadata(lang, {
 	<PageSection class="overflow-hidden pt-12" size="wide" tone="warm">
 		<div class="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(18rem,0.95fr)] lg:items-center">
 			<div class="max-w-3xl">
-				<p class="marketing-eyebrow">{content.hero.eyebrow}</p>
+				<MarketingEyebrow>{content.hero.eyebrow}</MarketingEyebrow>
 				<h1 class="font-display mt-6 text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl sm:leading-[1.02]">
 					{content.hero.title}
 				</h1>
@@ -39,12 +43,12 @@ const metadata = createMarketingMetadata(lang, {
 			</div>
 			<div class="grid gap-4">
 				{content.signals.map((signal) => (
-					<div class="home-proof-chip border-slate-200 bg-white/88">
+					<MarketingProofChip class="border-slate-200 bg-white/88">
 						<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
 							{signal.label}
 						</p>
 						<p class="mt-3 text-sm leading-6 text-slate-700">{signal.value}</p>
-					</div>
+					</MarketingProofChip>
 				))}
 			</div>
 		</div>
@@ -59,9 +63,9 @@ const metadata = createMarketingMetadata(lang, {
 		/>
 		<div class="mt-10 grid gap-4 md:grid-cols-3">
 			{content.tensions.points.map((point) => (
-				<div class="home-rhythm-card">
+				<HomeRhythmCard>
 					<p class="text-sm leading-6 text-slate-200">{point}</p>
-				</div>
+				</HomeRhythmCard>
 			))}
 		</div>
 	</PageSection>
@@ -74,7 +78,7 @@ const metadata = createMarketingMetadata(lang, {
 		/>
 		<div class="mt-10 grid gap-6 lg:grid-cols-3">
 			{content.playbook.steps.map((step, index) => (
-				<article class="home-case-card">
+				<HomeLiftedCard>
 					<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
 						0{index + 1}
 					</p>
@@ -82,7 +86,7 @@ const metadata = createMarketingMetadata(lang, {
 						{step.title}
 					</h2>
 					<p class="mt-4 text-base leading-7 text-slate-600">{step.body}</p>
-				</article>
+				</HomeLiftedCard>
 			))}
 		</div>
 	</PageSection>
@@ -95,7 +99,7 @@ const metadata = createMarketingMetadata(lang, {
 		/>
 		<div class="mt-10 grid gap-6 xl:grid-cols-3">
 			{content.scenarios.cards.map((card) => (
-				<article class="home-perspective-card">
+				<HomeLiftedCard>
 					<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
 						{card.label}
 					</p>
@@ -103,13 +107,13 @@ const metadata = createMarketingMetadata(lang, {
 						{card.title}
 					</h2>
 					<p class="mt-4 text-base leading-7 text-slate-600">{card.body}</p>
-				</article>
+				</HomeLiftedCard>
 			))}
 		</div>
 	</PageSection>
 
 	<PageSection class="pt-0">
-		<div class="marketing-panel mx-auto max-w-6xl rounded-[2rem] border border-slate-200 bg-linear-to-br from-amber-50 via-white to-sky-50 px-6 py-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10 lg:px-12">
+		<div class="marketing-panel mx-auto max-w-6xl rounded-4xl border border-slate-200 bg-linear-to-br from-amber-50 via-white to-sky-50 px-6 py-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10 lg:px-12">
 			<div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
 				<div class="max-w-3xl">
 					<h2 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">

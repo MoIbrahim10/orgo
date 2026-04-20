@@ -1,0 +1,51 @@
+---
+interface Props {
+	class?: string;
+	inverse?: boolean;
+}
+
+const { class: className, inverse = false } = Astro.props as Props;
+---
+
+<p class:list={["eyebrow", inverse && "eyebrow-inverse", className]}>
+	<slot />
+</p>
+
+<style is:global>
+	:root {
+		--marketing-eyebrow-bg:
+			linear-gradient(135deg, oklch(100% 0 0deg / 92%), oklch(99% 0.008 75deg / 80%)),
+			oklch(100% 0 0deg / 70%);
+		--marketing-eyebrow-shadow: 0 10px 24px oklch(20.8% 0.042 265.755deg / 5%);
+	}
+
+	html[data-theme="dark"] {
+		--marketing-eyebrow-bg:
+			linear-gradient(135deg, oklch(25% 0 0deg / 84%), oklch(30% 0 0deg / 78%)),
+			oklch(21.5% 0 0deg / 70%);
+		--marketing-eyebrow-shadow: none;
+	}
+</style>
+
+<style>
+	.eyebrow {
+		background: var(--marketing-eyebrow-bg);
+		border: 1px solid var(--brand-line);
+		border-radius: 9999px;
+		box-shadow: var(--marketing-eyebrow-shadow);
+		color: var(--page-text-muted);
+		display: inline-flex;
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.22em;
+		padding: 0.45rem 0.9rem;
+		text-transform: uppercase;
+	}
+
+	.eyebrow-inverse {
+		background: oklch(100% 0 0deg / 6%);
+		border-color: oklch(100% 0 0deg / 12%);
+		box-shadow: none;
+		color: oklch(92% 0 0deg / 92%);
+	}
+</style>

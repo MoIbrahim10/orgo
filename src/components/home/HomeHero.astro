@@ -24,28 +24,20 @@ const heroCalImageSrc = heroCalSrc[lang] ?? heroCalEn.src;
 const heroCalImageAlt = t(lang, 'home.hero.visual_alt');
 ---
 
-<section
-  class="home-hero"
-  data-home-hero>
+<section class="home-hero" data-home-reveal-section>
   <div class="home-hero__copy">
     <HomeHeroBadge
-      className="home-hero__reveal"
+      className="home-reveal"
       style="--reveal-index: 0"
       text={content.eyebrow}
     />
-    <h1
-      class="home-hero__title home-hero__reveal"
-      style="--reveal-index: 1">
+    <h1 class="home-hero__title home-reveal" style="--reveal-index: 1">
       {content.title}
     </h1>
-    <p
-      class="home-hero__description home-hero__reveal"
-      style="--reveal-index: 2">
+    <p class="home-hero__description home-reveal" style="--reveal-index: 2">
       {content.description}
     </p>
-    <div
-      class="home-hero__actions home-hero__reveal"
-      style="--reveal-index: 3">
+    <div class="home-hero__actions home-reveal" style="--reveal-index: 3">
       <ActionLink
         href={primaryHref}
         size="lg"
@@ -60,9 +52,7 @@ const heroCalImageAlt = t(lang, 'home.hero.visual_alt');
       </ActionLink>
     </div>
   </div>
-  <div
-    class="home-hero__visual home-hero__reveal"
-    style="--reveal-index: 4">
+  <div class="home-hero__visual home-reveal" style="--reveal-index: 4">
     <img
       class="home-hero__cal"
       src={heroCalImageSrc}
@@ -74,50 +64,6 @@ const heroCalImageAlt = t(lang, 'home.hero.visual_alt');
     />
   </div>
 </section>
-
-<script is:inline>
-  (() => {
-    const revealHero = (hero) => {
-      hero.classList.add('is-visible');
-    };
-
-    const bindHeroReveal = () => {
-      const heroes = document.querySelectorAll('[data-home-hero]');
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      if (!('IntersectionObserver' in window) || prefersReducedMotion) {
-        heroes.forEach(revealHero);
-        return;
-      }
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (!entry.isIntersecting) {
-              continue;
-            }
-
-            revealHero(entry.target);
-            observer.unobserve(entry.target);
-          }
-        },
-        { threshold: 0.12 },
-      );
-
-      heroes.forEach((hero) => {
-        if (!(hero instanceof HTMLElement) || hero.dataset.homeHeroBound === 'true') {
-          return;
-        }
-
-        hero.dataset.homeHeroBound = 'true';
-        observer.observe(hero);
-      });
-    };
-
-    document.addEventListener('astro:page-load', bindHeroReveal);
-    bindHeroReveal();
-  })();
-</script>
 
 <style>
   .home-hero {
@@ -176,44 +122,10 @@ const heroCalImageAlt = t(lang, 'home.hero.visual_alt');
     min-width: min(100%, 18rem);
   }
 
-  .home-hero :global(.home-hero__reveal) {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  .home-hero.is-visible :global(.home-hero__reveal) {
-    animation: home-hero-reveal 1s ease-out forwards;
-    animation-delay: calc(var(--reveal-index, 0) * 0.3s);
-  }
-
-  @keyframes home-hero-reveal {
-    from {
-      filter: blur(5px);
-      opacity: 0;
-      transform: translateY(20px);
-    }
-
-    to {
-      filter: blur(0);
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
   @media (max-width: 640px) {
     .home-hero__title {
       font-size: 40px;
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .home-hero :global(.home-hero__reveal) {
-      opacity: 1;
-      transform: none;
-    }
-
-    .home-hero.is-visible :global(.home-hero__reveal) {
-      animation: none;
-    }
-  }
 </style>

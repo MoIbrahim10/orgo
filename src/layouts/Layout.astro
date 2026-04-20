@@ -2,6 +2,7 @@
 import "../styles/global.css";
 
 import AnalyticsScripts from "../components/common/AnalyticsScripts.astro";
+import HomeRevealSectionsScript from "../components/common/HomeRevealSectionsScript.astro";
 import LayoutHead from "../components/common/LayoutHead.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/header.astro";
@@ -87,5 +88,6 @@ const headProps = {
 		</main>
 		{!hideFooter && <Footer lang={lang} />}
 		<AnalyticsScripts />
+		<HomeRevealSectionsScript />
 	</body>
 </html>

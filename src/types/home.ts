@@ -3,18 +3,30 @@ export type HomeIconName =
 	| "check-circle"
 	| "compass"
 	| "focus"
+	| "gear"
 	| "globe"
 	| "journal"
+	| "laurel"
 	| "layers"
 	| "leaf"
+	| "quadrants"
 	| "spark"
 	| "sunrise"
 	| "team"
 	| "wave";
 
-export type HomeJumpLink = {
-	href: string;
-	label: string;
+export type HomeFeatureSpotlightIcon =
+	| "calendar"
+	| "gear"
+	| "journal"
+	| "laurel"
+	| "quadrants"
+	| "team";
+
+export type HomeFeatureSpotlightItem = {
+	body: string;
+	icon: HomeFeatureSpotlightIcon;
+	title: string;
 };
 
 export type HomeFeatureHighlight = {
@@ -37,12 +49,6 @@ export type HomeWorkflowStep = {
 	body: string;
 	icon: HomeIconName;
 	title: string;
-};
-
-export type HomeSignal = {
-	label: string;
-	tone: "mint" | "rose" | "sky" | "sun";
-	value: string;
 };
 
 export type HomeCaseStudy = {
@@ -79,6 +85,12 @@ export type HomePageContent = {
 		secondaryCta: string;
 		title: string;
 	};
+	featureSpotlight: {
+		cards: HomeFeatureSpotlightItem[];
+		description: string;
+		headline: string;
+		sectionName: string;
+	};
 	features: HomeFeatureStory[];
 	hero: {
 		badges: string[];
@@ -88,8 +100,6 @@ export type HomePageContent = {
 		secondaryCta: string;
 		title: string;
 	};
-	jumpLinks: HomeJumpLink[];
-	jumpLinksLabel: string;
 	perspectives: {
 		cards: HomePerspectiveCard[];
 		description: string;
@@ -103,7 +113,6 @@ export type HomePageContent = {
 		plans: HomePlan[];
 		title: string;
 	};
-	processSignals: HomeSignal[];
 	proposal: {
 		description: string;
 		eyebrow: string;

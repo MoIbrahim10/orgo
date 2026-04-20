@@ -1,0 +1,32 @@
+---
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props as Props;
+---
+
+<div class:list={["chip", className]}>
+	<slot />
+</div>
+
+<style is:global>
+	:root {
+		--marketing-proof-chip-bg: oklch(100% 0 0deg / 78%);
+	}
+
+	html[data-theme="dark"] {
+		--marketing-proof-chip-bg: oklch(20.5% 0 0deg / 76%);
+	}
+</style>
+
+<style>
+	.chip {
+		background: var(--marketing-proof-chip-bg);
+		backdrop-filter: blur(16px);
+		border: 1px solid var(--page-border);
+		border-radius: 1.5rem;
+		box-shadow: var(--theme-shadow-soft);
+		padding: 1.25rem;
+	}
+</style>

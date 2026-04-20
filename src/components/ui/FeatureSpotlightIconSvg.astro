@@ -1,0 +1,433 @@
+---
+import {
+	FEATURE_SPOTLIGHT_BIG_D,
+	FEATURE_SPOTLIGHT_INNER_G_TRANSFORM,
+} from './featureSpotlightIconData';
+
+/**
+ * Shared spotlight icon: Figma art is on a 50×50 artboard; viewBox crops to the 38×38 plate
+ * at (5.6, 2.6) so the circle fills 38×38 CSS px (not scaled down by empty margins).
+ *
+ * **Slot** = idle disc innards only (paste from 50×50 export; was `<g mask>` in Figma). Fills: `url(#spotlight-{instanceId}-p2)` … `p7`.
+ *
+ * **glyphPathD** = same `d` as foreground path(s) in slot (24×24 inner space after `translate`); hover = white `hi7` only.
+ */
+interface Props {
+	glyphHoverFillRule?: 'evenodd' | 'nonzero';
+	glyphPathD: string | readonly string[];
+	instanceId: string;
+}
+
+const {
+	glyphHoverFillRule = 'nonzero',
+	glyphPathD,
+	instanceId: id,
+} = Astro.props as Props;
+const glyphDs = typeof glyphPathD === 'string' ? [glyphPathD] : [...glyphPathD];
+const innerTf = FEATURE_SPOTLIGHT_INNER_G_TRANSFORM;
+const hoverEvenOdd = glyphHoverFillRule === 'evenodd';
+
+const I = (name: string) => `spotlight-${id}-${name}`;
+const BIG = FEATURE_SPOTLIGHT_BIG_D;
+---
+
+<svg
+	class="spotlight-icon-svg"
+	width="38"
+	height="38"
+	viewBox="5.6 2.6 38 38"
+	fill="none"
+	xmlns="http://www.w3.org/2000/svg"
+	overflow="visible"
+	shape-rendering="geometricPrecision"
+	aria-hidden="true"
+>
+	<defs>
+		<filter
+			id={I('f-inner')}
+			x="0"
+			y="0"
+			width="50"
+			height="50"
+			filterUnits="userSpaceOnUse"
+			color-interpolation-filters="sRGB"
+		>
+			<feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+			<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"></feBlend>
+			<feColorMatrix
+				in="SourceAlpha"
+				type="matrix"
+				values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+				result="hardAlpha"
+			></feColorMatrix>
+			<feOffset dy="1"></feOffset>
+			<feGaussianBlur stdDeviation="1.65"></feGaussianBlur>
+			<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"></feComposite>
+			<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.16 0"></feColorMatrix>
+			<feBlend mode="normal" in2="shape" result="effect1_innerShadow"></feBlend>
+		</filter>
+		<filter
+			id={I('f-drop')}
+			x="-8"
+			y="-8"
+			width="66"
+			height="66"
+			filterUnits="userSpaceOnUse"
+			color-interpolation-filters="sRGB"
+		>
+			<feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+			<feColorMatrix
+				in="SourceAlpha"
+				type="matrix"
+				values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+				result="hardAlpha"
+			></feColorMatrix>
+			<feOffset dy="3"></feOffset>
+			<feGaussianBlur stdDeviation="3.55"></feGaussianBlur>
+			<feComposite in2="hardAlpha" operator="out"></feComposite>
+			<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.48 0"></feColorMatrix>
+			<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"></feBlend>
+			<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"></feBlend>
+		</filter>
+		<filter
+			id={I('f-glow')}
+			x="-30"
+			y="-25"
+			width="110"
+			height="115"
+			filterUnits="userSpaceOnUse"
+			color-interpolation-filters="sRGB"
+		>
+			<feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+			<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"></feBlend>
+			<feGaussianBlur stdDeviation="14.1" result="effect1_foregroundBlur"></feGaussianBlur>
+		</filter>
+
+		<clipPath id={I('disc')} clipPathUnits="userSpaceOnUse">
+			<circle cx="24.6001" cy="21.6" r="17.5"></circle>
+		</clipPath>
+
+		<linearGradient
+			id={I('p0')}
+			x1="38.6001"
+			y1="53.1"
+			x2="10.7959"
+			y2="57.5729"
+			gradientUnits="userSpaceOnUse"
+		>
+			<stop stop-color="#E98426"></stop>
+			<stop offset="0.505" stop-color="#D64988"></stop>
+			<stop offset="1" stop-color="#5B0AC1"></stop>
+		</linearGradient>
+		<linearGradient id={I('p1')} x1="24.6001" y1="2.60001" x2="24.6001" y2="40.6" gradientUnits="userSpaceOnUse">
+			<stop stop-color="var(--feature-spotlight-p1-top)"></stop>
+			<stop offset="1" stop-color="var(--feature-spotlight-p1-bottom)" stop-opacity="0"></stop>
+		</linearGradient>
+		<linearGradient
+			id={I('p2')}
+			x1="47.8699"
+			y1="46.7829"
+			x2="-5.44957"
+			y2="35.9233"
+			gradientUnits="userSpaceOnUse"
+		>
+			<stop offset="0.495" stop-color="var(--feature-spotlight-big-a)"></stop>
+			<stop offset="1" stop-color="var(--feature-spotlight-big-b)"></stop>
+		</linearGradient>
+		<linearGradient
+			id={I('p3')}
+			x1="-3.37973"
+			y1="37.3118"
+			x2="18.3213"
+			y2="59.2998"
+			gradientUnits="userSpaceOnUse"
+		>
+			<stop offset="0.420811" stop-color="white" stop-opacity="0"></stop>
+			<stop offset="0.434193" stop-color="white"></stop>
+			<stop offset="0.806429" stop-color="white" stop-opacity="0"></stop>
+		</linearGradient>
+		<linearGradient
+			id={I('p4')}
+			x1="24.0784"
+			y1="29.2683"
+			x2="-3.82934"
+			y2="25.0053"
+			gradientUnits="userSpaceOnUse"
+		>
+			<stop offset="0.495" stop-color="var(--feature-spotlight-big-a)"></stop>
+			<stop offset="1" stop-color="var(--feature-spotlight-big-b)"></stop>
+		</linearGradient>
+		<linearGradient
+			id={I('p5')}
+			x1="-2.27855"
+			y1="22.7738"
+			x2="12.0596"
+			y2="33.6697"
+			gradientUnits="userSpaceOnUse"
+		>
+			<stop offset="0.420811" stop-color="white" stop-opacity="0"></stop>
+			<stop offset="0.434193" stop-color="white"></stop>
+			<stop offset="0.806429" stop-color="white" stop-opacity="0"></stop>
+		</linearGradient>
+		<linearGradient id={I('p6')} x1="24.1526" y1="12.1" x2="24.1526" y2="29.1" gradientUnits="userSpaceOnUse">
+			<stop stop-color="var(--feature-spotlight-p6-start)" stop-opacity="var(--feature-spotlight-p6-start-opacity)"></stop>
+			<stop offset="1" stop-color="var(--feature-spotlight-p6-end)"></stop>
+		</linearGradient>
+		<linearGradient id={I('p7')} x1="15.6997" y1="20.6" x2="32.6527" y2="20.6" gradientUnits="userSpaceOnUse">
+			<stop stop-color="var(--feature-spotlight-glyph-a)"></stop>
+			<stop offset="1" stop-color="var(--feature-spotlight-glyph-b)"></stop>
+		</linearGradient>
+
+		<!-- Idle glyph fills — stops follow theme (light: stronger contrast on gray card) -->
+		<linearGradient id={I('igr-d')} x1="0" y1="0" x2="1" y2="0.2" gradientUnits="objectBoundingBox">
+			<stop stop-color="var(--feature-spotlight-glyph-a)"></stop>
+			<stop offset="1" stop-color="var(--feature-spotlight-glyph-b)"></stop>
+		</linearGradient>
+		<linearGradient id={I('igr-v')} x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+			<stop stop-color="var(--feature-spotlight-glyph-a)"></stop>
+			<stop offset="1" stop-color="var(--feature-spotlight-glyph-b)"></stop>
+		</linearGradient>
+		<linearGradient id={I('igr-vb')} x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
+			<stop stop-color="var(--feature-spotlight-glyph-a)"></stop>
+			<stop offset="1" stop-color="var(--feature-spotlight-glyph-b)"></stop>
+		</linearGradient>
+		<linearGradient id={I('igr-h')} x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+			<stop stop-color="var(--feature-spotlight-glyph-a)"></stop>
+			<stop offset="1" stop-color="var(--feature-spotlight-glyph-b)"></stop>
+		</linearGradient>
+		<linearGradient id={I('igr-l')} x1="1" y1="0" x2="0" y2="0" gradientUnits="objectBoundingBox">
+			<stop stop-color="var(--feature-spotlight-glyph-b)"></stop>
+			<stop offset="1" stop-color="var(--feature-spotlight-glyph-a)"></stop>
+		</linearGradient>
+		<linearGradient id={I('igr-r')} x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+			<stop stop-color="var(--feature-spotlight-glyph-a)"></stop>
+			<stop offset="1" stop-color="var(--feature-spotlight-glyph-b)"></stop>
+		</linearGradient>
+
+		<linearGradient
+			id={I('hg')}
+			x1="65.3004"
+			y1="72.4079"
+			x2="42.7892"
+			y2="84.3417"
+			gradientUnits="userSpaceOnUse"
+		>
+			<stop stop-color="#B45803"></stop>
+			<stop offset="0.505" stop-color="#C3276C"></stop>
+			<stop offset="1" stop-color="#A55EFF"></stop>
+		</linearGradient>
+		<linearGradient
+			id={I('hb0')}
+			x1="56.5"
+			y1="74.5"
+			x2="28.6958"
+			y2="78.9729"
+			gradientUnits="userSpaceOnUse"
+		>
+			<stop stop-color="#E98426"></stop>
+			<stop offset="0.505" stop-color="#D64988"></stop>
+			<stop offset="1" stop-color="#5B0AC1"></stop>
+		</linearGradient>
+		<linearGradient id={I('hb1')} x1="42.5" y1="24" x2="42.5" y2="62" gradientUnits="userSpaceOnUse">
+			<stop stop-color="var(--feature-spotlight-p1-top)"></stop>
+			<stop offset="1" stop-color="var(--feature-spotlight-p1-bottom)" stop-opacity="0"></stop>
+		</linearGradient>
+		<linearGradient
+			id={I('hi3')}
+			x1="65.7698"
+			y1="68.1829"
+			x2="12.4503"
+			y2="57.3233"
+			gradientUnits="userSpaceOnUse"
+		>
+			<stop offset="0.495" stop-color="#141414"></stop>
+			<stop offset="1" stop-color="#202020"></stop>
+		</linearGradient>
+		<linearGradient
+			id={I('hi4')}
+			x1="14.5202"
+			y1="58.7118"
+			x2="36.2212"
+			y2="80.6998"
+			gradientUnits="userSpaceOnUse"
+		>
+			<stop offset="0.420811" stop-color="white" stop-opacity="0"></stop>
+			<stop offset="0.434193" stop-color="white"></stop>
+			<stop offset="0.806429" stop-color="white" stop-opacity="0"></stop>
+		</linearGradient>
+		<linearGradient
+			id={I('hi5')}
+			x1="86.6222"
+			y1="50.1026"
+			x2="64.2702"
+			y2="79.8944"
+			gradientUnits="userSpaceOnUse"
+		>
+			<stop stop-color="#E98426"></stop>
+			<stop offset="0.505" stop-color="#D64988"></stop>
+			<stop offset="1" stop-color="#5B0AC1"></stop>
+		</linearGradient>
+		<linearGradient
+			id={I('hi6')}
+			x1="14.5202"
+			y1="58.7118"
+			x2="36.2212"
+			y2="80.6998"
+			gradientUnits="userSpaceOnUse"
+		>
+			<stop offset="0.420811" stop-color="white" stop-opacity="0"></stop>
+			<stop offset="0.434193" stop-color="white"></stop>
+			<stop offset="0.806429" stop-color="white" stop-opacity="0"></stop>
+		</linearGradient>
+		<linearGradient id={I('hi7')} x1="24.1526" y1="12.1" x2="24.1526" y2="29.1" gradientUnits="userSpaceOnUse">
+			<stop stop-color="white" stop-opacity="0.78"></stop>
+			<stop offset="1" stop-color="white"></stop>
+		</linearGradient>
+	</defs>
+
+	<g class="spotlight-icon-svg__glow" filter={`url(#${I('f-glow')})`}>
+		<ellipse
+			cx="17.2913"
+			cy="26.5833"
+			rx="23"
+			ry="18.3185"
+			transform="rotate(57.2495 17.2913 26.5833)"
+			fill={`url(#${I('hg')})`}
+			fill-opacity="0.29"
+		>
+		</ellipse>
+	</g>
+
+	<g class="spotlight-icon-svg__idle">
+		<g filter={`url(#${I('f-inner')})`}>
+			<rect x="5.6001" y="2.60001" width="38" height="38" rx="19" fill="var(--feature-spotlight-plate-fill)"></rect>
+			<rect
+				x="5.7001"
+				y="2.70001"
+				width="37.8"
+				height="37.8"
+				rx="18.9"
+				stroke={`url(#${I('p0')})`}
+				stroke-width="0.2"
+			>
+			</rect>
+			<rect
+				x="5.7001"
+				y="2.70001"
+				width="37.8"
+				height="37.8"
+				rx="18.9"
+				stroke={`url(#${I('p1')})`}
+				stroke-width="0.2"
+			>
+			</rect>
+		</g>
+		<g filter={`url(#${I('f-drop')})`}>
+			<g clip-path={`url(#${I('disc')})`}>
+				<slot />
+			</g>
+		</g>
+	</g>
+
+	<g class="spotlight-icon-svg__hover">
+		<g filter={`url(#${I('f-inner')})`}>
+			<rect x="5.6001" y="2.60001" width="38" height="38" rx="19" fill="var(--feature-spotlight-plate-fill)"></rect>
+			<rect
+				x="5.7001"
+				y="2.70001"
+				width="37.8"
+				height="37.8"
+				rx="18.9"
+				stroke={`url(#${I('hb0')})`}
+				stroke-width="0.2"
+			>
+			</rect>
+			<rect
+				x="5.7001"
+				y="2.70001"
+				width="37.8"
+				height="37.8"
+				rx="18.9"
+				stroke={`url(#${I('hb1')})`}
+				stroke-width="0.2"
+			>
+			</rect>
+		</g>
+		<g filter={`url(#${I('f-drop')})`}>
+			<g clip-path={`url(#${I('disc')})`}>
+				<path d={BIG} fill={`url(#${I('hi3')})`} fill-opacity="0.81"></path>
+				<path d={BIG} fill={`url(#${I('hi4')})`} fill-opacity="0.02"></path>
+				<path d={BIG} fill={`url(#${I('hi5')})`}></path>
+				<path d={BIG} fill={`url(#${I('hi6')})`} fill-opacity="0.1"></path>
+				<g transform={innerTf}>
+					{
+						glyphDs.map((d) => (
+							<path
+								d={d}
+								fill={`url(#${I('hi7')})`}
+								clip-rule={hoverEvenOdd ? 'evenodd' : undefined}
+								fill-rule={hoverEvenOdd ? 'evenodd' : undefined}
+							></path>
+						))
+					}
+				</g>
+			</g>
+		</g>
+	</g>
+</svg>
+
+<style>
+	.spotlight-icon-svg {
+		backface-visibility: hidden;
+		background: transparent;
+		display: block;
+		flex-shrink: 0;
+		-webkit-backface-visibility: hidden;
+	}
+</style>
+
+<style is:global>
+	.spotlight-icon-svg__glow,
+	.spotlight-icon-svg__idle,
+	.spotlight-icon-svg__hover {
+		transition:
+			opacity 0.28s ease,
+			visibility 0.28s ease;
+	}
+
+	.spotlight-icon-svg__glow,
+	.spotlight-icon-svg__hover {
+		opacity: 0;
+		visibility: hidden;
+	}
+
+	.spotlight-icon-svg__idle {
+		visibility: visible;
+	}
+
+	.feature-spotlight-card:hover .spotlight-icon-svg__glow,
+	.feature-spotlight-card:focus-within .spotlight-icon-svg__glow {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	.feature-spotlight-card:hover .spotlight-icon-svg__idle,
+	.feature-spotlight-card:focus-within .spotlight-icon-svg__idle {
+		opacity: 0;
+		visibility: hidden;
+	}
+
+	.feature-spotlight-card:hover .spotlight-icon-svg__hover,
+	.feature-spotlight-card:focus-within .spotlight-icon-svg__hover {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.spotlight-icon-svg__glow,
+		.spotlight-icon-svg__idle,
+		.spotlight-icon-svg__hover {
+			transition: none;
+		}
+	}
+</style>

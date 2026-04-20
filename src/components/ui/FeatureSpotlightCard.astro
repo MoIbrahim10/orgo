@@ -1,0 +1,110 @@
+---
+import {
+	FEATURE_SPOTLIGHT_GLYPH_HOVER_FILL_RULE,
+	FEATURE_SPOTLIGHT_GLYPH_PATHS,
+} from './featureSpotlightIconData';
+import FeatureSpotlightIconSvg from './FeatureSpotlightIconSvg.astro';
+import FeatureSpotlightInnerCalendar from './FeatureSpotlightInnerCalendar.astro';
+import FeatureSpotlightInnerGear from './FeatureSpotlightInnerGear.astro';
+import FeatureSpotlightInnerJournal from './FeatureSpotlightInnerJournal.astro';
+import FeatureSpotlightInnerLaurel from './FeatureSpotlightInnerLaurel.astro';
+import FeatureSpotlightInnerQuadrants from './FeatureSpotlightInnerQuadrants.astro';
+import FeatureSpotlightInnerTeam from './FeatureSpotlightInnerTeam.astro';
+import type { HomeFeatureSpotlightIcon } from '../../types/home';
+
+interface Props {
+	cardIndex?: number;
+	class?: string;
+	description: string;
+	icon: HomeFeatureSpotlightIcon;
+	title: string;
+}
+
+const { cardIndex = 0, class: className, description, icon, title } = Astro.props as Props;
+
+const defsId = `feature-spotlight-icon-${cardIndex}`;
+
+const SpotlightInnerByIcon = {
+	calendar: FeatureSpotlightInnerCalendar,
+	quadrants: FeatureSpotlightInnerQuadrants,
+	journal: FeatureSpotlightInnerJournal,
+	gear: FeatureSpotlightInnerGear,
+	team: FeatureSpotlightInnerTeam,
+	laurel: FeatureSpotlightInnerLaurel,
+} as const;
+
+const SpotlightInner = SpotlightInnerByIcon[icon];
+const glyphPaths = FEATURE_SPOTLIGHT_GLYPH_PATHS[icon];
+const glyphHoverFillRule = FEATURE_SPOTLIGHT_GLYPH_HOVER_FILL_RULE[icon];
+---
+
+<article class:list={['card', 'feature-spotlight-card', className]}>
+	<FeatureSpotlightIconSvg
+		glyphHoverFillRule={glyphHoverFillRule}
+		glyphPathD={glyphPaths}
+		instanceId={defsId}
+	>
+		<SpotlightInner instanceId={defsId} />
+	</FeatureSpotlightIconSvg>
+	<div class="body">
+		<div class="text-stack">
+			<h3 class="title">{title}</h3>
+			<p class="desc">{description}</p>
+		</div>
+	</div>
+</article>
+
+<style>
+	.card {
+		align-items: flex-start;
+		background: linear-gradient(137.06deg, #f3f3f3 24.05%, #ececec 75.84%);
+		border-radius: 7px;
+		display: flex;
+		flex-direction: column;
+		gap: 21px;
+		justify-content: center;
+		overflow: visible;
+		padding: 24px;
+	}
+
+	.body {
+		align-items: flex-start;
+		display: flex;
+		flex-direction: column;
+		gap: 21px;
+		padding: 0;
+		width: 100%;
+	}
+
+	.text-stack {
+		align-items: flex-start;
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		padding: 0;
+	}
+
+	.title {
+		color: var(--foreground-primary);
+		font-family: var(--font-ui);
+		font-size: 16px;
+		font-style: normal;
+		font-weight: 500;
+		line-height: 19px;
+		margin: 0;
+	}
+
+	.desc {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 16px;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 19px;
+		margin: 0;
+	}
+
+	:global(html[data-theme='dark']) .card {
+		background: linear-gradient(137.06deg, #141414 24.05%, #0d0d0d 75.84%);
+	}
+</style>

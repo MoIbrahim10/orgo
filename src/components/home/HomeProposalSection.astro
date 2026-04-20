@@ -14,7 +14,7 @@ const { content, primaryHref, secondaryHref } = Astro.props as Props;
 ---
 
 <PageSection class="py-8" tone="transparent">
-	<div class="home-proposal-panel">
+	<div class="proposal-panel">
 		<div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.42fr)] lg:items-center">
 			<SectionIntro
 				description={content.description}
@@ -22,7 +22,7 @@ const { content, primaryHref, secondaryHref } = Astro.props as Props;
 				title={content.title}
 				tone="inverse"
 			/>
-			<div class="rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-5">
+			<div class="rounded-[1.75rem] border border-white/10 bg-white/04 p-5">
 				<ul class="grid gap-4">
 					{
 						content.points.map((point) => (
@@ -49,3 +49,41 @@ const { content, primaryHref, secondaryHref } = Astro.props as Props;
 		</div>
 	</div>
 </PageSection>
+
+<style is:global>
+	:root {
+		--home-proposal-panel-bg:
+			radial-gradient(circle at top left, oklch(83% 0.12 82deg / 14%), transparent 28%),
+			radial-gradient(circle at bottom right, oklch(82% 0.08 230deg / 16%), transparent 28%),
+			linear-gradient(
+				160deg,
+				oklch(12.9% 0.042 264.695deg) 0%,
+				oklch(20.8% 0.042 265.755deg) 62%,
+				oklch(27.9% 0.041 260.031deg) 100%
+			);
+	}
+
+	html[data-theme="dark"] {
+		--home-proposal-panel-bg:
+			radial-gradient(circle at top left, oklch(72% 0.11 82deg / 16%), transparent 28%),
+			radial-gradient(circle at bottom right, oklch(68% 0.08 195deg / 12%), transparent 28%),
+			linear-gradient(
+				160deg,
+				oklch(17.9% 0 0deg) 0%,
+				oklch(21.5% 0 0deg) 54%,
+				oklch(25.5% 0 0deg) 100%
+			);
+	}
+</style>
+
+<style>
+	.proposal-panel {
+		background: var(--home-proposal-panel-bg);
+		border: 1px solid var(--page-border);
+		border-radius: 2rem;
+		box-shadow: 0 26px 80px oklch(20.8% 0.042 265.755deg / 18%);
+		color: oklch(100% 0 0deg);
+		overflow: hidden;
+		padding: 2rem;
+	}
+</style>

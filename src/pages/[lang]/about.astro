@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import PeopleGrid from "../../components/people/PeopleGrid.astro";
+import MarketingEyebrow from "../../components/ui/MarketingEyebrow.astro";
 import ActionLink from "../../components/ui/ActionLink.astro";
 import PageSection from "../../components/ui/PageSection.astro";
 import SectionIntro from "../../components/ui/SectionIntro.astro";
@@ -30,7 +31,7 @@ export function getStaticPaths() {
 
 	<PageSection backdrop="grid" layout="split" surface="panel">
 		<div class="space-y-5">
-			<p class="marketing-eyebrow">{content.story.eyebrow}</p>
+			<MarketingEyebrow>{content.story.eyebrow}</MarketingEyebrow>
 			<h2 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
 				{content.story.title}
 			</h2>

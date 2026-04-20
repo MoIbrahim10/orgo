@@ -2,13 +2,13 @@
 import ActionLink from "../../components/ui/ActionLink.astro";
 import HomeFeatureStory from "../../components/home/HomeFeatureStory.astro";
 import HomeHero from "../../components/home/HomeHero.astro";
-import HomeJumpNav from "../../components/home/HomeJumpNav.astro";
+import HomeFeatureSpotlightSection from "../../components/home/HomeFeatureSpotlightSection.astro";
 import HomePerspectivesSection from "../../components/home/HomePerspectivesSection.astro";
-import HomeProofStrip from "../../components/home/HomeProofStrip.astro";
 import HomeProposalSection from "../../components/home/HomeProposalSection.astro";
 import HomeStoriesSection from "../../components/home/HomeStoriesSection.astro";
 import HomeWorkflowSection from "../../components/home/HomeWorkflowSection.astro";
 import MarketingIcon from "../../components/home/MarketingIcon.astro";
+import MarketingEyebrow from "../../components/ui/MarketingEyebrow.astro";
 import PageSection from "../../components/ui/PageSection.astro";
 import SectionIntro from "../../components/ui/SectionIntro.astro";
 import { getHomePageContent } from "../../data/translations/home";
@@ -33,15 +33,16 @@ const bilingualPlanningHref = getLocalizedPath(lang, "/bilingual-planning");
 ---
 
 <Layout lang={lang} pageDescription={homeContent.hero.description} pageTitle={siteTranslations.title}>
-	<div class="py-10 flex flex-col gap-12">
+	<div class="py-10 flex flex-col gap-24">
 		<HomeHero
 			content={homeContent.hero}
 			lang={lang}
 			primaryHref={pricingHref}
 			secondaryHref={bilingualPlanningHref}
 		/>
-		<HomeJumpNav label={homeContent.jumpLinksLabel} links={homeContent.jumpLinks} />
-		<HomeProofStrip signals={homeContent.processSignals} />
+    <div class="flex flex-col gap-36 max-w-[914px] mx-auto">
+
+		<HomeFeatureSpotlightSection content={homeContent.featureSpotlight} />
 		{
 			homeContent.features.map((story) => (
 				<HomeFeatureStory story={story} />
@@ -126,7 +127,7 @@ const bilingualPlanningHref = getLocalizedPath(lang, "/bilingual-planning");
 			<div class="marketing-panel mx-auto max-w-6xl rounded-4xl border border-slate-200 bg-linear-to-br from-amber-50 via-white to-sky-50 px-6 py-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10 lg:px-12">
 				<div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
 					<div class="max-w-3xl">
-						<p class="marketing-eyebrow">{siteTranslations.title}</p>
+						<MarketingEyebrow>{siteTranslations.title}</MarketingEyebrow>
 						<h2 class="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
 							{homeContent.cta.title}
 						</h2>
@@ -143,5 +144,6 @@ const bilingualPlanningHref = getLocalizedPath(lang, "/bilingual-planning");
 				</div>
 			</div>
 		</PageSection>
+    </div>
 	</div>
 </Layout>

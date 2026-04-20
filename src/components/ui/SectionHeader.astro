@@ -1,0 +1,83 @@
+---
+interface Props {
+	align?: "center" | "start";
+	class?: string;
+	description: string;
+	headline: string;
+	headlineId?: string;
+	headlineTag?: "h1" | "h2" | "h3";
+	sectionName: string;
+}
+
+const {
+	align = "center",
+	class: className,
+	description,
+	headline,
+	headlineId,
+	headlineTag = "h2",
+	sectionName,
+} = Astro.props as Props;
+
+const TitleTag = headlineTag;
+---
+
+<header class:list={["section-header", className]} data-align={align}>
+	<p class="label">{sectionName}</p>
+	<TitleTag class="headline" id={headlineId}>{headline}</TitleTag>
+	<p class="description">{description}</p>
+</header>
+
+<style>
+	.section-header {
+		align-items: flex-start;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		justify-content: center;
+		max-width: 42rem;
+		padding: 0;
+		text-align: start;
+	}
+
+	.section-header[data-align="center"] {
+		align-items: center;
+
+		margin-inline: auto;
+		text-align: center;
+	}
+
+	.label {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 12px;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 15px;
+		margin: 0;
+	}
+
+	.headline {
+		color: var(--foreground-primary);
+		font-family: var(--font-display-latin);
+		font-size: 32px;
+		font-style: normal;
+		font-weight: 600;
+		line-height: 43px;
+		margin: 0;
+	}
+
+	.description {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 16px;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 19px;
+		margin: 0;
+	}
+
+	:global(body.locale-arabic) .headline {
+		font-family: var(--font-display-arabic);
+	}
+</style>

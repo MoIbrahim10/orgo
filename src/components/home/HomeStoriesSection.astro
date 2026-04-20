@@ -3,6 +3,7 @@ import type { HomePageContent } from "../../types/home";
 import ActionLink from "../ui/ActionLink.astro";
 import PageSection from "../ui/PageSection.astro";
 import SectionIntro from "../ui/SectionIntro.astro";
+import HomeLiftedCard from "./HomeLiftedCard.astro";
 import MarketingIcon from "./MarketingIcon.astro";
 
 interface Props {
@@ -21,7 +22,7 @@ const { content } = Astro.props as Props;
 	<div class="mt-10 grid gap-6 xl:grid-cols-3">
 		{
 			content.cards.map((card) => (
-				<article class="home-case-card">
+				<HomeLiftedCard>
 					<div class="flex items-center justify-between gap-4">
 						<div class="rounded-2xl bg-slate-950 p-2 text-white">
 							<MarketingIcon className="h-5 w-5" name={card.icon} />
@@ -45,7 +46,7 @@ const { content } = Astro.props as Props;
 							{card.cta}
 						</ActionLink>
 					)}
-				</article>
+				</HomeLiftedCard>
 			))
 		}
 	</div>

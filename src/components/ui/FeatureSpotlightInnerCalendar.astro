@@ -1,0 +1,27 @@
+---
+/**
+ * Idle disc: calendar (24×24 art, translated). Shared defs: `p2`–`p7`.
+ */
+import {
+	FEATURE_SPOTLIGHT_BIG_D,
+	FEATURE_SPOTLIGHT_GLYPH_PATHS,
+	FEATURE_SPOTLIGHT_INNER_G_TRANSFORM,
+} from './featureSpotlightIconData';
+
+interface Props {
+	instanceId: string;
+}
+
+const { instanceId } = Astro.props as Props;
+const g = (suffix: string) => `url(#spotlight-${instanceId}-${suffix})`;
+const BIG = FEATURE_SPOTLIGHT_BIG_D;
+const TF = FEATURE_SPOTLIGHT_INNER_G_TRANSFORM;
+const [calTop, calBody] = FEATURE_SPOTLIGHT_GLYPH_PATHS.calendar;
+---
+
+<path d={BIG} fill={g('p2')} fill-opacity="0.81"></path>
+<path d={BIG} fill={g('p3')} fill-opacity="0.02"></path>
+<g transform={TF} opacity="0.78">
+	<path d={calTop} fill={g('igr-d')}></path>
+	<path d={calBody} fill={g('igr-v')}></path>
+</g>

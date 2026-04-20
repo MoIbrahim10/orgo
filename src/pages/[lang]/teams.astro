@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import ResponsiveMedia from "../../components/common/ResponsiveMedia.astro";
 import PeopleGrid from "../../components/people/PeopleGrid.astro";
+import MarketingEyebrow from "../../components/ui/MarketingEyebrow.astro";
 import ActionLink from "../../components/ui/ActionLink.astro";
 import PageSection from "../../components/ui/PageSection.astro";
 import SectionIntro from "../../components/ui/SectionIntro.astro";
@@ -32,7 +33,7 @@ const metadata = createMarketingMetadata(lang, {
 	<PageSection class="overflow-hidden pt-12" size="wide">
 		<div class="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.95fr)] lg:items-center">
 			<div class="max-w-3xl">
-				<p class="marketing-eyebrow">{content.hero.eyebrow}</p>
+				<MarketingEyebrow>{content.hero.eyebrow}</MarketingEyebrow>
 				<h1 class="font-display mt-6 text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl sm:leading-[1.02]">
 					{content.hero.title}
 				</h1>

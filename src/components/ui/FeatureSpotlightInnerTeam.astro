@@ -1,0 +1,23 @@
+---
+import {
+	FEATURE_SPOTLIGHT_BIG_D,
+	FEATURE_SPOTLIGHT_GLYPH_PATHS,
+	FEATURE_SPOTLIGHT_INNER_G_TRANSFORM,
+} from './featureSpotlightIconData';
+
+interface Props {
+	instanceId: string;
+}
+
+const { instanceId } = Astro.props as Props;
+const g = (suffix: string) => `url(#spotlight-${instanceId}-${suffix})`;
+const BIG = FEATURE_SPOTLIGHT_BIG_D;
+const TF = FEATURE_SPOTLIGHT_INNER_G_TRANSFORM;
+const [teamD] = FEATURE_SPOTLIGHT_GLYPH_PATHS.team;
+---
+
+<path d={BIG} fill={g('p2')} fill-opacity="0.81"></path>
+<path d={BIG} fill={g('p3')} fill-opacity="0.02"></path>
+<g transform={TF} opacity="0.78">
+	<path fill-rule="evenodd" clip-rule="evenodd" d={teamD} fill={g('igr-vb')}></path>
+</g>
