@@ -6,10 +6,22 @@ type ContactFlowContent = {
 	title: string;
 	description: string;
 	intro: string;
+	channels: {
+		sectionName: string;
+		title: string;
+		description: string;
+	};
 	emailLabel: string;
 	emailValue: string;
+	emailHint: string;
 	githubLabel: string;
 	githubValue: string;
+	githubHint: string;
+	conversationsIntro: {
+		sectionName: string;
+		title: string;
+		description: string;
+	};
 	conversations: Array<{
 		title: string;
 		body: string;
@@ -17,7 +29,7 @@ type ContactFlowContent = {
 		href: string;
 	}>;
 	process: {
-		eyebrow: string;
+		sectionName: string;
 		title: string;
 		description: string;
 		steps: Array<{
@@ -25,16 +37,14 @@ type ContactFlowContent = {
 			body: string;
 		}>;
 	};
+	availabilityAsideTitle: string;
 	availability: Array<{
 		label: string;
 		value: string;
 	}>;
-	closing: {
-		title: string;
-		description: string;
-		primaryLabel: string;
-		secondaryLabel: string;
-	};
+	quickLinksLabel: string;
+	faqLinkLabel: string;
+	blogLinkLabel: string;
 };
 
 const contentByLanguage: Record<Language, ContactFlowContent> = {
@@ -42,13 +52,27 @@ const contentByLanguage: Record<Language, ContactFlowContent> = {
 		metaTitle: "Contact",
 		title: "Start the right conversation with Orgo",
 		description:
-			"Reach out for product fit, bilingual workflow questions, early access interest, or thoughtful feedback.",
+			"Questions about early access, bilingual workflows, or how Orgo fits your routine—say hello by email.",
 		intro:
-			"The goal of the contact page is not to pressure you into a demo. It is to help you choose the conversation that actually matches where you are.",
+			"Email is the best line. Tell us how you plan, write, and coordinate—we reply with care, usually asynchronously, and only nudge the conversation forward when it helps.",
+		channels: {
+			sectionName: "Direct lines",
+			title: "Email or GitHub",
+			description:
+				"Use email for anything personal or time-sensitive. GitHub is best for code, issues, and public technical threads.",
+		},
 		emailLabel: "Email",
 		emailValue: "hello@orgo.app",
+		emailHint: "We read every message—replies are usually asynchronous.",
 		githubLabel: "GitHub",
 		githubValue: "https://github.com/MoIbrahim10/orgo",
+		githubHint: "Source, issues, and discussions in the open.",
+		conversationsIntro: {
+			sectionName: "Conversations",
+			title: "Pick a starting point",
+			description:
+				"Each path below opens a different thread—choose what matches your question.",
+		},
 		conversations: [
 			{
 				title: "Product fit",
@@ -70,7 +94,7 @@ const contentByLanguage: Record<Language, ContactFlowContent> = {
 			},
 		],
 		process: {
-			eyebrow: "How it works",
+			sectionName: "How it works",
 			title: "A calm sales flow, if sales is even the right word.",
 			description:
 				"The contact experience is intentionally lightweight: understand your context, reply with care, and only keep going if the conversation is useful.",
@@ -89,6 +113,7 @@ const contentByLanguage: Record<Language, ContactFlowContent> = {
 				},
 			],
 		},
+		availabilityAsideTitle: "What to expect",
 		availability: [
 			{
 				label: "Best for",
@@ -100,25 +125,34 @@ const contentByLanguage: Record<Language, ContactFlowContent> = {
 				value: "Replies are usually thoughtful and asynchronous rather than instant.",
 			},
 		],
-		closing: {
-			title: "Prefer to learn more before reaching out?",
-			description:
-				"Start with the journal or the FAQ, then come back once you know which conversation you actually want.",
-			primaryLabel: "Read the FAQ",
-			secondaryLabel: "Open the blog",
-		},
+		quickLinksLabel: "More on the site",
+		faqLinkLabel: "FAQ",
+		blogLinkLabel: "Blog",
 	},
 	ar: {
 		metaTitle: "تواصل",
 		title: "ابدأ الحوار المناسب مع Orgo",
 		description:
-			"تواصل معنا بخصوص ملاءمة المنتج أو العمل الثنائي اللغة أو الاهتمام بالوصول المبكر أو الملاحظات المتأنية.",
+			"راسلنا—أسئلة حول الوصول المبكر، أو سير العمل الثنائي اللغة، أو كيف يناسبك Orgo.",
 		intro:
-			"الهدف من صفحة التواصل ليس دفعك إلى عرض سريع، بل مساعدتك على اختيار الحوار الذي يناسب مرحلتك فعلًا.",
+			"البريد هو الخط الأنسب. أخبرنا كيف تخطّط وتكتب وتنسّق—نرد بعناية، وغالباً بشكل غير متزامن، ونكمل الحوار فقط عندما يفيد ذلك.",
+		channels: {
+			sectionName: "خطوط التواصل",
+			title: "البريد أو جيت هب",
+			description:
+				"استخدم البريد لما هو شخصي أو يحتاج متابعة. جيت هب أنسب للكود والقضايا والنقاش التقني العلني.",
+		},
 		emailLabel: "البريد الإلكتروني",
 		emailValue: "hello@orgo.app",
+		emailHint: "نقرأ كل رسالة—الردود عادة غير فورية.",
 		githubLabel: "جيت هب",
 		githubValue: "https://github.com/MoIbrahim10/orgo",
+		githubHint: "الشفرة والقضايا والنقاش في العلن.",
+		conversationsIntro: {
+			sectionName: "محادثات",
+			title: "اختر نقطة البداية",
+			description: "كل مسار أدناه يفتح موضوعًا مختلفًا—اختر ما يناسب سؤالك.",
+		},
 		conversations: [
 			{
 				title: "ملاءمة المنتج",
@@ -140,7 +174,7 @@ const contentByLanguage: Record<Language, ContactFlowContent> = {
 			},
 		],
 		process: {
-			eyebrow: "كيف تسير المحادثة",
+			sectionName: "كيف تسير المحادثة",
 			title: "مسار مبيعات هادئ، إن صحّ أن نسميه مبيعات أصلًا.",
 			description:
 				"صُممت تجربة التواصل لتكون خفيفة: نفهم سياقك، نرد بعناية، ثم نواصل فقط إذا كانت الخطوة التالية مفيدة فعلًا.",
@@ -159,6 +193,7 @@ const contentByLanguage: Record<Language, ContactFlowContent> = {
 				},
 			],
 		},
+		availabilityAsideTitle: "ماذا تتوقع",
 		availability: [
 			{
 				label: "الأفضل من أجله",
@@ -170,13 +205,9 @@ const contentByLanguage: Record<Language, ContactFlowContent> = {
 				value: "الردود عادة متأنية وغير فورية بطبيعتها.",
 			},
 		],
-		closing: {
-			title: "تفضّل أن تتعرف أكثر قبل أن تتواصل؟",
-			description:
-				"ابدأ بالأسئلة الشائعة أو المدوّنة، ثم عد عندما يتضح لك نوع الحوار الذي تحتاجه فعلًا.",
-			primaryLabel: "اقرأ الأسئلة الشائعة",
-			secondaryLabel: "افتح المدوّنة",
-		},
+		quickLinksLabel: "المزيد في الموقع",
+		faqLinkLabel: "الأسئلة الشائعة",
+		blogLinkLabel: "المدونة",
 	},
 };
 
@@ -189,10 +220,5 @@ export function getContactPageContent(lang: Language) {
 			...conversation,
 			href: getLocalizedPath(lang, conversation.href),
 		})),
-		closing: {
-			...content.closing,
-			primaryHref: getLocalizedPath(lang, "/faq"),
-			secondaryHref: getLocalizedPath(lang, "/blog"),
-		},
 	};
 }

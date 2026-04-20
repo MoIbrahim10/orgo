@@ -68,7 +68,10 @@ const homeHref = getLocalizedPath(lang);
 				</p>
 				<nav aria-label={footerTranslations.primaryTitle} class="site-footer-nav">
 					{footerTranslations.primaryLinks.map((link) => (
-						<a class="site-footer-link" href={getLocalizedPath(lang, link.href)}>
+						<a
+							class="site-footer-link"
+							href={link.localeAbsolute ? link.href : getLocalizedPath(lang, link.href)}
+						>
 							{link.label}
 						</a>
 					))}
@@ -80,7 +83,10 @@ const homeHref = getLocalizedPath(lang);
 				</p>
 				<nav aria-label={footerTranslations.resourcesTitle} class="site-footer-nav">
 					{footerTranslations.resourceLinks.map((link) => (
-						<a class="site-footer-link" href={getLocalizedPath(lang, link.href)}>
+						<a
+							class="site-footer-link"
+							href={link.localeAbsolute ? link.href : getLocalizedPath(lang, link.href)}
+						>
 							{link.label}
 						</a>
 					))}

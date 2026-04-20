@@ -2,8 +2,7 @@
 import { getCollection } from "astro:content";
 import FaqAccordion from "../../components/faq/FaqAccordion.astro";
 import ActionLink from "../../components/ui/ActionLink.astro";
-import PageSection from "../../components/ui/PageSection.astro";
-import SectionIntro from "../../components/ui/SectionIntro.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import { getResourcePagesContent } from "../../data/translations/resources";
 import Layout from "../../layouts/Layout.astro";
 import { createMarketingMetadata } from "../../utils/metadata";
@@ -39,48 +38,215 @@ const metadata = createMarketingMetadata(lang, {
 ---
 
 <Layout {...metadata}>
-	<PageSection backdrop="glow" tone="warm">
-		<SectionIntro
-			description={pageContent.intro}
-			title={pageContent.title}
-			titleTag="h1"
-		/>
-	</PageSection>
-
-	<PageSection layout="split" surface="panel">
-		<div>
-			<FaqAccordion items={faqEntries} />
-		</div>
-		<div slot="aside" class="space-y-5">
-			<div class="rounded-[1.75rem] border border-slate-200 bg-slate-50 p-6">
-				<h2 class="font-display text-2xl font-semibold tracking-tight text-slate-950">
-					{pageContent.sidebarTitle}
-				</h2>
-				<p class="mt-4 text-base leading-7 text-slate-600">{pageContent.sidebarDescription}</p>
-				<div class="mt-6 flex flex-wrap gap-3">
-					<ActionLink href={pageContent.primaryHref} size="sm" variant="primary">
-						{pageContent.primaryLabel}
-					</ActionLink>
-					<ActionLink href={pageContent.secondaryHref} size="sm" variant="secondary">
-						{pageContent.secondaryLabel}
-					</ActionLink>
-				</div>
-			</div>
-			<div class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
-				<p class="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
-					{lang === "ar" ? "الموضوعات" : "Categories"}
+	<div class="faq-page py-10">
+		<section aria-labelledby="faq-hero-heading" class="faq-page__hero" data-home-reveal-section>
+			<div class="faq-page__hero-inner">
+				<h1 id="faq-hero-heading" class="faq-page__title home-reveal" style="--reveal-index: 0">
+					{pageContent.title}
+				</h1>
+				<p class="faq-page__lead home-reveal" style="--reveal-index: 1">
+					{pageContent.intro}
 				</p>
-				<ul class="mt-4 grid gap-3">
-					{categorySummaries.map((category) => (
-						<li class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
-							<span>{category.label}</span>
-							<span class="rounded-full bg-white px-2 py-0.5 text-xs text-slate-500">
-								{category.count}
-							</span>
-						</li>
-					))}
-				</ul>
 			</div>
+		</section>
+
+		<div class="home-main-stack mx-auto flex w-full max-w-[914px] flex-col gap-36 pb-12">
+			<section class="faq-page__block" aria-labelledby="faq-content-heading" data-home-reveal-section>
+				<h2 id="faq-content-heading" class="faq-page__sr-only">
+					{pageContent.title}
+				</h2>
+				<div class="faq-page__split">
+					<div class="faq-page__accordion home-reveal" style="--reveal-index: 2">
+						<FaqAccordion items={faqEntries} />
+					</div>
+					<div class="faq-page__aside">
+						<div class="faq-page__glance home-reveal" style="--reveal-index: 3">
+							<SectionHeader
+								align="start"
+								description={pageContent.sidebarDescription}
+								headline={pageContent.sidebarTitle}
+								headlineTag="h2"
+								revealStagger={true}
+								sectionName={pageContent.sidebarSectionName}
+							/>
+							<div class="faq-page__sidebar-actions">
+								<ActionLink href={pageContent.primaryHref} size="sm" variant="primary">
+									{pageContent.primaryLabel}
+								</ActionLink>
+								<ActionLink href={pageContent.secondaryHref} size="sm" variant="secondary">
+									{pageContent.secondaryLabel}
+								</ActionLink>
+							</div>
+						</div>
+						<div class="faq-page__glance faq-page__glance--categories home-reveal" style="--reveal-index: 3">
+							<p class="faq-page__glance-label">{pageContent.categoriesLabel}</p>
+							<ul class="faq-page__category-list">
+								{
+									categorySummaries.map((category) => (
+										<li class="faq-page__category-row">
+											<span class="faq-page__category-name">{category.label}</span>
+											<span class="faq-page__category-count">{category.count}</span>
+										</li>
+									))
+								}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</section>
 		</div>
-	</PageSection>
+	</div>
 </Layout>
+
+<style>
+	.faq-page {
+		display: flex;
+		flex-direction: column;
+		gap: 6rem;
+	}
+
+	.faq-page__hero {
+		overflow: hidden;
+		padding-inline: 6px;
+		padding-top: 12px;
+		position: relative;
+	}
+
+	.faq-page__hero-inner {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.faq-page__title {
+		color: var(--foreground-primary);
+		font-size: 48px;
+		font-weight: 600;
+		margin-bottom: 8px;
+		margin-top: 0;
+		max-width: 46rem;
+		text-wrap: balance;
+	}
+
+	.faq-page__lead {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 19px;
+		max-width: 41rem;
+		text-wrap: pretty;
+	}
+
+	@media (max-width: 640px) {
+		.faq-page__title {
+			font-size: 40px;
+		}
+	}
+
+	.faq-page__sr-only {
+		border: 0;
+		clip: rect(0, 0, 0, 0);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
+	}
+
+	.faq-page__block {
+		width: 100%;
+	}
+
+	.faq-page__split {
+		align-items: start;
+		display: grid;
+		gap: clamp(1.75rem, 4vw, 2.5rem);
+		grid-template-columns: 1fr;
+	}
+
+	@media (width >= 960px) {
+		.faq-page__split {
+			grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.42fr);
+			gap: 2.5rem;
+		}
+	}
+
+	.faq-page__aside {
+		display: flex;
+		flex-direction: column;
+		gap: clamp(12px, 2vw, 16px);
+	}
+
+	.faq-page__glance {
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		box-shadow: var(--theme-shadow-soft);
+		padding: 1.375rem 1.25rem 1.5rem;
+	}
+
+	html[data-theme="dark"] .faq-page__glance {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.faq-page__glance :global(.section-header) {
+		max-width: none;
+	}
+
+	.faq-page__sidebar-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem;
+		margin-top: 1.25rem;
+	}
+
+	.faq-page__glance-label {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.faq-page__category-list {
+		list-style: none;
+		margin: 1rem 0 0;
+		padding: 0;
+	}
+
+	.faq-page__category-row {
+		align-items: center;
+		background: var(--page-surface-muted);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		color: var(--foreground-secondary);
+		display: flex;
+		font-family: var(--font-ui);
+		font-size: 0.875rem;
+		justify-content: space-between;
+		margin: 0;
+		padding: 0.65rem 0.75rem;
+	}
+
+	.faq-page__category-row + .faq-page__category-row {
+		margin-top: 0.5rem;
+	}
+
+	.faq-page__category-count {
+		background: var(--page-surface-solid);
+		border: 1px solid var(--page-border);
+		border-radius: 999px;
+		color: var(--foreground-tertiary);
+		font-size: 0.75rem;
+		font-variant-numeric: tabular-nums;
+		padding: 0.15rem 0.45rem;
+	}
+</style>

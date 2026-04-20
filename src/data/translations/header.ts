@@ -7,6 +7,7 @@ function translateLinks(lang: Language, links: NavLink[]) {
 	return links.map((link) => ({
 		label: t(lang, `header.links.${link.key}` as TranslationKey),
 		href: link.href,
+		localeAbsolute: link.localeAbsolute === true,
 	}));
 }
 

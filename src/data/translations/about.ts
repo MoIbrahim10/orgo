@@ -5,14 +5,20 @@ type AboutPageContent = {
 	metaTitle: string;
 	title: string;
 	description: string;
-	intro: string;
+	hero: {
+		intro: string;
+		primaryCta: string;
+		secondaryCta: string;
+	};
 	story: {
-		eyebrow: string;
+		sectionName: string;
 		title: string;
 		body: string;
+		glanceTitle: string;
+		glanceItems: [string, string, string];
 	};
 	principles: {
-		eyebrow: string;
+		sectionName: string;
 		title: string;
 		description: string;
 		items: Array<{
@@ -20,8 +26,14 @@ type AboutPageContent = {
 			body: string;
 		}>;
 	};
-	cta: {
+	people: {
+		sectionName: string;
 		title: string;
+		description: string;
+	};
+	cta: {
+		sectionName: string;
+		headline: string;
 		description: string;
 		primaryLabel: string;
 		secondaryLabel: string;
@@ -32,77 +44,111 @@ const contentByLanguage: Record<Language, AboutPageContent> = {
 	en: {
 		metaTitle: "About",
 		title: "About Orgo",
-		description: "Learn more about the product thinking, people, and principles shaping Orgo.",
-		intro:
-			"Orgo is designed for people who want planning, reflection, and follow-through to live closer together.",
+		description:
+			"Calm planning, thoughtful writing, and bilingual craft—the people and ideas behind the product.",
+		hero: {
+			intro:
+				"We build one focused place for your calendar, notes, and tasks—so the week ahead stays legible, in English or Arabic, without the noise.",
+			primaryCta: "See team workflow",
+			secondaryCta: "Read the journal",
+		},
 		story: {
-			eyebrow: "Why Orgo exists",
-			title: "We care about the invisible work of staying organized.",
-			body: "Most productivity tools focus on visible execution. Orgo pays attention to the quieter layer underneath: rough notes, weekly reviews, product context, and the small decisions that keep work humane.",
+			sectionName: "Why we build",
+			title: "The quiet work of staying organized matters.",
+			body: "Most tools celebrate tasks shipped. We care about the layer underneath: rough notes, weekly reviews, small decisions that keep work humane—and interfaces that stay readable as the product grows.",
+			glanceTitle: "At a glance",
+			glanceItems: [
+				"A small team across product, editorial, and Arabic experience.",
+				"Bilingual routing, content, and UI details treated as one system.",
+				"Decisions biased toward clarity and maintainability.",
+			],
 		},
 		principles: {
-			eyebrow: "Principles",
-			title: "A calmer standard for product decisions.",
-			description:
-				"The product and site are both shaped by a few principles that keep us honest as the system grows.",
+			sectionName: "Principles",
+			title: "How we judge tradeoffs.",
+			description: "A short list we use to keep the product and the marketing site aligned as both evolve.",
 			items: [
 				{
 					title: "Clarity before cleverness",
-					body: "The product should make decisions easier to understand before it tries to impress anyone.",
+					body: "Make the next action obvious before trying to impress.",
 				},
 				{
-					title: "Localization as product quality",
-					body: "English and Arabic experiences deserve the same care in tone, structure, and navigation.",
+					title: "Localization is product quality",
+					body: "English and Arabic deserve the same care in voice, structure, and navigation.",
 				},
 				{
-					title: "Systems that stay readable",
-					body: "We prefer reusable patterns that make the next page, section, or release easier to maintain.",
+					title: "Readable systems",
+					body: "Prefer patterns you can revisit and extend without untangling special cases.",
 				},
 			],
 		},
-		cta: {
-			title: "Want to see how these ideas show up in the product?",
+		people: {
+			sectionName: "People",
+			title: "Who’s behind Orgo",
 			description:
-				"Explore the teams workflow, read the journal, or start a thoughtful conversation about fit.",
-			primaryLabel: "See the team view",
-			secondaryLabel: "Talk to Orgo",
+				"The folks shaping product direction, editorial voice, and bilingual polish.",
+		},
+		cta: {
+			sectionName: "Next step",
+			headline: "See the ideas in the product—or say hello.",
+			description:
+				"Walk the teams workflow, browse the journal, or start a conversation when you’re ready.",
+			primaryLabel: "Team workflow",
+			secondaryLabel: "Contact",
 		},
 	},
 	ar: {
 		metaTitle: "من نحن",
 		title: "عن Orgo",
-		description: "تعرّف أكثر على طريقة التفكير والأشخاص والمبادئ التي تشكّل Orgo.",
-		intro: "صُمّم Orgo للأشخاص الذين يريدون أن يعيش التخطيط والتأمل والمتابعة في مساحة أقرب لبعضها.",
+		description:
+			"تخطيط هادئ، وكتابة واعية، وصنعة ثنائية اللغة—من يقف وراء المنتج وأفكاره.",
+		hero: {
+			intro:
+				"نبني مساحة واحدة مركّزة لتقويمك وملاحظاتك ومهامك؛ لتبقى الأسابيع القادمة واضحة، بالعربية أو الإنجليزية، من دون ضوضاء.",
+			primaryCta: "سير عمل الفِرق",
+			secondaryCta: "اقرأ المجلة",
+		},
 		story: {
-			eyebrow: "لماذا يوجد Orgo",
-			title: "نهتم بالعمل غير المرئي المطلوب للبقاء منظمين.",
-			body: "تركّز معظم أدوات الإنتاجية على التنفيذ الظاهر. أما Orgo فيمنح اهتمامًا للطبقة الأكثر هدوءًا أسفل ذلك: الملاحظات الخام، والمراجعات الأسبوعية، وسياق المنتج، والقرارات الصغيرة التي تبقي العمل إنسانيًا.",
+			sectionName: "لماذا نبني",
+			title: "العمل الهادئ للبقاء منظمين يهم.",
+			body: "كثير من الأدوات تحتفل بالمهام المنجزة. نحن نهتم بالطبقة تحتها: الملاحظات الخام، المراجعات الأسبوعية، القرارات الصغيرة التي تُبقي العلاقة إنسانية—وواجهات تبقى قابلة للقراءة كلما اتسع المنتج.",
+			glanceTitle: "لقطة سريعة",
+			glanceItems: [
+				"فريق صغير يجمع المنتج والتحرير والتجربة العربية.",
+				"مسارات ومحتوى وواجهة ثنائية اللغة كمنظومة واحدة.",
+				"قرارات تميل إلى الوضوح وسهولة الصيانة.",
+			],
 		},
 		principles: {
-			eyebrow: "المبادئ",
-			title: "معيار أهدأ لاتخاذ قرارات المنتج.",
-			description:
-				"يتشكل المنتج والموقع معًا حول عدد قليل من المبادئ التي تبقينا صادقين كلما اتسع النظام.",
+			sectionName: "المبادئ",
+			title: "كيف نزن المفاضلات.",
+			description: "قائمة قصيرة نلتزم بها ليبقى المنتج والموقع متسقين مع التوسع.",
 			items: [
 				{
 					title: "الوضوح قبل الاستعراض",
-					body: "يجب أن يجعل المنتج القرارات أوضح للفهم قبل أن يحاول إبهار أحد.",
+					body: "اجعل الخطوة التالية واضحة قبل أن تحاول الإبهار.",
 				},
 				{
-					title: "التعريب جزء من جودة المنتج",
-					body: "تستحق التجربتان العربية والإنجليزية القدر نفسه من العناية في النبرة والبنية والتنقل.",
+					title: "التعريب جودة المنتج",
+					body: "العربية والإنجليزية تستحقان العناية نفسها في الصوت والبنية والتنقل.",
 				},
 				{
-					title: "أنظمة تبقى قابلة للقراءة",
-					body: "نفضّل الأنماط القابلة لإعادة الاستخدام التي تجعل الصفحة أو القسم أو الإصدار التالي أسهل صيانة.",
+					title: "أنظمة قابلة للقراءة",
+					body: "فضّل الأنماط التي يمكن إعادة استخدامها وتوسيعها دون حالات استثنائية معقّدة.",
 				},
 			],
 		},
+		people: {
+			sectionName: "الفريق",
+			title: "من وراء Orgo",
+			description: "من يصوغ اتجاه المنتج والصوت التحريري والطبقة الثنائية اللغة.",
+		},
 		cta: {
-			title: "هل تريد أن ترى كيف تظهر هذه الأفكار داخل المنتج؟",
-			description: "استكشف صفحة الفرق، أو اقرأ المدوّنة، أو ابدأ حوارًا متأنيًا حول الملاءمة.",
-			primaryLabel: "شاهد صفحة الفرق",
-			secondaryLabel: "تواصل مع Orgo",
+			sectionName: "الخطوة التالية",
+			headline: "شاهد الأفكار في المنتج أو راسلنا.",
+			description: "اطّلع على سير عمل الفرق، أو تصفّح المجلة، أو ابدأ الحوار عندما يناسبك.",
+			primaryLabel: "سير عمل الفرق",
+			secondaryLabel: "تواصل",
 		},
 	},
 };
@@ -112,6 +158,11 @@ export function getAboutPageContent(lang: Language) {
 
 	return {
 		...content,
+		hero: {
+			...content.hero,
+			primaryHref: getLocalizedPath(lang, "/teams"),
+			secondaryHref: getLocalizedPath(lang, "/blog"),
+		},
 		cta: {
 			...content.cta,
 			primaryHref: getLocalizedPath(lang, "/teams"),
@@ -119,3 +170,5 @@ export function getAboutPageContent(lang: Language) {
 		},
 	};
 }
+
+export type { AboutPageContent };

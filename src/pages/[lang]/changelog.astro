@@ -2,8 +2,7 @@
 import { getCollection } from "astro:content";
 import ReleaseFeed from "../../components/changelog/ReleaseFeed.astro";
 import ActionLink from "../../components/ui/ActionLink.astro";
-import PageSection from "../../components/ui/PageSection.astro";
-import SectionIntro from "../../components/ui/SectionIntro.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import { getResourcePagesContent } from "../../data/translations/resources";
 import Layout from "../../layouts/Layout.astro";
 import { createMarketingMetadata } from "../../utils/metadata";
@@ -36,44 +35,190 @@ const metadata = createMarketingMetadata(lang, {
 ---
 
 <Layout {...metadata}>
-	<PageSection backdrop="glow" tone="warm">
-		<SectionIntro
-			description={pageContent.intro}
-			title={pageContent.title}
-			titleTag="h1"
-		/>
-	</PageSection>
+	<div class="changelog-page py-10">
+		<section aria-labelledby="changelog-hero-heading" class="changelog-page__hero" data-home-reveal-section>
+			<div class="changelog-page__hero-inner">
+				<h1 id="changelog-hero-heading" class="changelog-page__title home-reveal" style="--reveal-index: 0">
+					{pageContent.title}
+				</h1>
+				<p class="changelog-page__lead home-reveal" style="--reveal-index: 1">
+					{pageContent.intro}
+				</p>
+			</div>
+		</section>
 
-	<PageSection layout="split" surface="panel">
-		<div>
-			<ReleaseFeed entries={changelogEntries} lang={lang} />
-		</div>
-		<div slot="aside" class="space-y-5">
-			<div class="rounded-[1.75rem] border border-slate-200 bg-slate-950 p-6 text-white">
-				<h2 class="font-display text-2xl font-semibold tracking-tight text-white">
-					{pageContent.sidebarTitle}
-				</h2>
-				<p class="mt-4 text-base leading-7 text-white/80">{pageContent.sidebarDescription}</p>
-				<div class="mt-6 grid gap-3">
-					<div class="rounded-2xl bg-white/10 px-4 py-3 text-sm">
-						{lang === "ar" ? "إصدارات تأسيسية" : "Foundation releases"}: {counts.launch}
+		<div class="home-main-stack mx-auto flex w-full max-w-[914px] flex-col gap-36 pb-12">
+			<section class="changelog-page__block" data-home-reveal-section>
+				<div class="changelog-page__split">
+					<div class="changelog-page__feed home-reveal" style="--reveal-index: 2">
+						<ReleaseFeed entries={changelogEntries} lang={lang} />
 					</div>
-					<div class="rounded-2xl bg-white/10 px-4 py-3 text-sm">
-						{lang === "ar" ? "تحسينات" : "Improvements"}: {counts.improvement}
-					</div>
-					<div class="rounded-2xl bg-white/10 px-4 py-3 text-sm">
-						{lang === "ar" ? "ملاحظات" : "Notes"}: {counts.note}
+					<div class="changelog-page__aside">
+						<div class="changelog-page__glance home-reveal" style="--reveal-index: 3">
+							<SectionHeader
+								align="start"
+								description={pageContent.sidebarDescription}
+								headline={pageContent.sidebarTitle}
+								headlineTag="h2"
+								revealStagger={true}
+								sectionName={pageContent.sidebarSectionName}
+							/>
+							<ul class="changelog-page__counts" aria-label={pageContent.sidebarSectionName}>
+								<li class="changelog-page__count-row">
+									<span class="changelog-page__count-label">{pageContent.countLabels.launch}</span>
+									<span class="changelog-page__count-value">{counts.launch}</span>
+								</li>
+								<li class="changelog-page__count-row">
+									<span class="changelog-page__count-label">{pageContent.countLabels.improvement}</span>
+									<span class="changelog-page__count-value">{counts.improvement}</span>
+								</li>
+								<li class="changelog-page__count-row">
+									<span class="changelog-page__count-label">{pageContent.countLabels.note}</span>
+									<span class="changelog-page__count-value">{counts.note}</span>
+								</li>
+							</ul>
+							<div class="changelog-page__aside-actions">
+								<ActionLink href={pageContent.primaryHref} size="sm" variant="primary">
+									{pageContent.primaryLabel}
+								</ActionLink>
+								<ActionLink href={pageContent.secondaryHref} size="sm" variant="secondary">
+									{pageContent.secondaryLabel}
+								</ActionLink>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="flex flex-wrap gap-3">
-				<ActionLink href={pageContent.primaryHref} size="sm" variant="primary">
-					{pageContent.primaryLabel}
-				</ActionLink>
-				<ActionLink href={pageContent.secondaryHref} size="sm" variant="secondary">
-					{pageContent.secondaryLabel}
-				</ActionLink>
-			</div>
+			</section>
 		</div>
-	</PageSection>
+	</div>
 </Layout>
+
+<style>
+	.changelog-page {
+		display: flex;
+		flex-direction: column;
+		gap: 6rem;
+	}
+
+	.changelog-page__hero {
+		overflow: hidden;
+		padding-inline: 6px;
+		padding-top: 12px;
+		position: relative;
+	}
+
+	.changelog-page__hero-inner {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.changelog-page__title {
+		color: var(--foreground-primary);
+		font-size: 48px;
+		font-weight: 600;
+		margin-bottom: 8px;
+		margin-top: 0;
+		max-width: 46rem;
+		text-wrap: balance;
+	}
+
+	.changelog-page__lead {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 19px;
+		max-width: 41rem;
+		text-wrap: pretty;
+	}
+
+	@media (max-width: 640px) {
+		.changelog-page__title {
+			font-size: 40px;
+		}
+	}
+
+	.changelog-page__block {
+		width: 100%;
+	}
+
+	.changelog-page__split {
+		align-items: start;
+		display: grid;
+		gap: clamp(1.75rem, 4vw, 2.5rem);
+		grid-template-columns: 1fr;
+	}
+
+	@media (width >= 960px) {
+		.changelog-page__split {
+			grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.42fr);
+			gap: 2.5rem;
+		}
+	}
+
+	.changelog-page__aside {
+		display: flex;
+		flex-direction: column;
+		gap: clamp(12px, 2vw, 16px);
+	}
+
+	.changelog-page__glance {
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		box-shadow: var(--theme-shadow-soft);
+		padding: 1.375rem 1.25rem 1.5rem;
+	}
+
+	html[data-theme="dark"] .changelog-page__glance {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.changelog-page__glance :global(.section-header) {
+		max-width: none;
+	}
+
+	.changelog-page__counts {
+		list-style: none;
+		margin: 1.25rem 0 0;
+		padding: 0;
+	}
+
+	.changelog-page__count-row {
+		align-items: center;
+		background: var(--page-surface-muted);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		display: flex;
+		font-family: var(--font-ui);
+		font-size: 0.875rem;
+		justify-content: space-between;
+		margin: 0;
+		padding: 0.65rem 0.75rem;
+	}
+
+	.changelog-page__count-row + .changelog-page__count-row {
+		margin-top: 0.5rem;
+	}
+
+	.changelog-page__count-label {
+		color: var(--foreground-secondary);
+	}
+
+	.changelog-page__count-value {
+		color: var(--foreground-primary);
+		font-variant-numeric: tabular-nums;
+		font-weight: 600;
+	}
+
+	.changelog-page__aside-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem;
+		margin-top: 1.25rem;
+	}
+</style>

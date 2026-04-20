@@ -1,55 +1,703 @@
 ---
+import HomePricingCard from "../../components/home/HomePricingCard.astro";
 import ActionLink from "../../components/ui/ActionLink.astro";
-import Container from "../../components/ui/Container.astro";
-import SectionIntro from "../../components/ui/SectionIntro.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
+import { getHomePageContent } from "../../data/translations/home";
 import Layout from "../../layouts/Layout.astro";
 import { t } from "../../utils/i18n";
 import { createMarketingMetadata } from "../../utils/metadata";
-import {
-	getLanguageFromParams,
-	getLocalizedPath,
-	getLocaleStaticPaths,
-} from "../../utils/routing";
+import { getLanguageFromParams, getLocalizedPath, getLocaleStaticPaths } from "../../utils/routing";
 
 export function getStaticPaths() {
 	return getLocaleStaticPaths();
 }
 
 const lang = getLanguageFromParams(Astro.params.lang);
+const homeContent = getHomePageContent(lang);
+const pricingContent = homeContent.pricing;
 const contactHref = getLocalizedPath(lang, "/contact");
 const blogHref = getLocalizedPath(lang, "/blog");
+const faqHref = getLocalizedPath(lang, "/faq");
 const metadata = createMarketingMetadata(lang, {
 	description: t(lang, "pages.pricing.description"),
 	title: t(lang, "pages.pricing.meta_title"),
 });
+
+const trustCards = [
+	{
+		body: t(lang, "pages.pricing.trust_card_one_body"),
+		title: t(lang, "pages.pricing.trust_card_one_title"),
+	},
+	{
+		body: t(lang, "pages.pricing.trust_card_two_body"),
+		title: t(lang, "pages.pricing.trust_card_two_title"),
+	},
+	{
+		body: t(lang, "pages.pricing.trust_card_three_body"),
+		title: t(lang, "pages.pricing.trust_card_three_title"),
+	},
+] as const;
 ---
 
 <Layout {...metadata}>
-	<section class="py-16">
-		<Container size="page">
-			<SectionIntro
-				description={t(lang, "pages.pricing.intro")}
-				title={t(lang, "pages.pricing.title")}
-				titleTag="h1"
-			/>
-			<div class="mt-10 grid gap-6 md:grid-cols-2">
-				<div class="rounded-3xl border border-slate-200 p-8">
-					<h2 class="text-2xl font-semibold text-slate-950">
-						{t(lang, "pages.pricing.plans.starter.title")}
-				</h2>
-				<p class="mt-3 text-slate-600">
-					{t(lang, "pages.pricing.plans.starter.description")}
+	<div class="pricing-page py-10">
+		<section aria-labelledby="pricing-hero-heading" class="pricing-page__hero" data-home-reveal-section>
+			<div class="pricing-page__hero-inner">
+				<p class="pricing-page__hero-eyebrow home-reveal" style="--reveal-index: 0">
+					{t(lang, "pages.pricing.hero_eyebrow")}
 				</p>
-			</div>
-				<div class="rounded-3xl border border-slate-900 bg-slate-900 p-8 text-white">
-					<h2 class="text-2xl font-semibold">{t(lang, "pages.pricing.plans.pro.title")}</h2>
-					<p class="mt-3 text-slate-300">{t(lang, "pages.pricing.plans.pro.description")}</p>
+				<h1 id="pricing-hero-heading" class="pricing-page__title home-reveal" style="--reveal-index: 1">
+					{t(lang, "pages.pricing.title")}
+				</h1>
+				<p class="pricing-page__lead home-reveal" style="--reveal-index: 2">
+					{t(lang, "pages.pricing.intro")}
+				</p>
+				<div class="pricing-page__actions home-reveal" style="--reveal-index: 3">
+					<ActionLink href={contactHref} size="lg" variant="primary">
+						{t(lang, "header.links.contact")}
+					</ActionLink>
+					<ActionLink href={blogHref} size="lg" variant="secondary">
+						{t(lang, "blog.index_title")}
+					</ActionLink>
 				</div>
 			</div>
-			<div class="mt-8 flex flex-wrap gap-4">
-				<ActionLink href={contactHref} variant="primary">{t(lang, "header.links.contact")}</ActionLink>
-				<ActionLink href={blogHref} variant="secondary">{t(lang, "blog.index_title")}</ActionLink>
-			</div>
-		</Container>
-	</section>
+		</section>
+
+		<div class="home-main-stack mx-auto flex w-full max-w-[914px] flex-col gap-36 pb-12">
+			<section aria-labelledby="pricing-plans-heading" class="pricing-page__block" data-home-reveal-section>
+				<SectionHeader
+					align="center"
+					class="pricing-page__plans-header"
+					description={t(lang, "pages.pricing.plans_description")}
+					headline={t(lang, "pages.pricing.plans_headline")}
+					headlineId="pricing-plans-heading"
+					headlineTag="h2"
+					revealStagger={true}
+					sectionName={t(lang, "pages.pricing.plans_section_name")}
+				/>
+				<div class="pricing-page__cards-grid">
+					{
+						pricingContent.plans.map((plan, index) => (
+							<div class="pricing-page__card-cell home-reveal" style={`--reveal-index: ${index + 3}`}>
+								<HomePricingCard
+									ctaHref={contactHref}
+									featuresHeading={pricingContent.featuresHeading}
+									lang={lang}
+									perMonth={pricingContent.perMonth}
+									plan={plan}
+								/>
+							</div>
+						))
+					}
+				</div>
+			</section>
+
+			<section class="pricing-page__trust" aria-labelledby="pricing-trust-heading" data-home-reveal-section>
+				<SectionHeader
+					align="center"
+					class="pricing-page__trust-header"
+					description={t(lang, "pages.pricing.trust_description")}
+					headline={t(lang, "pages.pricing.trust_headline")}
+					headlineId="pricing-trust-heading"
+					headlineTag="h2"
+					revealStagger={true}
+					sectionName={t(lang, "pages.pricing.trust_section_name")}
+				/>
+				<ul class="pricing-page__trust-grid">
+					{
+						trustCards.map((card, index) => (
+							<li class="pricing-page__trust-item home-reveal" style={`--reveal-index: ${index + 3}`}>
+								<h3 class="pricing-page__trust-title">{card.title}</h3>
+								<p class="pricing-page__trust-body">{card.body}</p>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+
+			<section class="pricing-page__compare" aria-labelledby="pricing-compare-heading" data-home-reveal-section>
+				<SectionHeader
+					align="center"
+					class="pricing-page__compare-header"
+					description={t(lang, "pages.pricing.compare_description")}
+					headline={t(lang, "pages.pricing.compare_headline")}
+					headlineId="pricing-compare-heading"
+					headlineTag="h2"
+					revealStagger={true}
+					sectionName={t(lang, "pages.pricing.compare_section_name")}
+				/>
+				<div class="pricing-page__compare-wrap home-reveal" style="--reveal-index: 3">
+					<table class="pricing-page__table">
+						<caption class="pricing-page__sr-only">
+							{t(lang, "pages.pricing.compare_headline")}
+						</caption>
+						<colgroup>
+							<col class="pricing-page__col-feature" />
+							<col class="pricing-page__col-basic" />
+							<col class="pricing-page__col-pro" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th class="pricing-page__th pricing-page__th--feature" scope="col">
+									{t(lang, "pages.pricing.compare_col_feature")}
+								</th>
+								<th class="pricing-page__th" scope="col">{t(lang, "pages.pricing.compare_col_basic")}</th>
+								<th class="pricing-page__th pricing-page__th--highlight" scope="col">
+									{t(lang, "pages.pricing.compare_col_pro")}
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th class="pricing-page__row-label" scope="row">
+									{t(lang, "pages.pricing.compare_row_one_label")}
+								</th>
+								<td>{t(lang, "pages.pricing.compare_row_one_basic")}</td>
+								<td class="pricing-page__td--emphasis">{t(lang, "pages.pricing.compare_row_one_pro")}</td>
+							</tr>
+							<tr>
+								<th class="pricing-page__row-label" scope="row">
+									{t(lang, "pages.pricing.compare_row_two_label")}
+								</th>
+								<td>{t(lang, "pages.pricing.compare_row_two_basic")}</td>
+								<td class="pricing-page__td--emphasis">{t(lang, "pages.pricing.compare_row_two_pro")}</td>
+							</tr>
+							<tr>
+								<th class="pricing-page__row-label" scope="row">
+									{t(lang, "pages.pricing.compare_row_three_label")}
+								</th>
+								<td>{t(lang, "pages.pricing.compare_row_three_basic")}</td>
+								<td class="pricing-page__td--emphasis">{t(lang, "pages.pricing.compare_row_three_pro")}</td>
+							</tr>
+							<tr>
+								<th class="pricing-page__row-label" scope="row">
+									{t(lang, "pages.pricing.compare_row_four_label")}
+								</th>
+								<td>{t(lang, "pages.pricing.compare_row_four_basic")}</td>
+								<td class="pricing-page__td--emphasis">{t(lang, "pages.pricing.compare_row_four_pro")}</td>
+							</tr>
+							<tr>
+								<th class="pricing-page__row-label" scope="row">
+									{t(lang, "pages.pricing.compare_row_five_label")}
+								</th>
+								<td>{t(lang, "pages.pricing.compare_row_five_basic")}</td>
+								<td class="pricing-page__td--emphasis">{t(lang, "pages.pricing.compare_row_five_pro")}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</section>
+
+			<section class="pricing-page__closing" aria-labelledby="pricing-closing-heading" data-home-reveal-section>
+				<div class="pricing-page__closing-inner">
+					<header class="pricing-page__closing-intro home-reveal" style="--reveal-index: 0">
+						<p class="pricing-page__closing-eyebrow">{t(lang, "pages.pricing.closing_eyebrow")}</p>
+						<h2 id="pricing-closing-heading" class="pricing-page__closing-title">
+							{t(lang, "pages.pricing.closing_headline")}
+						</h2>
+						<p class="pricing-page__closing-lead">{t(lang, "pages.pricing.closing_intro")}</p>
+					</header>
+					<div class="pricing-page__closing-panels">
+						<article
+							class="pricing-page__panel home-reveal"
+							style="--reveal-index: 1"
+							aria-labelledby="pricing-faq-heading"
+						>
+							<p class="pricing-page__panel-eyebrow">{t(lang, "pages.pricing.faq_section_name")}</p>
+							<h3 id="pricing-faq-heading" class="pricing-page__panel-title">
+								{t(lang, "pages.pricing.faq_headline")}
+							</h3>
+							<p class="pricing-page__panel-desc">{t(lang, "pages.pricing.faq_description")}</p>
+						</article>
+						<article
+							class="pricing-page__panel home-reveal"
+							style="--reveal-index: 2"
+							aria-labelledby="pricing-cta-heading"
+						>
+							<p class="pricing-page__panel-eyebrow">{t(lang, "pages.pricing.cta_section_name")}</p>
+							<h3 id="pricing-cta-heading" class="pricing-page__panel-title">
+								{t(lang, "pages.pricing.cta_title")}
+							</h3>
+							<p class="pricing-page__panel-desc">{t(lang, "pages.pricing.cta_description")}</p>
+						</article>
+					</div>
+					<p class="pricing-page__closing-blog home-reveal" style="--reveal-index: 3">
+						<a class="pricing-page__closing-blog-link" href={blogHref}>{t(lang, "pages.pricing.closing_blog_link")}</a>
+					</p>
+					<div class="pricing-page__closing-actions home-reveal" style="--reveal-index: 4">
+						<ActionLink href={faqHref} size="lg" variant="primary">
+							{t(lang, "pages.pricing.faq_cta")}
+						</ActionLink>
+						<ActionLink href={contactHref} size="lg" variant="secondary">
+							{t(lang, "header.links.contact")}
+						</ActionLink>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
 </Layout>
+
+<style>
+	.pricing-page {
+		/* Matches HomeTestimonialCard hover accent: bg-linear-to-t from-orange-500 via-pink-500 to-violet-800 */
+		--pricing-testimonial-accent: linear-gradient(
+			to top,
+			rgb(249 115 22),
+			rgb(236 72 153),
+			rgb(91 33 182)
+		);
+
+		display: flex;
+		flex-direction: column;
+		gap: 6rem;
+	}
+
+	.pricing-page__hero {
+		overflow: hidden;
+		padding-inline: 6px;
+		padding-top: 12px;
+		position: relative;
+	}
+
+	.pricing-page__hero-inner {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		text-align: center;
+	}
+
+	.pricing-page__hero-eyebrow {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		margin: 0 0 0.75rem;
+		text-transform: uppercase;
+	}
+
+	.pricing-page__title {
+		color: var(--foreground-primary);
+		font-size: 48px;
+		font-weight: 600;
+		margin-bottom: 8px;
+		margin-top: 0;
+		max-width: 46rem;
+		text-wrap: balance;
+	}
+
+	.pricing-page__lead {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 1.55;
+		max-width: 42rem;
+		text-wrap: pretty;
+	}
+
+	.pricing-page__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		justify-content: center;
+		margin-top: 20px;
+	}
+
+	@media (max-width: 640px) {
+		.pricing-page__title {
+			font-size: 40px;
+		}
+	}
+
+	.pricing-page__block {
+		width: 100%;
+	}
+
+	.pricing-page__plans-header :global(.section-header) {
+		margin-inline: auto;
+		max-width: 40rem;
+	}
+
+	.pricing-page__cards-grid {
+		display: grid;
+		gap: 24px;
+		grid-template-columns: 1fr;
+		margin-top: clamp(2rem, 5vw, 2.5rem);
+	}
+
+	@media (width >= 640px) {
+		.pricing-page__cards-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	.pricing-page__card-cell {
+		min-width: 0;
+	}
+
+	.pricing-page__trust-header :global(.section-header),
+	.pricing-page__compare-header :global(.section-header) {
+		margin-inline: auto;
+		max-width: 40rem;
+	}
+
+	.pricing-page__trust-grid {
+		display: grid;
+		gap: clamp(12px, 2.5vw, 16px);
+		grid-template-columns: 1fr;
+		list-style: none;
+		margin: clamp(1.75rem, 4vw, 2.25rem) 0 0;
+		padding: 0;
+	}
+
+	@media (width >= 520px) {
+		.pricing-page__trust-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (width >= 900px) {
+		.pricing-page__trust-grid {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	.pricing-page__trust-item {
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: 0;
+		box-shadow: var(--theme-shadow-soft);
+		margin: 0;
+		min-height: 0;
+		padding: 1.25rem 1.1rem 1.35rem;
+		position: relative;
+		text-align: start;
+	}
+
+	.pricing-page__trust-item::before {
+		background: var(--pricing-testimonial-accent);
+		bottom: 0.85rem;
+		content: "";
+		left: 0;
+		position: absolute;
+		top: 0.85rem;
+		width: 3px;
+	}
+
+	:global(body.locale-arabic) .pricing-page__trust-item {
+		text-align: right;
+	}
+
+	:global(body.locale-arabic) .pricing-page__trust-item::before {
+		left: auto;
+		right: 0;
+	}
+
+	.pricing-page__trust-title {
+		color: var(--foreground-primary);
+		font-family: var(--font-ui);
+		font-size: 15px;
+		font-weight: 600;
+		line-height: 1.3;
+		margin: 0 0 0.5rem;
+		padding-inline-start: 0.65rem;
+	}
+
+	:global(body.locale-arabic) .pricing-page__trust-title {
+		padding-inline-end: 0.65rem;
+		padding-inline-start: 0;
+	}
+
+	.pricing-page__trust-body {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 14px;
+		line-height: 1.5;
+		margin: 0;
+		padding-inline-start: 0.65rem;
+	}
+
+	:global(body.locale-arabic) .pricing-page__trust-body {
+		padding-inline-end: 0.65rem;
+		padding-inline-start: 0;
+	}
+
+	html[data-theme="dark"] .pricing-page__trust-item {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.pricing-page__compare-wrap {
+		margin-top: clamp(1.75rem, 4vw, 2.25rem);
+		min-width: 0;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.pricing-page__table {
+		border-collapse: collapse;
+		font-family: var(--font-ui);
+		table-layout: fixed;
+		width: 100%;
+	}
+
+	.pricing-page__col-feature {
+		width: 46%;
+	}
+
+	.pricing-page__col-basic,
+	.pricing-page__col-pro {
+		width: 27%;
+	}
+
+	.pricing-page__sr-only {
+		border: 0;
+		clip: rect(0, 0, 0, 0);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
+	}
+
+	.pricing-page__th {
+		background: color-mix(in srgb, var(--page-surface-muted) 88%, var(--page-bg));
+		border: 1px solid var(--page-border);
+		color: var(--foreground-primary);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		padding: 0.85rem 0.65rem;
+		text-align: center;
+		text-transform: uppercase;
+		vertical-align: middle;
+		word-wrap: break-word;
+	}
+
+	.pricing-page__th:first-child {
+		text-align: start;
+		text-transform: none;
+	}
+
+	.pricing-page__th--feature {
+		font-size: 13px;
+		letter-spacing: normal;
+	}
+
+	.pricing-page__th--highlight {
+		background: color-mix(in srgb, var(--foreground-primary) 6%, var(--page-surface-muted));
+	}
+
+	.pricing-page__row-label {
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		color: var(--foreground-primary);
+		font-size: 14px;
+		font-weight: 500;
+		hyphens: auto;
+		padding: 0.85rem 0.65rem;
+		text-align: start;
+		vertical-align: middle;
+		word-wrap: break-word;
+	}
+
+	.pricing-page__table td {
+		background: var(--page-bg);
+		border: 1px solid var(--page-border);
+		color: var(--foreground-secondary);
+		font-size: 14px;
+		line-height: 1.35;
+		padding: 0.85rem 0.65rem;
+		text-align: center;
+		vertical-align: middle;
+		word-wrap: break-word;
+	}
+
+	.pricing-page__td--emphasis {
+		background: color-mix(in srgb, var(--foreground-primary) 4%, var(--page-bg));
+		color: var(--foreground-primary);
+		font-weight: 500;
+	}
+
+	.pricing-page__closing {
+		background: color-mix(in srgb, var(--page-surface-muted) 28%, var(--page-bg));
+		border-block: 1px solid var(--page-border);
+		border-inline: 0;
+		border-radius: 0;
+		box-shadow: none;
+		margin-inline: calc(50% - 50vw);
+		padding: clamp(2rem, 5vw, 2.75rem) var(--layout-gutter);
+		width: 100vw;
+	}
+
+	.pricing-page__closing-inner {
+		margin-inline: auto;
+		max-width: min(56rem, 100%);
+	}
+
+	.pricing-page__closing-intro {
+		margin-inline: auto;
+		max-width: 38rem;
+		text-align: center;
+	}
+
+	.pricing-page__closing-eyebrow {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		margin: 0 0 0.65rem;
+		text-transform: uppercase;
+	}
+
+	.pricing-page__closing-title {
+		color: var(--foreground-primary);
+		font-family: var(--font-display-latin);
+		font-size: clamp(1.5rem, 3.2vw, 1.85rem);
+		font-weight: 600;
+		line-height: 1.2;
+		margin: 0 0 0.65rem;
+		text-wrap: balance;
+	}
+
+	:global(body.locale-arabic) .pricing-page__closing-title {
+		font-family: var(--font-display-arabic);
+	}
+
+	.pricing-page__closing-lead {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 15px;
+		line-height: 1.5;
+		margin: 0;
+		text-wrap: pretty;
+	}
+
+	.pricing-page__closing-panels {
+		display: grid;
+		gap: 0;
+		margin-top: clamp(1.75rem, 4vw, 2.35rem);
+	}
+
+	@media (width >= 768px) {
+		.pricing-page__closing-panels {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		.pricing-page__panel:first-of-type {
+			border-inline-end: 1px solid var(--page-border);
+			padding-inline-end: clamp(1.25rem, 3vw, 2rem);
+		}
+
+		.pricing-page__panel:last-of-type {
+			padding-inline-start: clamp(1.25rem, 3vw, 2rem);
+		}
+	}
+
+	.pricing-page__panel {
+		background: transparent;
+		border: none;
+		border-radius: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.55rem;
+		min-width: 0;
+		padding: clamp(1.1rem, 2.5vw, 1.35rem) 0;
+		position: relative;
+		text-align: center;
+	}
+
+	.pricing-page__panel::before {
+		background: var(--pricing-testimonial-accent);
+		content: "";
+		height: 3px;
+		inset-inline-start: 50%;
+		position: absolute;
+		top: 0;
+		transform: translateX(-50%);
+		width: min(12rem, 72%);
+	}
+
+	@media (width >= 768px) {
+		.pricing-page__panel::before {
+			bottom: 0.35rem;
+			height: auto;
+			inset-inline-start: 0;
+			top: 0.35rem;
+			transform: none;
+			width: 3px;
+		}
+	}
+
+	.pricing-page__panel-eyebrow {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.pricing-page__panel-title {
+		color: var(--foreground-primary);
+		font-family: var(--font-display-latin);
+		font-size: clamp(1.1rem, 2.4vw, 1.25rem);
+		font-weight: 600;
+		line-height: 1.25;
+		margin: 0;
+		text-wrap: balance;
+	}
+
+	:global(body.locale-arabic) .pricing-page__panel-title {
+		font-family: var(--font-display-arabic);
+	}
+
+	.pricing-page__panel-desc {
+		color: var(--foreground-secondary);
+		flex: 1;
+		font-family: var(--font-ui);
+		font-size: 14px;
+		line-height: 1.5;
+		margin: 0;
+		padding-top: 0.35rem;
+		text-wrap: pretty;
+	}
+
+	.pricing-page__closing-blog {
+		margin: clamp(1.25rem, 3vw, 1.5rem) 0 0;
+		text-align: center;
+	}
+
+	.pricing-page__closing-blog-link {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 14px;
+		font-weight: 500;
+		text-decoration: underline;
+		text-decoration-color: color-mix(in srgb, var(--foreground-tertiary) 55%, transparent);
+		text-underline-offset: 0.2em;
+	}
+
+	.pricing-page__closing-blog-link:hover {
+		color: var(--foreground-secondary);
+		text-decoration-color: color-mix(in srgb, var(--foreground-secondary) 65%, transparent);
+	}
+
+	.pricing-page__closing-actions {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		justify-content: center;
+		margin-top: clamp(1.35rem, 3vw, 1.75rem);
+		width: 100%;
+	}
+</style>

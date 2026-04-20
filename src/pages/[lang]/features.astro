@@ -1,9 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
-import MarketingEyebrow from "../../components/ui/MarketingEyebrow.astro";
 import ActionLink from "../../components/ui/ActionLink.astro";
-import PageSection from "../../components/ui/PageSection.astro";
-import SectionIntro from "../../components/ui/SectionIntro.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import { getResourcePagesContent } from "../../data/translations/resources";
 import Layout from "../../layouts/Layout.astro";
 import { createMarketingMetadata } from "../../utils/metadata";
@@ -31,74 +29,298 @@ const metadata = createMarketingMetadata(lang, {
 ---
 
 <Layout {...metadata}>
-	<PageSection backdrop="glow" tone="warm">
-		<SectionIntro
-			description={pageContent.intro}
-			title={pageContent.title}
-			titleTag="h1"
-		/>
-	</PageSection>
+	<div class="features-page py-10">
+		<section aria-labelledby="features-hero-heading" class="features-page__hero" data-home-reveal-section>
+			<div class="features-page__hero-inner">
+				<h1 id="features-hero-heading" class="features-page__title home-reveal" style="--reveal-index: 0">
+					{pageContent.title}
+				</h1>
+				<p class="features-page__lead home-reveal" style="--reveal-index: 1">
+					{pageContent.intro}
+				</p>
+			</div>
+		</section>
 
-	{
-		featureSections.map(({ feature, Content }, index) => (
-			<PageSection
-				backdrop={index % 2 === 0 ? "grid" : "glow"}
-				layout="split"
-				surface="panel"
-				tone={index % 2 === 0 ? "transparent" : "soft"}
-			>
-				<div>
-					<MarketingEyebrow>{feature.data.eyebrow}</MarketingEyebrow>
-					<h2 class="font-display mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
-						{feature.data.title}
-					</h2>
-					<p class="mt-5 text-lg leading-8 text-slate-600">{feature.data.summary}</p>
-					<div class="blog-prose mt-6">
-						<Content />
+		<div class="home-main-stack mx-auto flex w-full max-w-[914px] flex-col gap-36 pb-12">
+			{
+				featureSections.map(({ feature, Content }, index) => (
+					<section
+						class="features-page__block"
+						aria-labelledby={`feature-section-${index}-heading`}
+						data-home-reveal-section
+					>
+						<div class="features-page__split">
+							<div class="features-page__main home-reveal" style={`--reveal-index: ${index % 3}`}>
+								<p class="features-page__eyebrow">{feature.data.eyebrow}</p>
+								<h2 id={`feature-section-${index}-heading`} class="features-page__feature-title">
+									{feature.data.title}
+								</h2>
+								<p class="features-page__summary">{feature.data.summary}</p>
+								<div class="features-page__prose blog-prose">
+									<Content />
+								</div>
+							</div>
+							<aside class="features-page__aside home-reveal" style={`--reveal-index: ${(index % 3) + 1}`}>
+								<div class="features-page__glance">
+									<p class="features-page__glance-label">{pageContent.benefitsAsideTitle}</p>
+									<ul class="features-page__benefit-list">
+										{feature.data.benefits.map((benefit) => (
+											<li class="features-page__benefit">
+												<h3 class="spotlight-surface-card-title features-page__benefit-title">{benefit.title}</h3>
+												<p class="spotlight-surface-card-desc features-page__benefit-body">{benefit.body}</p>
+											</li>
+										))}
+									</ul>
+								</div>
+								{feature.data.relatedPath && feature.data.relatedLabel && (
+									<div class="features-page__related">
+										<ActionLink href={getLocalizedPath(lang, feature.data.relatedPath)} variant="secondary">
+											{feature.data.relatedLabel}
+										</ActionLink>
+									</div>
+								)}
+							</aside>
+						</div>
+					</section>
+				))
+			}
+
+			<section class="features-page__cta" aria-labelledby="features-cta-heading" data-home-reveal-section>
+				<div class="features-page__cta-inner">
+					<SectionHeader
+						align="center"
+						class="features-page__cta-header"
+						description={pageContent.cta.description}
+						headline={pageContent.cta.headline}
+						headlineId="features-cta-heading"
+						headlineTag="h2"
+						revealStagger={true}
+						sectionName={pageContent.cta.sectionName}
+					/>
+					<div class="features-page__cta-panel home-reveal" style="--reveal-index: 3">
+						<div class="features-page__cta-actions">
+							<ActionLink href={pageContent.cta.primaryHref} variant="primary">
+								{pageContent.cta.primaryLabel}
+							</ActionLink>
+							<ActionLink href={pageContent.cta.secondaryHref} variant="secondary">
+								{pageContent.cta.secondaryLabel}
+							</ActionLink>
+						</div>
 					</div>
 				</div>
-				<div slot="aside" class="space-y-5">
-					<div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
-						<p class="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
-							{lang === "ar" ? "لماذا يهم هذا" : "Why this matters"}
-						</p>
-						<ul class="mt-4 grid gap-4">
-							{feature.data.benefits.map((benefit) => (
-								<li class="rounded-2xl bg-white p-4">
-									<h3 class="text-base font-semibold text-slate-950">{benefit.title}</h3>
-									<p class="mt-2 text-sm leading-6 text-slate-600">{benefit.body}</p>
-								</li>
-							))}
-						</ul>
-					</div>
-					{feature.data.relatedPath && feature.data.relatedLabel && (
-						<ActionLink href={getLocalizedPath(lang, feature.data.relatedPath)} variant="secondary">
-							{feature.data.relatedLabel}
-						</ActionLink>
-					)}
-				</div>
-			</PageSection>
-		))
+			</section>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	.features-page {
+		display: flex;
+		flex-direction: column;
+		gap: 6rem;
 	}
 
-	<PageSection class="pt-0">
-		<div class="rounded-4xl border border-slate-200 bg-linear-to-br from-amber-50 via-white to-sky-50 px-6 py-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10">
-			<div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-				<div class="max-w-3xl">
-					<h2 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
-						{pageContent.closingTitle}
-					</h2>
-					<p class="mt-5 text-lg leading-8 text-slate-600">{pageContent.closingDescription}</p>
-				</div>
-				<div class="flex flex-wrap gap-4">
-					<ActionLink href={pageContent.primaryHref} variant="primary">
-						{pageContent.primaryLabel}
-					</ActionLink>
-					<ActionLink href={pageContent.secondaryHref} variant="secondary">
-						{pageContent.secondaryLabel}
-					</ActionLink>
-				</div>
-			</div>
-		</div>
-	</PageSection>
-</Layout>
+	.features-page__hero {
+		overflow: hidden;
+		padding-inline: 6px;
+		padding-top: 12px;
+		position: relative;
+	}
+
+	.features-page__hero-inner {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.features-page__title {
+		color: var(--foreground-primary);
+		font-size: 48px;
+		font-weight: 600;
+		margin-bottom: 8px;
+		margin-top: 0;
+		max-width: 46rem;
+		text-wrap: balance;
+	}
+
+	.features-page__lead {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 19px;
+		max-width: 41rem;
+		text-wrap: pretty;
+	}
+
+	@media (max-width: 640px) {
+		.features-page__title {
+			font-size: 40px;
+		}
+	}
+
+	.features-page__block {
+		width: 100%;
+	}
+
+	.features-page__split {
+		align-items: start;
+		display: grid;
+		gap: clamp(1.75rem, 4vw, 2.5rem);
+		grid-template-columns: 1fr;
+	}
+
+	@media (width >= 960px) {
+		.features-page__split {
+			grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.42fr);
+			gap: 2.5rem;
+		}
+	}
+
+	.features-page__eyebrow {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		margin: 0 0 0.75rem;
+		text-transform: uppercase;
+	}
+
+	.features-page__feature-title {
+		color: var(--foreground-primary);
+		font-family: var(--font-display-latin);
+		font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+		font-weight: 600;
+		line-height: 1.2;
+		margin: 0;
+	}
+
+	:global(body.locale-arabic) .features-page__feature-title {
+		font-family: var(--font-display-arabic);
+	}
+
+	.features-page__summary {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 16px;
+		line-height: 1.45;
+		margin: 1rem 0 0;
+	}
+
+	.features-page__prose {
+		margin-top: 1.5rem;
+	}
+
+	.features-page__glance {
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		box-shadow: var(--theme-shadow-soft);
+		padding: 1.375rem 1.25rem 1.5rem;
+	}
+
+	html[data-theme="dark"] .features-page__glance {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.features-page__glance-label {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.features-page__benefit-list {
+		list-style: none;
+		margin: 1rem 0 0;
+		padding: 0;
+	}
+
+	.features-page__benefit {
+		background: var(--page-surface-muted);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		margin: 0;
+		padding: 0.85rem 0.75rem 1rem;
+	}
+
+	.features-page__benefit + .features-page__benefit {
+		margin-top: 0.65rem;
+	}
+
+	.features-page__benefit-title {
+		font-size: 15px;
+	}
+
+	.features-page__benefit-body {
+		font-size: 14px;
+		line-height: 1.45;
+		margin-top: 0.35rem;
+	}
+
+	.features-page__related {
+		margin-top: 1rem;
+	}
+
+	.features-page__cta {
+		background: transparent;
+		isolation: isolate;
+		margin-inline: calc(50% - 50vw);
+		overflow: hidden;
+		width: 100vw;
+	}
+
+	.features-page__cta-inner {
+		margin-inline: auto;
+		max-width: var(--layout-width-navbar);
+		padding-inline: var(--layout-gutter);
+	}
+
+	.features-page__cta-header :global(.section-header) {
+		margin-inline: auto;
+		max-width: 40rem;
+	}
+
+	.features-page__cta-panel {
+		border-top: 1px solid transparent;
+		margin-inline: auto;
+		margin-top: clamp(1.75rem, 4vw, 2.25rem);
+		max-width: 40rem;
+		padding: 24px;
+		padding-top: clamp(1.5rem, 3vw, 2rem);
+		position: relative;
+		width: 100%;
+	}
+
+	.features-page__cta-actions {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+		justify-content: center;
+		width: 100%;
+	}
+
+	.features-page__cta-panel::before {
+		background: linear-gradient(
+			90deg,
+			transparent,
+			color-mix(in srgb, var(--foreground-primary) 16%, transparent) 22%,
+			color-mix(in srgb, var(--foreground-primary) 16%, transparent) 78%,
+			transparent
+		);
+		content: "";
+		height: 1px;
+		left: 0;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+</style>

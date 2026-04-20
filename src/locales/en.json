@@ -14,7 +14,9 @@
 			"features": "Features",
 			"bilingual_planning": "Bilingual planning",
 			"faq": "FAQ",
-			"changelog": "Changelog"
+			"changelog": "Changelog",
+			"error_404": "404 page",
+			"error_500": "500 page"
 		},
 		"cta": "Get Started",
 		"menu_label": "Open menu",
@@ -212,15 +214,60 @@
 		"about": {
 			"meta_title": "About",
 			"title": "About Orgo",
-			"description": "Learn more about the ideas and product direction behind Orgo.",
-			"intro": "Orgo is designed to bring planning, journaling, and calm execution into one focused experience.",
-			"body": "This marketing site showcases a multilingual experience, structured content, and a product voice centered on clarity."
+			"description": "The people and principles behind Orgo—calm planning, thoughtful writing, and bilingual product craft.",
+			"intro": "Orgo brings planning, journaling, and calm execution into one focused experience—so your week, notes, and priorities stay in view without the noise.",
+			"body": "We build a multilingual product voice rooted in clarity: structured content, careful interface details, and routines you can sustain."
 		},
 		"pricing": {
 			"meta_title": "Pricing",
 			"title": "Pricing",
-			"description": "Review Orgo's pricing direction and evaluate the product offering.",
-			"intro": "The marketing site is ready for a pricing section, but the actual product plans are still placeholder content.",
+			"description": "Simple plans that match how you work—merge calendars, notes, and tasks in one calm workspace.",
+			"intro": "Whether you are planning solo or coordinating a bilingual team, pick a tier that matches your cadence. The amounts below are directional while we finalize launch packaging—reach out for early access and tailored guidance.",
+			"hero_eyebrow": "Plans & transparency",
+			"plans_section_name": "Plans",
+			"plans_headline": "Choose how you want to grow",
+			"plans_description": "Both tiers include our unified workspace—calendars, journaling, and tasks in one calm surface. Upgrade when you are ready for deeper workflows and priority support.",
+			"trust_section_name": "Why teams choose Orgo",
+			"trust_headline": "Clarity at every step",
+			"trust_description": "Pricing is only part of the promise—we build for sustainable routines and respectful communication.",
+			"trust_card_one_title": "No surprise line items",
+			"trust_card_one_body": "You will always see what you are paying for before you commit. Annual options will land when packaging is final.",
+			"trust_card_two_title": "Privacy-minded",
+			"trust_card_two_body": "Your reflections and schedules deserve care—Orgo is shaped around thoughtful defaults and clear boundaries.",
+			"trust_card_three_title": "Support that listens",
+			"trust_card_three_body": "Reach out for bilingual workflows, roadmap questions, or help choosing the right tier—we read every message.",
+			"compare_section_name": "Compare",
+			"compare_headline": "What is in each tier",
+			"compare_description": "A quick side-by-side before you talk to us or explore a trial.",
+			"compare_col_feature": "Capability",
+			"compare_col_basic": "Basic",
+			"compare_col_pro": "Elevate",
+			"compare_row_one_label": "Unified calendar, journal & tasks",
+			"compare_row_one_basic": "Included",
+			"compare_row_one_pro": "Included",
+			"compare_row_two_label": "Bilingual interface",
+			"compare_row_two_basic": "Included",
+			"compare_row_two_pro": "Included",
+			"compare_row_three_label": "Core integrations",
+			"compare_row_three_basic": "Included",
+			"compare_row_three_pro": "Included",
+			"compare_row_four_label": "Advanced automation & focus tools",
+			"compare_row_four_basic": "Core",
+			"compare_row_four_pro": "Full access",
+			"compare_row_five_label": "Priority onboarding & support",
+			"compare_row_five_basic": "—",
+			"compare_row_five_pro": "Included",
+			"faq_section_name": "Questions",
+			"faq_headline": "Billing, trials, and switching plans",
+			"faq_description": "We have collected answers to common pricing questions—VAT, invoices, and how to move between tiers.",
+			"faq_cta": "Browse the FAQ",
+			"closing_eyebrow": "How we can help",
+			"closing_headline": "Self-serve answers or a real conversation",
+			"closing_intro": "Use the FAQ for fast billing detail, or reach out when you want early access context and bilingual workflow guidance.",
+			"closing_blog_link": "Read the blog",
+			"cta_section_name": "Next step",
+			"cta_title": "Not sure which plan fits?",
+			"cta_description": "We’re happy to talk through early access, bilingual workflows, and what’s coming next.",
 			"plans": {
 				"starter": {
 					"title": "Basic",
@@ -228,15 +275,16 @@
 				},
 				"pro": {
 					"title": "Elevate",
-					"description": "Designed for those who want to elevate their productivity and mindfulness."
+					"description": "Designed for those who want to elevate their productivity and mindfulness.",
+					"badge": "Recommended"
 				}
 			}
 		},
 		"contact": {
 			"meta_title": "Contact",
 			"title": "Contact Orgo",
-			"description": "Reach out if you want to talk about the product direction, early access, or thoughtful planning workflows.",
-			"intro": "The simplest way to reach Orgo right now is by email. If you're exploring how the product could fit your routine, we'd love to hear from you.",
+			"description": "Say hello—questions about early access, bilingual workflows, or how Orgo fits your routine.",
+			"intro": "Email is the best line. Tell us how you plan, write, and coordinate—we reply with care, usually asynchronously.",
 			"card_title": "Get in touch",
 			"email_label": "Email",
 			"email_value": "hello@orgo.app",
@@ -251,20 +299,24 @@
 		},
 		"errors": {
 			"not_found": {
-				"title": "Page not found",
-				"description": "The page you requested does not exist or has moved.",
-				"cta": "Go home"
+				"eyebrow": "Missing page",
+				"title": "We can’t find that page",
+				"description": "The link may be outdated, or the page moved. Head back home and pick up where you left off.",
+				"cta": "Back to home",
+				"secondary_cta": "View pricing"
 			},
 			"server": {
-				"title": "Server error",
-				"description": "Something went wrong on our side."
+				"eyebrow": "Something broke",
+				"title": "We hit a server error",
+				"description": "This isn’t on you—our side had trouble finishing the request. Try again in a moment.",
+				"cta": "Back to home"
 			}
 		}
 	},
 	"blog": {
 		"eyebrow": "Journal",
 		"index_title": "Blog",
-		"index_description": "Explore the latest articles, product notes, and practical planning ideas from Orgo.",
+		"index_description": "Product notes, planning ideas, and bilingual craft stories from the Orgo journal.",
 		"rss_label": "RSS feed",
 		"featured_topics": "Featured topics",
 		"categories_title": "Categories",

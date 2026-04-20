@@ -1,11 +1,6 @@
 ---
-import HomeLiftedCard from "../../components/home/HomeLiftedCard.astro";
-import HomeRhythmCard from "../../components/home/HomeRhythmCard.astro";
 import ActionLink from "../../components/ui/ActionLink.astro";
-import MarketingEyebrow from "../../components/ui/MarketingEyebrow.astro";
-import MarketingProofChip from "../../components/ui/MarketingProofChip.astro";
-import PageSection from "../../components/ui/PageSection.astro";
-import SectionIntro from "../../components/ui/SectionIntro.astro";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import { getBilingualPlanningPageContent } from "../../data/translations/bilingualPlanning";
 import Layout from "../../layouts/Layout.astro";
 import { createMarketingMetadata } from "../../utils/metadata";
@@ -24,15 +19,16 @@ const metadata = createMarketingMetadata(lang, {
 ---
 
 <Layout {...metadata}>
-	<PageSection class="overflow-hidden pt-12" size="wide" tone="warm">
-		<div class="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(18rem,0.95fr)] lg:items-center">
-			<div class="max-w-3xl">
-				<MarketingEyebrow>{content.hero.eyebrow}</MarketingEyebrow>
-				<h1 class="font-display mt-6 text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl sm:leading-[1.02]">
+	<div class="bilingual-page py-10">
+		<section aria-labelledby="bilingual-hero-heading" class="bilingual-page__hero" data-home-reveal-section>
+			<div class="bilingual-page__hero-inner">
+				<h1 id="bilingual-hero-heading" class="bilingual-page__title home-reveal" style="--reveal-index: 0">
 					{content.hero.title}
 				</h1>
-				<p class="mt-6 text-lg leading-8 text-slate-600">{content.hero.description}</p>
-				<div class="mt-8 flex flex-wrap gap-4">
+				<p class="bilingual-page__lead home-reveal" style="--reveal-index: 1">
+					{content.hero.description}
+				</p>
+				<div class="bilingual-page__actions home-reveal" style="--reveal-index: 2">
 					<ActionLink href={content.hero.primaryHref} size="lg" variant="primary">
 						{content.hero.primaryCta}
 					</ActionLink>
@@ -41,95 +37,480 @@ const metadata = createMarketingMetadata(lang, {
 					</ActionLink>
 				</div>
 			</div>
-			<div class="grid gap-4">
-				{content.signals.map((signal) => (
-					<MarketingProofChip class="border-slate-200 bg-white/88">
-						<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-							{signal.label}
-						</p>
-						<p class="mt-3 text-sm leading-6 text-slate-700">{signal.value}</p>
-					</MarketingProofChip>
-				))}
-			</div>
-		</div>
-	</PageSection>
+		</section>
 
-	<PageSection backdrop="glow" tone="contrast">
-		<SectionIntro
-			description={content.tensions.description}
-			eyebrow={content.tensions.eyebrow}
-			title={content.tensions.title}
-			tone="inverse"
-		/>
-		<div class="mt-10 grid gap-4 md:grid-cols-3">
-			{content.tensions.points.map((point) => (
-				<HomeRhythmCard>
-					<p class="text-sm leading-6 text-slate-200">{point}</p>
-				</HomeRhythmCard>
-			))}
-		</div>
-	</PageSection>
-
-	<PageSection tone="soft">
-		<SectionIntro
-			description={content.playbook.description}
-			eyebrow={content.playbook.eyebrow}
-			title={content.playbook.title}
-		/>
-		<div class="mt-10 grid gap-6 lg:grid-cols-3">
-			{content.playbook.steps.map((step, index) => (
-				<HomeLiftedCard>
-					<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-						0{index + 1}
-					</p>
-					<h2 class="font-display mt-5 text-2xl font-semibold tracking-tight text-slate-950">
-						{step.title}
-					</h2>
-					<p class="mt-4 text-base leading-7 text-slate-600">{step.body}</p>
-				</HomeLiftedCard>
-			))}
-		</div>
-	</PageSection>
-
-	<PageSection>
-		<SectionIntro
-			description={content.scenarios.description}
-			eyebrow={content.scenarios.eyebrow}
-			title={content.scenarios.title}
-		/>
-		<div class="mt-10 grid gap-6 xl:grid-cols-3">
-			{content.scenarios.cards.map((card) => (
-				<HomeLiftedCard>
-					<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-						{card.label}
-					</p>
-					<h2 class="font-display mt-5 text-2xl font-semibold tracking-tight text-slate-950">
-						{card.title}
-					</h2>
-					<p class="mt-4 text-base leading-7 text-slate-600">{card.body}</p>
-				</HomeLiftedCard>
-			))}
-		</div>
-	</PageSection>
-
-	<PageSection class="pt-0">
-		<div class="marketing-panel mx-auto max-w-6xl rounded-4xl border border-slate-200 bg-linear-to-br from-amber-50 via-white to-sky-50 px-6 py-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10 lg:px-12">
-			<div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-				<div class="max-w-3xl">
-					<h2 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
-						{content.closing.title}
-					</h2>
-					<p class="mt-5 text-lg leading-8 text-slate-600">{content.closing.description}</p>
+		<div class="home-main-stack mx-auto flex w-full max-w-[914px] flex-col gap-36 pb-12">
+			<section aria-labelledby="bilingual-tensions-heading" class="bilingual-page__block" data-home-reveal-section>
+				<div class="bilingual-page__split">
+					<header class="bilingual-page__block-intro">
+						<SectionHeader
+							align="start"
+							description={content.tensions.description}
+							headline={content.tensions.title}
+							headlineId="bilingual-tensions-heading"
+							headlineTag="h2"
+							revealStagger={true}
+							sectionName={content.tensions.sectionName}
+						/>
+					</header>
+					<aside class="bilingual-page__glance home-reveal" aria-label={content.signalsAsideTitle} style="--reveal-index: 3">
+						<p class="bilingual-page__glance-label">{content.signalsAsideTitle}</p>
+						<ul class="bilingual-page__glance-list">
+							{
+								content.signals.map((signal) => (
+									<li class="bilingual-page__glance-item">
+										<span class="bilingual-page__glance-signal-label">{signal.label}</span>
+										<span class="bilingual-page__glance-signal-value">{signal.value}</span>
+									</li>
+								))
+							}
+						</ul>
+					</aside>
 				</div>
-				<div class="flex flex-wrap gap-4">
-					<ActionLink href={content.closing.primaryHref} variant="primary">
-						{content.closing.primaryCta}
-					</ActionLink>
-					<ActionLink href={content.closing.secondaryHref} variant="secondary">
-						{content.closing.secondaryCta}
-					</ActionLink>
+				<ul class="bilingual-page__tensions home-reveal" style="--reveal-index: 3">
+					{
+						content.tensions.points.map((point) => (
+							<li class="bilingual-page__tension">
+								<p class="spotlight-surface-card-desc bilingual-page__tension-body">{point}</p>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+
+			<section aria-labelledby="bilingual-playbook-heading" class="bilingual-page__block" data-home-reveal-section>
+				<SectionHeader
+					align="center"
+					class="bilingual-page__section-header"
+					description={content.playbook.description}
+					headline={content.playbook.title}
+					headlineId="bilingual-playbook-heading"
+					headlineTag="h2"
+					revealStagger={true}
+					sectionName={content.playbook.sectionName}
+				/>
+				<ol class="bilingual-page__steps home-reveal" style="--reveal-index: 3">
+					{
+						content.playbook.steps.map((step, index) => (
+							<li class="bilingual-page__step">
+								<span class="bilingual-page__step-index" aria-hidden="true">
+									{String(index + 1).padStart(2, "0")}
+								</span>
+								<h3 class="spotlight-surface-card-title bilingual-page__step-title">{step.title}</h3>
+								<p class="spotlight-surface-card-desc bilingual-page__step-body">{step.body}</p>
+							</li>
+						))
+					}
+				</ol>
+			</section>
+
+			<section aria-labelledby="bilingual-scenarios-heading" class="bilingual-page__block" data-home-reveal-section>
+				<SectionHeader
+					align="center"
+					class="bilingual-page__section-header"
+					description={content.scenarios.description}
+					headline={content.scenarios.title}
+					headlineId="bilingual-scenarios-heading"
+					headlineTag="h2"
+					revealStagger={true}
+					sectionName={content.scenarios.sectionName}
+				/>
+				<ul class="bilingual-page__scenarios home-reveal" style="--reveal-index: 3">
+					{
+						content.scenarios.cards.map((card) => (
+							<li class="bilingual-page__scenario">
+								<p class="bilingual-page__scenario-label">{card.label}</p>
+								<h3 class="spotlight-surface-card-title bilingual-page__scenario-title">{card.title}</h3>
+								<p class="spotlight-surface-card-desc bilingual-page__scenario-body">{card.body}</p>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+
+			<section class="bilingual-page__cta" aria-labelledby="bilingual-cta-heading" data-home-reveal-section>
+				<div class="bilingual-page__cta-inner">
+					<SectionHeader
+						align="center"
+						class="bilingual-page__cta-header"
+						description={content.cta.description}
+						headline={content.cta.headline}
+						headlineId="bilingual-cta-heading"
+						headlineTag="h2"
+						revealStagger={true}
+						sectionName={content.cta.sectionName}
+					/>
+					<div class="bilingual-page__cta-panel home-reveal" style="--reveal-index: 3">
+						<div class="bilingual-page__cta-actions">
+							<ActionLink href={content.cta.primaryHref} variant="primary">
+								{content.cta.primaryLabel}
+							</ActionLink>
+							<ActionLink href={content.cta.secondaryHref} variant="secondary">
+								{content.cta.secondaryLabel}
+							</ActionLink>
+						</div>
+					</div>
 				</div>
-			</div>
+			</section>
 		</div>
-	</PageSection>
+	</div>
 </Layout>
+
+<style>
+	.bilingual-page {
+		display: flex;
+		flex-direction: column;
+		gap: 6rem;
+	}
+
+	.bilingual-page__hero {
+		overflow: hidden;
+		padding-inline: 6px;
+		padding-top: 12px;
+		position: relative;
+	}
+
+	.bilingual-page__hero-inner {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.bilingual-page__title {
+		color: var(--foreground-primary);
+		font-size: 48px;
+		font-weight: 600;
+		margin-bottom: 8px;
+		margin-top: 0;
+		max-width: 46rem;
+		text-wrap: balance;
+	}
+
+	.bilingual-page__lead {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 19px;
+		max-width: 41rem;
+		text-wrap: pretty;
+	}
+
+	.bilingual-page__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		justify-content: center;
+		margin-top: 20px;
+	}
+
+	@media (max-width: 640px) {
+		.bilingual-page__title {
+			font-size: 40px;
+		}
+	}
+
+	.bilingual-page__block {
+		width: 100%;
+	}
+
+	.bilingual-page__split {
+		align-items: start;
+		display: grid;
+		gap: clamp(1.75rem, 4vw, 2.5rem);
+		grid-template-columns: 1fr;
+		margin-bottom: clamp(1.75rem, 4.5vw, 2.75rem);
+	}
+
+	@media (width >= 960px) {
+		.bilingual-page__split {
+			grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.42fr);
+			gap: 2.5rem;
+		}
+	}
+
+	.bilingual-page__block-intro :global(.section-header) {
+		max-width: none;
+	}
+
+	.bilingual-page__glance {
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		box-shadow: var(--theme-shadow-soft);
+		padding: 1.375rem 1.25rem 1.5rem;
+	}
+
+	html[data-theme="dark"] .bilingual-page__glance {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.bilingual-page__glance-label {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.bilingual-page__glance-list {
+		list-style: none;
+		margin: 1rem 0 0;
+		padding: 0;
+	}
+
+	.bilingual-page__glance-item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+		margin: 0;
+	}
+
+	.bilingual-page__glance-item + .bilingual-page__glance-item {
+		margin-top: 0.85rem;
+	}
+
+	.bilingual-page__glance-signal-label {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	.bilingual-page__glance-signal-value {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 15px;
+		font-weight: 400;
+		line-height: 1.45;
+	}
+
+	.bilingual-page__tensions {
+		display: grid;
+		gap: clamp(12px, 2.5vw, 20px);
+		grid-template-columns: 1fr;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	@media (width >= 768px) {
+		.bilingual-page__tensions {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	.bilingual-page__tension {
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		box-shadow: var(--theme-shadow-soft);
+		margin: 0;
+		min-height: 0;
+		min-width: 0;
+		padding: 22px 18px 26px;
+		text-align: center;
+	}
+
+	html[data-theme="dark"] .bilingual-page__tension {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.bilingual-page__tension-body {
+		margin: 0;
+		text-align: center;
+		text-wrap: balance;
+	}
+
+	.bilingual-page__section-header :global(.section-header[data-align="center"]) {
+		margin-inline: auto;
+		max-width: 42rem;
+	}
+
+	.bilingual-page__steps {
+		display: grid;
+		gap: clamp(12px, 2.5vw, 20px);
+		grid-template-columns: 1fr;
+		list-style: none;
+		margin: clamp(1.75rem, 4.5vw, 2.75rem) 0 0;
+		padding: 0;
+	}
+
+	@media (width >= 768px) {
+		.bilingual-page__steps {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	.bilingual-page__step {
+		align-items: center;
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		box-shadow: var(--theme-shadow-soft);
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		margin: 0;
+		min-height: 0;
+		min-width: 0;
+		padding: 22px 18px 26px;
+		text-align: center;
+	}
+
+	html[data-theme="dark"] .bilingual-page__step {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.bilingual-page__step-index {
+		background: var(--feature-spotlight-plate-fill);
+		border: 1px solid color-mix(in srgb, var(--foreground-primary) 10%, transparent);
+		border-radius: 999px;
+		color: var(--foreground-secondary);
+		display: inline-flex;
+		font-family: var(--font-ui);
+		font-size: 12px;
+		font-variant-numeric: tabular-nums;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		line-height: 1;
+		padding: 8px 14px;
+	}
+
+	.bilingual-page__step-title {
+		margin: 0;
+		text-align: center;
+	}
+
+	.bilingual-page__step-body {
+		flex: 1;
+		margin: 0;
+		text-align: center;
+		text-wrap: balance;
+	}
+
+	.bilingual-page__scenarios {
+		display: grid;
+		gap: clamp(12px, 2.5vw, 20px);
+		grid-template-columns: 1fr;
+		list-style: none;
+		margin: clamp(1.75rem, 4.5vw, 2.75rem) 0 0;
+		padding: 0;
+	}
+
+	@media (width >= 768px) {
+		.bilingual-page__scenarios {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	.bilingual-page__scenario {
+		align-items: center;
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		box-shadow: var(--theme-shadow-soft);
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		margin: 0;
+		min-height: 0;
+		min-width: 0;
+		padding: 22px 18px 26px;
+		text-align: center;
+	}
+
+	html[data-theme="dark"] .bilingual-page__scenario {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.bilingual-page__scenario-label {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.bilingual-page__scenario-title {
+		margin: 0;
+		text-align: center;
+	}
+
+	.bilingual-page__scenario-body {
+		flex: 1;
+		margin: 0;
+		text-align: center;
+		text-wrap: balance;
+	}
+
+	.bilingual-page__cta {
+		background: transparent;
+		isolation: isolate;
+		margin-inline: calc(50% - 50vw);
+		overflow: hidden;
+		width: 100vw;
+	}
+
+	.bilingual-page__cta-inner {
+		margin-inline: auto;
+		max-width: var(--layout-width-navbar);
+		padding-inline: var(--layout-gutter);
+	}
+
+	.bilingual-page__cta-header :global(.section-header) {
+		margin-inline: auto;
+		max-width: 40rem;
+	}
+
+	.bilingual-page__cta-panel {
+		border-top: 1px solid transparent;
+		margin-inline: auto;
+		margin-top: clamp(1.75rem, 4vw, 2.25rem);
+		max-width: 40rem;
+		padding: 24px;
+		padding-top: clamp(1.5rem, 3vw, 2rem);
+		position: relative;
+		width: 100%;
+	}
+
+	.bilingual-page__cta-actions {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+		justify-content: center;
+		width: 100%;
+	}
+
+	.bilingual-page__cta-panel::before {
+		background: linear-gradient(
+			90deg,
+			transparent,
+			color-mix(in srgb, var(--foreground-primary) 16%, transparent) 22%,
+			color-mix(in srgb, var(--foreground-primary) 16%, transparent) 78%,
+			transparent
+		);
+		content: "";
+		height: 1px;
+		left: 0;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+</style>

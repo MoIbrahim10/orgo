@@ -1,20 +1,13 @@
 ---
 import { getCollection } from "astro:content";
-import ResponsiveMedia from "../../components/common/ResponsiveMedia.astro";
 import PeopleGrid from "../../components/people/PeopleGrid.astro";
-import MarketingEyebrow from "../../components/ui/MarketingEyebrow.astro";
 import ActionLink from "../../components/ui/ActionLink.astro";
-import PageSection from "../../components/ui/PageSection.astro";
-import SectionIntro from "../../components/ui/SectionIntro.astro";
-import { homeSpotlightImage } from "../../data/media";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import { getTeamsPageContent } from "../../data/translations/teams";
 import Layout from "../../layouts/Layout.astro";
 import { createMarketingMetadata } from "../../utils/metadata";
 import { sortPeople } from "../../utils/people";
-import {
-	getLanguageFromParams,
-	getLocaleStaticPaths,
-} from "../../utils/routing";
+import { getLanguageFromParams, getLocaleStaticPaths } from "../../utils/routing";
 
 export function getStaticPaths() {
 	return getLocaleStaticPaths();
@@ -24,21 +17,22 @@ const lang = getLanguageFromParams(Astro.params.lang);
 const content = getTeamsPageContent(lang);
 const people = sortPeople(await getCollection("people"));
 const metadata = createMarketingMetadata(lang, {
-	title: content.hero.eyebrow,
-	description: content.hero.description,
+	title: content.metaTitle,
+	description: content.metaDescription,
 });
 ---
 
 <Layout {...metadata}>
-	<PageSection class="overflow-hidden pt-12" size="wide">
-		<div class="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.95fr)] lg:items-center">
-			<div class="max-w-3xl">
-				<MarketingEyebrow>{content.hero.eyebrow}</MarketingEyebrow>
-				<h1 class="font-display mt-6 text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl sm:leading-[1.02]">
+	<div class="teams-page py-10">
+		<section aria-labelledby="teams-hero-heading" class="teams-page__hero" data-home-reveal-section>
+			<div class="teams-page__hero-inner">
+				<h1 id="teams-hero-heading" class="teams-page__title home-reveal" style="--reveal-index: 0">
 					{content.hero.title}
 				</h1>
-				<p class="mt-6 text-lg leading-8 text-slate-600">{content.hero.description}</p>
-				<div class="mt-8 flex flex-wrap gap-4">
+				<p class="teams-page__lead home-reveal" style="--reveal-index: 1">
+					{content.hero.description}
+				</p>
+				<div class="teams-page__actions home-reveal" style="--reveal-index: 2">
 					<ActionLink href={content.hero.primaryHref} size="lg" variant="primary">
 						{content.hero.primaryCta}
 					</ActionLink>
@@ -47,95 +41,442 @@ const metadata = createMarketingMetadata(lang, {
 					</ActionLink>
 				</div>
 			</div>
-			<div class="grid gap-5">
-				<div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
-					<ResponsiveMedia
-						alt=""
-						ariaHidden={true}
-						imgClass="h-full w-full object-cover opacity-95"
-						loading="eager"
-						sizes="(max-width: 1024px) 100vw, 520px"
-						src={homeSpotlightImage}
-						widths={[520, 760, 980]}
+		</section>
+
+		<div class="home-main-stack mx-auto flex w-full max-w-[914px] flex-col gap-36 pb-12">
+			<section aria-labelledby="teams-playbook-heading" class="teams-page__block" data-home-reveal-section>
+				<div class="teams-page__split">
+					<header class="teams-page__block-intro">
+						<SectionHeader
+							align="start"
+							description={content.playbook.description}
+							headline={content.playbook.title}
+							headlineId="teams-playbook-heading"
+							headlineTag="h2"
+							revealStagger={true}
+							sectionName={content.playbook.sectionName}
+						/>
+					</header>
+					<aside class="teams-page__glance home-reveal" aria-label={content.signalsAsideTitle} style="--reveal-index: 3">
+						<p class="teams-page__glance-label">{content.signalsAsideTitle}</p>
+						<ul class="teams-page__glance-list">
+							{
+								content.signals.map((signal) => (
+									<li class="spotlight-surface-card-desc teams-page__glance-item">
+										<span class="teams-page__glance-signal-label">{signal.label}</span>
+										<span class="teams-page__glance-signal-value">{signal.value}</span>
+									</li>
+								))
+							}
+						</ul>
+					</aside>
+				</div>
+			</section>
+
+			<section aria-labelledby="teams-steps-heading" class="teams-page__block" data-home-reveal-section>
+				<h2 id="teams-steps-heading" class="teams-page__sr-only">
+					{content.playbook.sectionName}
+				</h2>
+				<ol class="teams-page__steps home-reveal" style="--reveal-index: 3">
+					{
+						content.playbook.steps.map((step, index) => (
+							<li class="teams-page__step">
+								<span class="teams-page__step-index" aria-hidden="true">
+									{String(index + 1).padStart(2, "0")}
+								</span>
+								<h3 class="spotlight-surface-card-title teams-page__step-title">{step.title}</h3>
+								<p class="spotlight-surface-card-desc teams-page__step-body">{step.body}</p>
+							</li>
+						))
+					}
+				</ol>
+			</section>
+
+			<section aria-labelledby="teams-pillars-heading" class="teams-page__block" data-home-reveal-section>
+				<SectionHeader
+					align="center"
+					class="teams-page__section-header"
+					description={content.pillars.description}
+					headline={content.pillars.title}
+					headlineId="teams-pillars-heading"
+					headlineTag="h2"
+					revealStagger={true}
+					sectionName={content.pillars.sectionName}
+				/>
+				<ul class="teams-page__pillars home-reveal" style="--reveal-index: 3">
+					{
+						content.pillars.items.map((pillar) => (
+							<li class="teams-page__pillar">
+								<h3 class="spotlight-surface-card-title teams-page__pillar-title">{pillar.title}</h3>
+								<p class="spotlight-surface-card-desc teams-page__pillar-body">{pillar.body}</p>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+
+			<section aria-labelledby="teams-people-heading" class="teams-page__block" data-home-reveal-section>
+				<SectionHeader
+					align="center"
+					class="teams-page__section-header"
+					description={content.roster.description}
+					headline={content.roster.title}
+					headlineId="teams-people-heading"
+					headlineTag="h2"
+					revealStagger={true}
+					sectionName={content.roster.sectionName}
+				/>
+				<div class="teams-page__people-reveal home-reveal" style="--reveal-index: 3">
+					<PeopleGrid lang={lang} people={people} />
+				</div>
+			</section>
+
+			<section class="teams-page__cta" aria-labelledby="teams-cta-heading" data-home-reveal-section>
+				<div class="teams-page__cta-inner">
+					<SectionHeader
+						align="center"
+						class="teams-page__cta-header"
+						description={content.cta.description}
+						headline={content.cta.headline}
+						headlineId="teams-cta-heading"
+						headlineTag="h2"
+						revealStagger={true}
+						sectionName={content.cta.sectionName}
 					/>
-				</div>
-				<div class="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
-					{content.signals.map((signal) => (
-						<div class="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
-							<p class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-								{signal.label}
-							</p>
-							<p class="mt-3 text-base leading-7 text-slate-700">{signal.value}</p>
+					<div class="teams-page__cta-panel home-reveal" style="--reveal-index: 3">
+						<div class="teams-page__cta-actions">
+							<ActionLink href={content.cta.primaryHref} variant="primary">
+								{content.cta.primaryLabel}
+							</ActionLink>
+							<ActionLink href={content.cta.secondaryHref} variant="secondary">
+								{content.cta.secondaryLabel}
+							</ActionLink>
 						</div>
-					))}
+					</div>
 				</div>
-			</div>
+			</section>
 		</div>
-	</PageSection>
-
-	<PageSection tone="soft">
-		<SectionIntro
-			description={content.playbook.description}
-			eyebrow={content.playbook.eyebrow}
-			title={content.playbook.title}
-		/>
-		<div class="mt-10 grid gap-6 lg:grid-cols-3">
-			{content.playbook.steps.map((step, index) => (
-				<article class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
-					<p class="text-sm font-medium uppercase tracking-[0.18em] text-slate-500">
-						0{index + 1}
-					</p>
-					<h2 class="font-display mt-5 text-2xl font-semibold tracking-tight text-slate-950">
-						{step.title}
-					</h2>
-					<p class="mt-4 text-base leading-7 text-slate-600">{step.body}</p>
-				</article>
-			))}
-		</div>
-	</PageSection>
-
-	<PageSection>
-		<div class="grid gap-6 lg:grid-cols-3">
-			{content.pillars.map((pillar) => (
-				<article class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
-					<h2 class="font-display text-2xl font-semibold tracking-tight text-slate-950">
-						{pillar.title}
-					</h2>
-					<p class="mt-4 text-base leading-7 text-slate-600">{pillar.body}</p>
-				</article>
-			))}
-		</div>
-	</PageSection>
-
-	<PageSection tone="soft">
-		<SectionIntro
-			description={content.roster.description}
-			eyebrow={content.roster.eyebrow}
-			title={content.roster.title}
-		/>
-		<div class="mt-10">
-			<PeopleGrid lang={lang} people={people} />
-		</div>
-	</PageSection>
-
-	<PageSection class="pt-0">
-		<div class="rounded-[2rem] border border-slate-200 bg-linear-to-br from-amber-50 via-white to-sky-50 px-6 py-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10">
-			<div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-				<div class="max-w-3xl">
-					<h2 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
-						{content.closing.title}
-					</h2>
-					<p class="mt-5 text-lg leading-8 text-slate-600">{content.closing.description}</p>
-				</div>
-				<div class="flex flex-wrap gap-4">
-					<ActionLink href={content.closing.primaryHref} variant="primary">
-						{content.closing.primaryCta}
-					</ActionLink>
-					<ActionLink href={content.closing.secondaryHref} variant="secondary">
-						{content.closing.secondaryCta}
-					</ActionLink>
-				</div>
-			</div>
-		</div>
-	</PageSection>
+	</div>
 </Layout>
+
+<style>
+	.teams-page {
+		display: flex;
+		flex-direction: column;
+		gap: 6rem;
+	}
+
+	.teams-page__hero {
+		overflow: hidden;
+		padding-inline: 6px;
+		padding-top: 12px;
+		position: relative;
+	}
+
+	.teams-page__hero-inner {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.teams-page__title {
+		color: var(--foreground-primary);
+		font-size: 48px;
+		font-weight: 600;
+		margin-bottom: 8px;
+		margin-top: 0;
+		max-width: 46rem;
+		text-wrap: balance;
+	}
+
+	.teams-page__lead {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 19px;
+		max-width: 41rem;
+		text-wrap: pretty;
+	}
+
+	.teams-page__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		justify-content: center;
+		margin-top: 20px;
+	}
+
+	@media (max-width: 640px) {
+		.teams-page__title {
+			font-size: 40px;
+		}
+	}
+
+	.teams-page__block {
+		width: 100%;
+	}
+
+	.teams-page__split {
+		align-items: start;
+		display: grid;
+		gap: clamp(1.75rem, 4vw, 2.5rem);
+		grid-template-columns: 1fr;
+	}
+
+	@media (width >= 960px) {
+		.teams-page__split {
+			grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.42fr);
+			gap: 2.5rem;
+		}
+	}
+
+	.teams-page__block-intro :global(.section-header) {
+		max-width: none;
+	}
+
+	.teams-page__glance {
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		box-shadow: var(--theme-shadow-soft);
+		padding: 1.375rem 1.25rem 1.5rem;
+	}
+
+	html[data-theme="dark"] .teams-page__glance {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.teams-page__glance-label {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.teams-page__glance-list {
+		list-style: none;
+		margin: 1rem 0 0;
+		padding: 0;
+	}
+
+	.teams-page__glance-item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+		margin: 0;
+	}
+
+	.teams-page__glance-item + .teams-page__glance-item {
+		margin-top: 0.85rem;
+	}
+
+	.teams-page__glance-signal-label {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	.teams-page__glance-signal-value {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 15px;
+		font-weight: 400;
+		line-height: 1.45;
+	}
+
+	.teams-page__section-header :global(.section-header[data-align="center"]) {
+		margin-inline: auto;
+		max-width: 42rem;
+	}
+
+	.teams-page__sr-only {
+		border: 0;
+		clip: rect(0, 0, 0, 0);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
+	}
+
+	.teams-page__steps {
+		display: grid;
+		gap: clamp(12px, 2.5vw, 20px);
+		grid-template-columns: 1fr;
+		list-style: none;
+		margin: clamp(1.75rem, 4.5vw, 2.75rem) 0 0;
+		padding: 0;
+	}
+
+	@media (width >= 768px) {
+		.teams-page__steps {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	.teams-page__step {
+		align-items: center;
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		box-shadow: var(--theme-shadow-soft);
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		margin: 0;
+		min-height: 0;
+		min-width: 0;
+		padding: 22px 18px 26px;
+		position: relative;
+		text-align: center;
+	}
+
+	html[data-theme="dark"] .teams-page__step {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.teams-page__step-index {
+		background: var(--feature-spotlight-plate-fill);
+		border: 1px solid color-mix(in srgb, var(--foreground-primary) 10%, transparent);
+		border-radius: 999px;
+		color: var(--foreground-secondary);
+		display: inline-flex;
+		font-family: var(--font-ui);
+		font-size: 12px;
+		font-variant-numeric: tabular-nums;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		line-height: 1;
+		padding: 8px 14px;
+	}
+
+	.teams-page__step-title {
+		margin: 0;
+		text-align: center;
+	}
+
+	.teams-page__step-body {
+		flex: 1;
+		margin: 0;
+		text-align: center;
+		text-wrap: balance;
+	}
+
+	.teams-page__pillars {
+		display: grid;
+		gap: clamp(12px, 2.5vw, 20px);
+		grid-template-columns: 1fr;
+		list-style: none;
+		margin: clamp(1.75rem, 4.5vw, 2.75rem) 0 0;
+		padding: 0;
+	}
+
+	@media (width >= 768px) {
+		.teams-page__pillars {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	.teams-page__pillar {
+		align-items: center;
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		box-shadow: var(--theme-shadow-soft);
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		margin: 0;
+		min-height: 0;
+		min-width: 0;
+		padding: 22px 18px 26px;
+		text-align: center;
+	}
+
+	html[data-theme="dark"] .teams-page__pillar {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.teams-page__pillar-title {
+		margin: 0;
+		text-align: center;
+	}
+
+	.teams-page__pillar-body {
+		flex: 1;
+		margin: 0;
+		text-align: center;
+		text-wrap: balance;
+	}
+
+	.teams-page__cta {
+		background: transparent;
+		isolation: isolate;
+		margin-inline: calc(50% - 50vw);
+		overflow: hidden;
+		width: 100vw;
+	}
+
+	.teams-page__cta-inner {
+		margin-inline: auto;
+		max-width: var(--layout-width-navbar);
+		padding-inline: var(--layout-gutter);
+	}
+
+	.teams-page__cta-header :global(.section-header) {
+		margin-inline: auto;
+		max-width: 40rem;
+	}
+
+	.teams-page__cta-panel {
+		border-top: 1px solid transparent;
+		margin-inline: auto;
+		margin-top: clamp(1.75rem, 4vw, 2.25rem);
+		max-width: 40rem;
+		padding: 24px;
+		padding-top: clamp(1.5rem, 3vw, 2rem);
+		position: relative;
+		width: 100%;
+	}
+
+	.teams-page__cta-actions {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+		justify-content: center;
+		width: 100%;
+	}
+
+	.teams-page__cta-panel::before {
+		background: linear-gradient(
+			90deg,
+			transparent,
+			color-mix(in srgb, var(--foreground-primary) 16%, transparent) 22%,
+			color-mix(in srgb, var(--foreground-primary) 16%, transparent) 78%,
+			transparent
+		);
+		content: "";
+		height: 1px;
+		left: 0;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+</style>

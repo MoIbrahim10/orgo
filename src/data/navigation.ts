@@ -21,6 +21,8 @@ export const navigation: NavigationConfig = {
 			{ key: "bilingual_planning", href: "/bilingual-planning" },
 			{ key: "faq", href: "/faq" },
 			{ key: "changelog", href: "/changelog" },
+			{ key: "error_404", href: "/404", localeAbsolute: true },
+			{ key: "error_500", href: "/500", localeAbsolute: true },
 		],
 	},
 };

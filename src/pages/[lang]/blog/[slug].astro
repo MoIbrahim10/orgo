@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getCollection, getEntry, getEntries, render } from "astro:content";
+import SiteMainStack from "../../../components/layout/SiteMainStack.astro";
 import ResponsiveMedia from "../../../components/common/ResponsiveMedia.astro";
 import TranslationAvailabilityNotice from "../../../components/TranslationAvailabilityNotice.astro";
 import ActionLink from "../../../components/ui/ActionLink.astro";
@@ -115,7 +116,8 @@ const { Content } = await render(page);
 ---
 
 <Layout {...metadata}>
-	<section class="py-16">
+	<SiteMainStack>
+	<section class="contents">
 		<Container size="article">
 			<article class="space-y-10">
 				<header class="space-y-6">
@@ -233,4 +235,5 @@ const { Content } = await render(page);
 			</article>
 		</Container>
 	</section>
+	</SiteMainStack>
 </Layout>

@@ -1,13 +1,10 @@
 ---
 import ActionLink from "../../components/ui/ActionLink.astro";
-import ResponsiveMedia from "../../components/common/ResponsiveMedia.astro";
-import PageSection from "../../components/ui/PageSection.astro";
-import SectionIntro from "../../components/ui/SectionIntro.astro";
-import { contactSceneImage } from "../../data/media";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import { getContactPageContent } from "../../data/translations/contact";
 import Layout from "../../layouts/Layout.astro";
 import { createMarketingMetadata } from "../../utils/metadata";
-import { getLanguageFromParams, getLocaleStaticPaths } from "../../utils/routing";
+import { getLanguageFromParams, getLocaleStaticPaths, getLocalizedPath } from "../../utils/routing";
 
 export function getStaticPaths() {
 	return getLocaleStaticPaths();
@@ -15,115 +12,560 @@ export function getStaticPaths() {
 
 const lang = getLanguageFromParams(Astro.params.lang);
 const content = getContactPageContent(lang);
+const faqHref = getLocalizedPath(lang, "/faq");
+const blogHref = getLocalizedPath(lang, "/blog");
 const metadata = createMarketingMetadata(lang, {
 	description: content.description,
 	title: content.metaTitle,
 });
+
+const githubDisplay = content.githubValue.replace(/^https?:\/\//, "");
 ---
 
 <Layout {...metadata}>
-	<PageSection backdrop="glow" layout="split" tone="warm">
-		<div slot="intro">
-			<SectionIntro description={content.intro} title={content.title} titleTag="h1" />
-		</div>
-		<div class="grid gap-6">
-			<div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
-				<ResponsiveMedia
-					alt=""
-					ariaHidden={true}
-					imgClass="h-full w-full object-cover"
-					loading="eager"
-					sizes="(max-width: 1024px) 100vw, 720px"
-					src={contactSceneImage}
-					widths={[520, 760, 980]}
+	<div class="contact-page py-10">
+		<section aria-labelledby="contact-hero-heading" class="contact-page__hero" data-home-reveal-section>
+			<div class="contact-page__hero-inner">
+				<h1 id="contact-hero-heading" class="contact-page__title home-reveal" style="--reveal-index: 0">
+					{content.title}
+				</h1>
+				<p class="contact-page__lead home-reveal" style="--reveal-index: 1">
+					{content.intro}
+				</p>
+			</div>
+		</section>
+
+		<div class="home-main-stack mx-auto flex w-full max-w-[914px] flex-col gap-28 pb-12">
+			<section class="contact-page__block" aria-labelledby="contact-channels-heading" data-home-reveal-section>
+				<SectionHeader
+					align="center"
+					class="contact-page__channels-header"
+					description={content.channels.description}
+					headline={content.channels.title}
+					headlineId="contact-channels-heading"
+					headlineTag="h2"
+					revealStagger={true}
+					sectionName={content.channels.sectionName}
 				/>
-			</div>
-			<div class="grid gap-5 lg:grid-cols-3">
-				{content.conversations.map((conversation) => (
-					<article class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
-						<h2 class="font-display text-2xl font-semibold tracking-tight text-slate-950">
-							{conversation.title}
-						</h2>
-						<p class="mt-4 text-base leading-7 text-slate-600">{conversation.body}</p>
-						<div class="mt-6">
-							<ActionLink href={conversation.href} size="sm" variant="secondary">
-								{conversation.ctaLabel}
-							</ActionLink>
+				<div class="contact-page__channel-grid home-reveal" style="--reveal-index: 3">
+					<a class="contact-page__channel-card" href={`mailto:${content.emailValue}`}>
+						<span class="contact-page__channel-accent" aria-hidden="true"></span>
+						<div class="contact-page__channel-main">
+							<div class="contact-page__channel-body">
+								<p class="contact-page__channel-label">{content.emailLabel}</p>
+								<p class="contact-page__channel-value">{content.emailValue}</p>
+								<p class="contact-page__channel-hint">{content.emailHint}</p>
+							</div>
+							<span class="contact-page__channel-icon" aria-hidden="true">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path
+										d="M4 6h16v12H4V6zm0 0 8 5 8-5"
+										stroke="currentColor"
+										stroke-width="1.75"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+									</path>
+								</svg>
+							</span>
 						</div>
-					</article>
-				))}
-			</div>
-		</div>
-		<div slot="aside" class="space-y-5">
-			<div class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
-				<p class="text-xs uppercase tracking-[0.2em] text-slate-500">{content.emailLabel}</p>
-				<a class="mt-3 block text-lg font-medium text-slate-900" href={`mailto:${content.emailValue}`}>
-					{content.emailValue}
-				</a>
-			</div>
-			<div class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
-				<p class="text-xs uppercase tracking-[0.2em] text-slate-500">{content.githubLabel}</p>
-				<a
-					class="mt-3 block text-lg font-medium text-slate-900"
-					href={content.githubValue}
-					rel="noreferrer"
-					target="_blank"
-				>
-					{content.githubValue.replace(/^https?:\/\//, "")}
-				</a>
-			</div>
-		</div>
-	</PageSection>
+					</a>
+					<a
+						class="contact-page__channel-card"
+						href={content.githubValue}
+						rel="noreferrer"
+						target="_blank"
+					>
+						<span class="contact-page__channel-accent" aria-hidden="true"></span>
+						<div class="contact-page__channel-main">
+							<div class="contact-page__channel-body">
+								<p class="contact-page__channel-label">{content.githubLabel}</p>
+								<p class="contact-page__channel-value">{githubDisplay}</p>
+								<p class="contact-page__channel-hint">{content.githubHint}</p>
+							</div>
+							<span class="contact-page__channel-icon" aria-hidden="true">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+									<path
+										d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10Z"
+									>
+									</path>
+								</svg>
+							</span>
+						</div>
+					</a>
+				</div>
+			</section>
 
-	<PageSection layout="split" surface="panel">
-		<div slot="intro">
-			<SectionIntro
-				description={content.process.description}
-				eyebrow={content.process.eyebrow}
-				title={content.process.title}
-			/>
-		</div>
-		<div class="grid gap-6 lg:grid-cols-3">
-			{content.process.steps.map((step, index) => (
-				<article class="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
-					<p class="text-sm font-medium uppercase tracking-[0.18em] text-slate-500">
-						0{index + 1}
-					</p>
-					<h2 class="font-display mt-4 text-2xl font-semibold tracking-tight text-slate-950">
-						{step.title}
-					</h2>
-					<p class="mt-4 text-base leading-7 text-slate-600">{step.body}</p>
-				</article>
-			))}
-		</div>
-		<div slot="aside" class="space-y-4">
-			{content.availability.map((item) => (
-				<div class="rounded-[1.5rem] border border-slate-200 bg-slate-950 p-6 text-white">
-					<p class="text-xs uppercase tracking-[0.18em] text-white/60">{item.label}</p>
-					<p class="mt-4 text-base leading-7 text-white/90">{item.value}</p>
-				</div>
-			))}
-		</div>
-	</PageSection>
+			<section aria-labelledby="contact-conversations-heading" class="contact-page__block" data-home-reveal-section>
+				<header class="contact-page__section-intro">
+					<SectionHeader
+						align="start"
+						description={content.conversationsIntro.description}
+						headline={content.conversationsIntro.title}
+						headlineId="contact-conversations-heading"
+						headlineTag="h2"
+						revealStagger={true}
+						sectionName={content.conversationsIntro.sectionName}
+					/>
+				</header>
+				<ul class="contact-page__conversations home-reveal" style="--reveal-index: 3">
+					{
+						content.conversations.map((conversation) => (
+							<li class="contact-page__conversation">
+								<h3 class="spotlight-surface-card-title contact-page__conversation-title">{conversation.title}</h3>
+								<p class="spotlight-surface-card-desc contact-page__conversation-body">{conversation.body}</p>
+								<div class="contact-page__conversation-cta">
+									<ActionLink href={conversation.href} size="sm" variant="secondary">
+										{conversation.ctaLabel}
+									</ActionLink>
+								</div>
+							</li>
+						))
+					}
+				</ul>
+			</section>
 
-	<PageSection class="pt-0">
-		<div class="rounded-[2rem] border border-slate-200 bg-linear-to-br from-amber-50 via-white to-sky-50 px-6 py-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10">
-			<div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-				<div class="max-w-3xl">
-					<h2 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
-						{content.closing.title}
-					</h2>
-					<p class="mt-5 text-lg leading-8 text-slate-600">{content.closing.description}</p>
+			<section aria-labelledby="contact-process-heading" class="contact-page__block" data-home-reveal-section>
+				<header class="contact-page__section-intro">
+					<SectionHeader
+						align="start"
+						description={content.process.description}
+						headline={content.process.title}
+						headlineId="contact-process-heading"
+						headlineTag="h2"
+						revealStagger={true}
+						sectionName={content.process.sectionName}
+					/>
+				</header>
+				<div class="contact-page__expectations home-reveal" style="--reveal-index: 2">
+					<p class="contact-page__expectations-title">{content.availabilityAsideTitle}</p>
+					<ul class="contact-page__expectations-list">
+						{
+							content.availability.map((item) => (
+								<li class="contact-page__expectations-item">
+									<span class="contact-page__expectations-label">{item.label}</span>
+									<span class="contact-page__expectations-value">{item.value}</span>
+								</li>
+							))
+						}
+					</ul>
 				</div>
-				<div class="flex flex-wrap gap-4">
-					<ActionLink href={content.closing.primaryHref} variant="primary">
-						{content.closing.primaryLabel}
-					</ActionLink>
-					<ActionLink href={content.closing.secondaryHref} variant="secondary">
-						{content.closing.secondaryLabel}
-					</ActionLink>
-				</div>
-			</div>
+				<ol class="contact-page__steps home-reveal" style="--reveal-index: 3" aria-labelledby="contact-process-heading">
+					{
+						content.process.steps.map((step, index) => (
+							<li class="contact-page__step">
+								<span class="contact-page__step-index" aria-hidden="true">
+									{String(index + 1).padStart(2, "0")}
+								</span>
+								<h3 class="spotlight-surface-card-title contact-page__step-title">{step.title}</h3>
+								<p class="spotlight-surface-card-desc contact-page__step-body">{step.body}</p>
+							</li>
+						))
+					}
+				</ol>
+			</section>
+
+			<nav class="contact-page__quick-links home-reveal" aria-label={content.quickLinksLabel} data-home-reveal-section style="--reveal-index: 0">
+				<a class="contact-page__quick-link" href={faqHref}>{content.faqLinkLabel}</a>
+				<span class="contact-page__quick-sep" aria-hidden="true"></span>
+				<a class="contact-page__quick-link" href={blogHref}>{content.blogLinkLabel}</a>
+			</nav>
 		</div>
-	</PageSection>
+	</div>
 </Layout>
+
+<style>
+	.contact-page {
+		--contact-accent-gradient: linear-gradient(
+			to top,
+			rgb(249 115 22),
+			rgb(236 72 153),
+			rgb(91 33 182)
+		);
+
+		display: flex;
+		flex-direction: column;
+		gap: 6rem;
+	}
+
+	.contact-page__hero {
+		overflow: hidden;
+		padding-inline: 6px;
+		padding-top: 12px;
+		position: relative;
+	}
+
+	.contact-page__hero-inner {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.contact-page__title {
+		color: var(--foreground-primary);
+		font-size: 48px;
+		font-weight: 600;
+		margin-bottom: 8px;
+		margin-top: 0;
+		max-width: 46rem;
+		text-wrap: balance;
+	}
+
+	.contact-page__lead {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 1.55;
+		max-width: 41rem;
+		text-wrap: pretty;
+	}
+
+	@media (max-width: 640px) {
+		.contact-page__title {
+			font-size: 40px;
+		}
+	}
+
+	.contact-page__block {
+		width: 100%;
+	}
+
+	.contact-page__channels-header :global(.section-header) {
+		margin-inline: auto;
+		max-width: 38rem;
+		text-align: center;
+	}
+
+	.contact-page__channels-header :global(.section-header[data-align="center"]) {
+		align-items: center;
+	}
+
+	.contact-page__channel-grid {
+		display: grid;
+		gap: clamp(14px, 2.5vw, 18px);
+		grid-template-columns: 1fr;
+		margin-top: clamp(1.75rem, 4vw, 2.25rem);
+	}
+
+	@media (width >= 640px) {
+		.contact-page__channel-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	.contact-page__channel-card {
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: 0;
+		box-shadow: var(--theme-shadow-soft);
+		color: inherit;
+		display: block;
+		min-width: 0;
+		padding: 1.35rem 1.2rem 1.45rem 1rem;
+		padding-inline-start: 1.1rem;
+		position: relative;
+		text-align: start;
+		text-decoration: none;
+		transition:
+			border-color 0.2s ease,
+			box-shadow 0.2s ease,
+			background-color 0.2s ease;
+	}
+
+	.contact-page__channel-card:hover {
+		background: color-mix(in srgb, var(--feature-spotlight-card-surface) 92%, var(--page-bg));
+		border-color: color-mix(in srgb, var(--foreground-primary) 14%, var(--page-border));
+		box-shadow: var(--theme-shadow-panel);
+	}
+
+	html[data-theme="dark"] .contact-page__channel-card {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.contact-page__channel-accent {
+		background: var(--contact-accent-gradient);
+		inset-block: 0.75rem;
+		inset-inline-start: 0;
+		position: absolute;
+		width: 3px;
+	}
+
+	.contact-page__channel-main {
+		display: flex;
+		align-items: flex-start;
+		gap: 1rem;
+		justify-content: space-between;
+		margin-inline-start: 0.65rem;
+	}
+
+	:global(body.locale-arabic) .contact-page__channel-main {
+		margin-inline-end: 0.65rem;
+		margin-inline-start: 0;
+	}
+
+	:global(body.locale-arabic) .contact-page__channel-accent {
+		inset-inline-end: 0;
+		inset-inline-start: auto;
+	}
+
+	.contact-page__channel-body {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.contact-page__channel-icon {
+		color: var(--foreground-secondary);
+		flex-shrink: 0;
+		margin-top: 0.1rem;
+	}
+
+	.contact-page__channel-label {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.contact-page__channel-value {
+		color: var(--foreground-primary);
+		font-family: var(--font-ui);
+		font-size: 1.05rem;
+		font-weight: 600;
+		line-height: 1.35;
+		margin: 0.4rem 0 0;
+		text-decoration: underline;
+		text-decoration-color: color-mix(in srgb, var(--foreground-primary) 30%, transparent);
+		text-underline-offset: 0.18em;
+	}
+
+	.contact-page__channel-card:hover .contact-page__channel-value {
+		text-decoration-color: color-mix(in srgb, var(--foreground-primary) 55%, transparent);
+	}
+
+	.contact-page__channel-hint {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 13px;
+		line-height: 1.45;
+		margin: 0.5rem 0 0;
+	}
+
+	.contact-page__section-intro :global(.section-header) {
+		max-width: none;
+	}
+
+	.contact-page__conversations {
+		display: grid;
+		gap: clamp(12px, 2.5vw, 20px);
+		grid-template-columns: 1fr;
+		list-style: none;
+		margin: clamp(1.5rem, 3.5vw, 2rem) 0 0;
+		padding: 0;
+	}
+
+	@media (width >= 768px) {
+		.contact-page__conversations {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	.contact-page__conversation {
+		align-items: center;
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: 0;
+		box-shadow: var(--theme-shadow-soft);
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		margin: 0;
+		min-height: 0;
+		min-width: 0;
+		padding: 22px 18px 26px;
+		text-align: center;
+	}
+
+	html[data-theme="dark"] .contact-page__conversation {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.contact-page__conversation-title {
+		margin: 0;
+		text-align: center;
+	}
+
+	.contact-page__conversation-body {
+		flex: 1;
+		margin: 0;
+		text-align: center;
+		text-wrap: balance;
+	}
+
+	.contact-page__conversation-cta {
+		margin-top: 0.25rem;
+	}
+
+	.contact-page__expectations {
+		background: color-mix(in srgb, var(--page-surface-muted) 55%, var(--page-bg));
+		border: 1px solid var(--page-border);
+		border-radius: 0;
+		margin-top: clamp(1.35rem, 3vw, 1.75rem);
+		padding: 1.1rem 1.15rem 1.2rem;
+	}
+
+	.contact-page__expectations-title {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		margin: 0 0 0.65rem;
+		text-transform: uppercase;
+	}
+
+	.contact-page__expectations-list {
+		display: grid;
+		gap: 1rem 1.5rem;
+		grid-template-columns: 1fr;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	@media (width >= 640px) {
+		.contact-page__expectations-list {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	.contact-page__expectations-item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+		margin: 0;
+	}
+
+	.contact-page__expectations-label {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	.contact-page__expectations-value {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 14px;
+		line-height: 1.45;
+	}
+
+	.contact-page__steps {
+		display: grid;
+		gap: clamp(12px, 2.5vw, 20px);
+		grid-template-columns: 1fr;
+		list-style: none;
+		margin: clamp(1.35rem, 3.5vw, 1.85rem) 0 0;
+		padding: 0;
+	}
+
+	@media (width >= 768px) {
+		.contact-page__steps {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	.contact-page__step {
+		align-items: center;
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: 0;
+		box-shadow: var(--theme-shadow-soft);
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		margin: 0;
+		min-height: 0;
+		min-width: 0;
+		padding: 22px 18px 26px;
+		position: relative;
+		text-align: center;
+	}
+
+	html[data-theme="dark"] .contact-page__step {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.contact-page__step-index {
+		background: var(--feature-spotlight-plate-fill);
+		border: 1px solid color-mix(in srgb, var(--foreground-primary) 10%, transparent);
+		border-radius: 999px;
+		color: var(--foreground-secondary);
+		display: inline-flex;
+		font-family: var(--font-ui);
+		font-size: 12px;
+		font-variant-numeric: tabular-nums;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		line-height: 1;
+		padding: 8px 14px;
+	}
+
+	.contact-page__step-title {
+		margin: 0;
+		text-align: center;
+	}
+
+	.contact-page__step-body {
+		flex: 1;
+		margin: 0;
+		text-align: center;
+		text-wrap: balance;
+	}
+
+	.contact-page__quick-links {
+		align-items: center;
+		border-block: 1px solid var(--page-border);
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 0.75rem;
+		justify-content: center;
+		margin-top: 0.5rem;
+		padding-block: 1.25rem;
+	}
+
+	.contact-page__quick-link {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 14px;
+		font-weight: 500;
+		text-decoration: underline;
+		text-decoration-color: color-mix(in srgb, var(--foreground-secondary) 35%, transparent);
+		text-underline-offset: 0.2em;
+	}
+
+	.contact-page__quick-link:hover {
+		color: var(--foreground-primary);
+		text-decoration-color: color-mix(in srgb, var(--foreground-primary) 50%, transparent);
+	}
+
+	.contact-page__quick-sep {
+		background: color-mix(in srgb, var(--foreground-tertiary) 45%, transparent);
+		border-radius: 999px;
+		display: inline-block;
+		height: 3px;
+		width: 3px;
+	}
+</style>

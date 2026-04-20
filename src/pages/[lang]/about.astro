@@ -1,101 +1,414 @@
 ---
-import { getCollection } from "astro:content";
-import PeopleGrid from "../../components/people/PeopleGrid.astro";
-import MarketingEyebrow from "../../components/ui/MarketingEyebrow.astro";
-import ActionLink from "../../components/ui/ActionLink.astro";
-import PageSection from "../../components/ui/PageSection.astro";
-import SectionIntro from "../../components/ui/SectionIntro.astro";
-import { getAboutPageContent } from "../../data/translations/about";
-import Layout from "../../layouts/Layout.astro";
-import { createMarketingMetadata } from "../../utils/metadata";
-import { sortPeople } from "../../utils/people";
-import { getLanguageFromParams, getLocaleStaticPaths } from "../../utils/routing";
+import { getCollection } from 'astro:content';
+import PeopleGrid from '../../components/people/PeopleGrid.astro';
+import ActionLink from '../../components/ui/ActionLink.astro';
+import SectionHeader from '../../components/ui/SectionHeader.astro';
+import { getAboutPageContent } from '../../data/translations/about';
+import Layout from '../../layouts/Layout.astro';
+import { createMarketingMetadata } from '../../utils/metadata';
+import { sortPeople } from '../../utils/people';
+import { getLanguageFromParams, getLocaleStaticPaths } from '../../utils/routing';
 
 const lang = getLanguageFromParams(Astro.params.lang);
 const content = getAboutPageContent(lang);
-const people = sortPeople(await getCollection("people"));
+const people = sortPeople(await getCollection('people'));
 const metadata = createMarketingMetadata(lang, {
-	description: content.description,
-	title: content.metaTitle,
+  description: content.description,
+  title: content.metaTitle,
 });
 
 export function getStaticPaths() {
-	return getLocaleStaticPaths();
+  return getLocaleStaticPaths();
 }
 ---
 
 <Layout {...metadata}>
-	<PageSection backdrop="glow" tone="warm">
-		<SectionIntro description={content.intro} title={content.title} titleTag="h1" />
-	</PageSection>
+  <div class="about-page py-10">
+    <section
+      aria-labelledby="about-hero-heading"
+      class="about-page__hero"
+      data-home-reveal-section>
+      <div class="about-page__hero-inner">
+        <h1
+          id="about-hero-heading"
+          class="about-page__title home-reveal"
+          style="--reveal-index: 0">
+          {content.title}
+        </h1>
+        <p
+          class="about-page__lead home-reveal"
+          style="--reveal-index: 1">
+          {content.hero.intro}
+        </p>
+        <div
+          class="about-page__actions home-reveal"
+          style="--reveal-index: 2">
+          <ActionLink
+            href={content.hero.primaryHref}
+            size="lg"
+            variant="primary">
+            {content.hero.primaryCta}
+          </ActionLink>
+          <ActionLink
+            href={content.hero.secondaryHref}
+            size="lg"
+            variant="secondary">
+            {content.hero.secondaryCta}
+          </ActionLink>
+        </div>
+      </div>
+    </section>
 
-	<PageSection backdrop="grid" layout="split" surface="panel">
-		<div class="space-y-5">
-			<MarketingEyebrow>{content.story.eyebrow}</MarketingEyebrow>
-			<h2 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
-				{content.story.title}
-			</h2>
-			<p class="text-lg leading-8 text-slate-600">{content.story.body}</p>
-		</div>
-		<div slot="aside" class="rounded-[1.75rem] border border-slate-200 bg-slate-950 p-6 text-white">
-			<p class="text-xs font-medium uppercase tracking-[0.18em] text-white/60">
-				{lang === "ar" ? "لقطة سريعة" : "At a glance"}
-			</p>
-			<ul class="mt-4 grid gap-4 text-sm text-white/90">
-				<li>{lang === "ar" ? "٣ مساهمين عبر المحتوى والتصميم والتجربة العربية" : "3 contributors across product, editorial, and Arabic experience"}</li>
-				<li>{lang === "ar" ? "طبقة منتج ثنائية اللغة في المسارات والمحتوى والواجهة" : "Bilingual product thinking across routing, content, and interface details"}</li>
-				<li>{lang === "ar" ? "قرارات مبنية على الوضوح وقابلية الصيانة" : "Decisions shaped by clarity, maintainability, and calm UX"}</li>
-			</ul>
-		</div>
-	</PageSection>
+    <div class="home-main-stack mx-auto flex w-full max-w-[914px] flex-col gap-36 pb-12">
+      <section
+        aria-labelledby="about-story-heading"
+        class="about-page__block"
+        data-home-reveal-section>
+        <div class="about-page__split">
+          <header class="about-page__block-intro">
+            <SectionHeader
+              align="start"
+              description={content.story.body}
+              headline={content.story.title}
+              headlineId="about-story-heading"
+              headlineTag="h2"
+              revealStagger={true}
+              sectionName={content.story.sectionName}
+            />
+          </header>
+          <aside
+            class="about-page__glance home-reveal"
+            aria-label={content.story.glanceTitle}
+            style="--reveal-index: 3">
+            <p class="about-page__glance-label">{content.story.glanceTitle}</p>
+            <ul class="about-page__glance-list">
+              {content.story.glanceItems.map((item) => <li class="spotlight-surface-card-desc about-page__glance-item">{item}</li>)}
+            </ul>
+          </aside>
+        </div>
+      </section>
 
-	<PageSection tone="soft">
-		<SectionIntro
-			description={content.principles.description}
-			eyebrow={content.principles.eyebrow}
-			title={content.principles.title}
-		/>
-		<div class="mt-10 grid gap-6 lg:grid-cols-3">
-			{content.principles.items.map((item) => (
-				<article class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
-					<h2 class="font-display text-2xl font-semibold tracking-tight text-slate-950">
-						{item.title}
-					</h2>
-					<p class="mt-4 text-base leading-7 text-slate-600">{item.body}</p>
-				</article>
-			))}
-		</div>
-	</PageSection>
+      <section
+        aria-labelledby="about-principles-heading"
+        class="about-page__block"
+        data-home-reveal-section>
+        <SectionHeader
+          align="center"
+          class="about-page__section-header"
+          description={content.principles.description}
+          headline={content.principles.title}
+          headlineId="about-principles-heading"
+          headlineTag="h2"
+          revealStagger={true}
+          sectionName={content.principles.sectionName}
+        />
+        <ol
+          class="about-page__principles home-reveal"
+          style="--reveal-index: 3">
+          {
+            content.principles.items.map((item, index) => (
+              <li class="about-page__principle">
+                <span
+                  class="about-page__principle-step"
+                  aria-hidden="true">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 class="spotlight-surface-card-title about-page__principle-title">{item.title}</h3>
+                <p class="spotlight-surface-card-desc about-page__principle-body">{item.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
 
-	<PageSection>
-		<SectionIntro
-			description={lang === "ar" ? "الأشخاص الذين يصوغون المنتج والمحتوى والجودة الثنائية اللغة." : "The people shaping the product, editorial voice, and bilingual quality layer."}
-			eyebrow={lang === "ar" ? "الفريق" : "People"}
-			title={lang === "ar" ? "تعرف على الفريق وراء Orgo" : "Meet the people behind Orgo"}
-		/>
-		<div class="mt-10">
-			<PeopleGrid lang={lang} people={people} />
-		</div>
-	</PageSection>
+      <section
+        aria-labelledby="about-people-heading"
+        class="about-page__block"
+        data-home-reveal-section>
+        <SectionHeader
+          align="center"
+          class="about-page__section-header"
+          description={content.people.description}
+          headline={content.people.title}
+          headlineId="about-people-heading"
+          headlineTag="h2"
+          revealStagger={true}
+          sectionName={content.people.sectionName}
+        />
+        <div
+          class="about-page__people-reveal home-reveal"
+          style="--reveal-index: 3">
+          <PeopleGrid
+            lang={lang}
+            people={people}
+          />
+        </div>
+      </section>
 
-	<PageSection class="pt-0">
-		<div class="rounded-[2rem] border border-slate-200 bg-linear-to-br from-amber-50 via-white to-sky-50 px-6 py-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10">
-			<div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-				<div class="max-w-3xl">
-					<h2 class="font-display text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
-						{content.cta.title}
-					</h2>
-					<p class="mt-5 text-lg leading-8 text-slate-600">{content.cta.description}</p>
-				</div>
-				<div class="flex flex-wrap gap-4">
-					<ActionLink href={content.cta.primaryHref} variant="primary">
-						{content.cta.primaryLabel}
-					</ActionLink>
-					<ActionLink href={content.cta.secondaryHref} variant="secondary">
-						{content.cta.secondaryLabel}
-					</ActionLink>
-				</div>
-			</div>
-		</div>
-	</PageSection>
+      <section
+        class="about-page__cta"
+        aria-labelledby="about-cta-heading"
+        data-home-reveal-section>
+        <div class="about-page__cta-inner">
+          <SectionHeader
+            align="center"
+            class="about-page__cta-header"
+            description={content.cta.description}
+            headline={content.cta.headline}
+            headlineId="about-cta-heading"
+            headlineTag="h2"
+            revealStagger={true}
+            sectionName={content.cta.sectionName}
+          />
+          <div
+            class="about-page__cta-panel home-reveal"
+            style="--reveal-index: 3">
+            <div class="about-page__cta-actions">
+              <ActionLink
+                href={content.cta.primaryHref}
+                variant="primary">
+                {content.cta.primaryLabel}
+              </ActionLink>
+              <ActionLink
+                href={content.cta.secondaryHref}
+                variant="secondary">
+                {content.cta.secondaryLabel}
+              </ActionLink>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
 </Layout>
+
+<style>
+  .about-page {
+    display: flex;
+    flex-direction: column;
+    gap: 6rem;
+  }
+
+  .about-page__hero {
+    overflow: hidden;
+    padding-inline: 6px;
+    padding-top: 12px;
+    position: relative;
+  }
+
+  .about-page__hero-inner {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .about-page__title {
+    color: var(--foreground-primary);
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 0;
+    max-width: 46rem;
+    text-wrap: balance;
+  }
+
+  .about-page__lead {
+    color: var(--foreground-secondary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19px;
+    max-width: 41rem;
+    text-wrap: pretty;
+  }
+
+  .about-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .about-page__title {
+      font-size: 40px;
+    }
+  }
+
+  .about-page__block {
+    width: 100%;
+  }
+
+  .about-page__split {
+    align-items: start;
+    display: grid;
+    gap: clamp(1.75rem, 4vw, 2.5rem);
+    grid-template-columns: 1fr;
+  }
+
+  @media (width >= 960px) {
+    .about-page__split {
+      grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.42fr);
+      gap: 2.5rem;
+    }
+  }
+
+  .about-page__block-intro :global(.section-header) {
+    max-width: none;
+  }
+
+  .about-page__glance {
+    background: var(--feature-spotlight-card-surface);
+    border: 1px solid var(--page-border);
+    border-radius: var(--feature-spotlight-card-radius);
+    box-shadow: var(--theme-shadow-soft);
+    padding: 1.375rem 1.25rem 1.5rem;
+  }
+
+  html[data-theme='dark'] .about-page__glance {
+    box-shadow:
+      var(--theme-shadow-soft),
+      inset 0 1px 0 rgb(255 255 255 / 6%);
+  }
+
+  .about-page__glance-label {
+    color: var(--foreground-tertiary);
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .about-page__glance-list {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+  }
+
+  .about-page__glance-item + .about-page__glance-item {
+    margin-top: 0.85rem;
+  }
+
+  .about-page__section-header :global(.section-header[data-align='center']) {
+    margin-inline: auto;
+    max-width: 42rem;
+  }
+
+  .about-page__principles {
+    display: grid;
+    gap: clamp(12px, 2.5vw, 20px);
+    grid-template-columns: 1fr;
+    list-style: none;
+    margin: clamp(1.75rem, 4.5vw, 2.75rem) 0 0;
+    padding: 0;
+  }
+
+  @media (width >= 768px) {
+    .about-page__principles {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .about-page__principle {
+    align-items: center;
+    background: var(--feature-spotlight-card-surface);
+    border: 1px solid var(--page-border);
+    border-radius: var(--feature-spotlight-card-radius);
+    box-shadow: var(--theme-shadow-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    min-height: 0;
+    min-width: 0;
+    padding: 22px 18px 26px;
+    position: relative;
+    text-align: center;
+  }
+
+  html[data-theme='dark'] .about-page__principle {
+    box-shadow:
+      var(--theme-shadow-soft),
+      inset 0 1px 0 rgb(255 255 255 / 6%);
+  }
+
+  .about-page__principle-step {
+    background: var(--feature-spotlight-plate-fill);
+    border: 1px solid color-mix(in srgb, var(--foreground-primary) 10%, transparent);
+    border-radius: 999px;
+    color: var(--foreground-secondary);
+    display: inline-flex;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    padding: 8px 14px;
+  }
+
+  .about-page__principle-title {
+    margin: 0;
+    text-align: center;
+  }
+
+  .about-page__principle-body {
+    flex: 1;
+    margin: 0;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .about-page__cta {
+    background: transparent;
+    isolation: isolate;
+    margin-inline: calc(50% - 50vw);
+    overflow: hidden;
+    width: 100vw;
+  }
+
+  .about-page__cta-inner {
+    margin-inline: auto;
+    max-width: var(--layout-width-navbar);
+    padding-inline: var(--layout-gutter);
+  }
+
+  .about-page__cta-header :global(.section-header) {
+    margin-inline: auto;
+    max-width: 40rem;
+  }
+
+  .about-page__cta-panel {
+    border-top: 1px solid transparent;
+    margin-inline: auto;
+    margin-top: clamp(1.75rem, 4vw, 2.25rem);
+    max-width: 40rem;
+    padding: 24px;
+    padding-top: clamp(1.5rem, 3vw, 2rem);
+    position: relative;
+    width: 100%;
+  }
+
+  .about-page__cta-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .about-page__cta-panel::before {
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--foreground-primary) 16%, transparent) 22%, color-mix(in srgb, var(--foreground-primary) 16%, transparent) 78%, transparent);
+    content: '';
+    height: 1px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+</style>

@@ -5,7 +5,6 @@ import authorJohn from "../assets/generated/author-john.png";
 import blogArchitecture from "../assets/generated/blog-architecture.png";
 import blogFocus from "../assets/generated/blog-focus.png";
 import blogIntroduction from "../assets/generated/blog-introduction.png";
-import contactScene from "../assets/generated/contact-scene.png";
 import homeSpotlight from "../assets/generated/home-spotlight.png";
 
 const blogCoverImages = {
@@ -33,4 +32,3 @@ export function getAuthorAvatarImage(authorId?: string): ImageMetadata | undefin
 }
 
 export const homeSpotlightImage = homeSpotlight;
-export const contactSceneImage = contactScene;

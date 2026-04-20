@@ -1,0 +1,44 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import teamJane from '../../assets/team-1.png';
+import teamJohn from '../../assets/team-2.png';
+import teamAhmed from '../../assets/team-3.png';
+
+interface Props {
+	personId: string;
+	alt: string;
+	class?: string;
+}
+
+const teamByPersonId: Record<string, ImageMetadata> = {
+	'jane-doe': teamJane,
+	'john-doe': teamJohn,
+	'ahmed-ali': teamAhmed,
+};
+
+const { personId, alt, class: className = '' } = Astro.props as Props;
+const src = teamByPersonId[personId] ?? teamJane;
+---
+
+<div class:list={['person-avatar', className]}>
+	<Image alt={alt} class="person-avatar__img" height={320} src={src} widths={[200, 280, 360]} sizes="(max-width: 900px) 40vw, 200px" />
+</div>
+
+<style>
+	.person-avatar {
+		align-items: center;
+		display: flex;
+		justify-content: center;
+		width: 100%;
+	}
+
+	.person-avatar__img {
+		display: block;
+		height: auto;
+		max-height: 9.5rem;
+		width: auto;
+		max-width: 100%;
+		object-fit: contain;
+	}
+</style>

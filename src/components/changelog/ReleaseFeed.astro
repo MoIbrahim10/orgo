@@ -10,11 +10,6 @@ interface Props {
 }
 
 const { entries, lang } = Astro.props as Props;
-const toneClasses = {
-	launch: "bg-emerald-100 text-emerald-800",
-	improvement: "bg-sky-100 text-sky-800",
-	note: "bg-amber-100 text-amber-800",
-} as const;
 const typeLabels = {
 	en: {
 		launch: "Launch",
@@ -35,39 +30,149 @@ const renderedEntries = await Promise.all(
 );
 ---
 
-<div class="grid gap-6">
-	{renderedEntries.map(({ entry, Content }) => (
-		<article class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.05)]">
-			<div class="flex flex-wrap items-center gap-3 text-sm text-slate-500">
-				<span
-					class:list={[
-						"rounded-full px-3 py-1 text-xs font-medium uppercase tracking-[0.18em]",
-						toneClasses[entry.data.type],
-					]}
-				>
-					{typeLabels[lang][entry.data.type]}
-				</span>
-				<span>{entry.data.version}</span>
-				<time datetime={entry.data.releaseDate.toISOString()}>
-					{formatLocalizedDate(lang, entry.data.releaseDate, { dateStyle: "long" })}
-				</time>
-			</div>
-			<h2 class="font-display mt-5 text-3xl font-semibold tracking-tight text-slate-950">
-				{entry.data.title}
-			</h2>
-			<p class="mt-4 text-lg leading-8 text-slate-600">{entry.data.summary}</p>
-			{entry.data.highlights.length > 0 && (
-				<ul class="mt-5 grid gap-3 sm:grid-cols-3">
-					{entry.data.highlights.map((highlight) => (
-						<li class="rounded-3xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700">
-							{highlight}
-						</li>
-					))}
-				</ul>
-			)}
-			<div class="blog-prose mt-6">
-				<Content />
-			</div>
-		</article>
-	))}
+<div class="release-feed">
+	{
+		renderedEntries.map(({ entry, Content }) => (
+			<article class="release-feed__item">
+				<div class="release-feed__meta">
+					<span class:list={["release-feed__tag", `release-feed__tag--${entry.data.type}`]}>
+						{typeLabels[lang][entry.data.type]}
+					</span>
+					<span class="release-feed__version">{entry.data.version}</span>
+					<time class="release-feed__date" datetime={entry.data.releaseDate.toISOString()}>
+						{formatLocalizedDate(lang, entry.data.releaseDate, { dateStyle: "long" })}
+					</time>
+				</div>
+				<h2 class="release-feed__title">{entry.data.title}</h2>
+				<p class="release-feed__summary">{entry.data.summary}</p>
+				{entry.data.highlights.length > 0 && (
+					<ul class="release-feed__highlights">
+						{entry.data.highlights.map((highlight) => (
+							<li class="release-feed__highlight">{highlight}</li>
+						))}
+					</ul>
+				)}
+				<div class="release-feed__prose blog-prose">
+					<Content />
+				</div>
+			</article>
+		))
+	}
 </div>
+
+<style>
+	.release-feed {
+		display: grid;
+		gap: 1.5rem;
+	}
+
+	.release-feed__item {
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		box-shadow: var(--theme-shadow-soft);
+		padding: 1.5rem 1.25rem 1.75rem;
+	}
+
+	html[data-theme="dark"] .release-feed__item {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.release-feed__meta {
+		align-items: center;
+		color: var(--foreground-tertiary);
+		display: flex;
+		flex-wrap: wrap;
+		font-family: var(--font-ui);
+		font-size: 0.875rem;
+		gap: 0.65rem 0.75rem;
+	}
+
+	.release-feed__tag {
+		border: 1px solid var(--page-border);
+		border-radius: 999px;
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		padding: 0.35rem 0.65rem;
+		text-transform: uppercase;
+	}
+
+	.release-feed__tag--launch {
+		background: color-mix(in srgb, var(--page-text-soft) 12%, transparent);
+		color: var(--foreground-primary);
+	}
+
+	.release-feed__tag--improvement {
+		background: color-mix(in srgb, var(--page-text-soft) 10%, transparent);
+		color: var(--foreground-secondary);
+	}
+
+	.release-feed__tag--note {
+		background: color-mix(in srgb, var(--page-text-muted) 14%, transparent);
+		color: var(--foreground-secondary);
+	}
+
+	.release-feed__version {
+		font-variant-numeric: tabular-nums;
+		font-weight: 500;
+	}
+
+	.release-feed__date {
+		color: var(--foreground-tertiary);
+	}
+
+	.release-feed__title {
+		color: var(--foreground-primary);
+		font-family: var(--font-display-latin);
+		font-size: 1.75rem;
+		font-weight: 600;
+		line-height: 1.15;
+		margin: 1.25rem 0 0;
+	}
+
+	:global(body.locale-arabic) .release-feed__title {
+		font-family: var(--font-display-arabic);
+	}
+
+	.release-feed__summary {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 1.05rem;
+		line-height: 1.5;
+		margin: 1rem 0 0;
+	}
+
+	.release-feed__highlights {
+		display: grid;
+		gap: 0.65rem;
+		grid-template-columns: 1fr;
+		list-style: none;
+		margin: 1.25rem 0 0;
+		padding: 0;
+	}
+
+	@media (width >= 640px) {
+		.release-feed__highlights {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	.release-feed__highlight {
+		background: var(--page-surface-muted);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 0.875rem;
+		line-height: 1.45;
+		margin: 0;
+		padding: 0.65rem 0.85rem;
+	}
+
+	.release-feed__prose {
+		margin-top: 1.5rem;
+	}
+</style>

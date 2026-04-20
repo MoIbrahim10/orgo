@@ -2,23 +2,30 @@ import type { Language } from "../../types/translations";
 import { getLocalizedPath } from "../../utils/routing";
 
 type TeamsPageContent = {
+	metaTitle: string;
+	metaDescription: string;
 	hero: {
-		eyebrow: string;
 		title: string;
 		description: string;
 		primaryCta: string;
 		secondaryCta: string;
 	};
+	signalsAsideTitle: string;
 	signals: Array<{
 		label: string;
 		value: string;
 	}>;
-	pillars: Array<{
+	pillars: {
+		sectionName: string;
 		title: string;
-		body: string;
-	}>;
+		description: string;
+		items: Array<{
+			title: string;
+			body: string;
+		}>;
+	};
 	playbook: {
-		eyebrow: string;
+		sectionName: string;
 		title: string;
 		description: string;
 		steps: Array<{
@@ -27,150 +34,178 @@ type TeamsPageContent = {
 		}>;
 	};
 	roster: {
-		eyebrow: string;
+		sectionName: string;
 		title: string;
 		description: string;
 	};
-	closing: {
-		title: string;
+	cta: {
+		sectionName: string;
+		headline: string;
 		description: string;
-		primaryCta: string;
-		secondaryCta: string;
+		primaryLabel: string;
+		secondaryLabel: string;
 	};
 };
 
 const contentByLanguage: Record<Language, TeamsPageContent> = {
 	en: {
+		metaTitle: "Teams",
+		metaDescription:
+			"How teams use Orgo for calmer weekly planning—shared rhythm, lighter meetings, and bilingual updates in one place.",
 		hero: {
-			eyebrow: "For teams",
-			title: "Run calmer weekly planning with fewer status meetings.",
+			title: "A calmer rhythm for the week ahead.",
 			description:
-				"Orgo gives product, operations, and leadership teams a shared rhythm for commitments, decisions, and follow-through without turning every update into another meeting.",
+				"Give product, ops, and leadership one legible place for priorities, notes, and follow-through—without living in status meetings.",
 			primaryCta: "See pricing",
 			secondaryCta: "Read the journal",
 		},
+		signalsAsideTitle: "What teams get",
 		signals: [
 			{
 				label: "Weekly rhythm",
-				value: "Shared priorities, notes, and review points in one place.",
+				value: "Priorities, notes, and review points stay in one thread.",
 			},
 			{
 				label: "Decision trail",
-				value: "Capture context so choices stay understandable a week later.",
+				value: "Context sticks around so choices still make sense next week.",
 			},
 			{
-				label: "Team calm",
-				value: "Less chasing. More clarity about what moved, what slipped, and why.",
-			},
-		],
-		pillars: [
-			{
-				title: "Plan with context, not just task lists",
-				body: "Bring goals, meeting notes, and next actions into the same flow so people can see the story behind the work.",
-			},
-			{
-				title: "Review without rebuilding the narrative",
-				body: "Standups and weekly reviews become lighter when the project record is already organized before the meeting starts.",
-			},
-			{
-				title: "Keep the team aligned across languages",
-				body: "The product foundation already supports bilingual publishing, which makes it easier to communicate with mixed-language teams and stakeholders.",
+				label: "Less chasing",
+				value: "See what moved, what slipped, and why—without another ping storm.",
 			},
 		],
 		playbook: {
-			eyebrow: "Team playbook",
-			title: "A focused weekly operating rhythm.",
+			sectionName: "Team playbook",
+			title: "A light operating cadence everyone can trust.",
 			description:
-				"Instead of scattered updates across docs, chats, and calendars, Orgo supports a lightweight cadence the whole team can trust.",
+				"When updates aren’t scattered across docs, chat, and calendars, the week is easier to read—and easier to steer.",
 			steps: [
 				{
-					title: "Monday: capture commitments",
-					body: "Write what matters this week, who owns it, and what success should look like before momentum starts pulling people in different directions.",
+					title: "Monday: set commitments",
+					body: "Name what matters, who owns it, and what “done” looks like before the week pulls people sideways.",
 				},
 				{
-					title: "Midweek: surface blockers early",
-					body: "Use shared notes and tagged workstreams to spot uncertainty before it becomes last-minute firefighting.",
+					title: "Midweek: surface blockers",
+					body: "Shared notes and clear owners make uncertainty visible before it becomes a fire drill.",
 				},
 				{
 					title: "Friday: reflect and reset",
-					body: "Close the loop with a short review that keeps decisions, outcomes, and next steps visible for the following week.",
+					body: "Close the loop with a short review so decisions and next steps stay visible for Monday.",
+				},
+			],
+		},
+		pillars: {
+			sectionName: "How we think about teams",
+			title: "Clarity without extra process.",
+			description: "A few habits that keep planning humane as the team grows.",
+			items: [
+				{
+					title: "Context, not just tasks",
+					body: "Goals, meeting notes, and next actions share one narrative so the work stays understandable.",
+				},
+				{
+					title: "Reviews that don’t restart from zero",
+					body: "Standups and weekly syncs feel lighter when the record is already organized.",
+				},
+				{
+					title: "Bilingual by design",
+					body: "English and Arabic stay first-class—so mixed-language teams and stakeholders aren’t an afterthought.",
 				},
 			],
 		},
 		roster: {
-			eyebrow: "People",
-			title: "The people shaping the workflow",
+			sectionName: "People",
+			title: "The people behind the workflow",
 			description:
-				"Orgo's team view feels stronger when the people behind product, editorial systems, and Arabic experience stay visible.",
+				"The small crew building product, editorial systems, and Arabic experience—same faces you’ll see on About.",
 		},
-		closing: {
-			title: "Built for teams that want clarity without extra process.",
+		cta: {
+			sectionName: "Next step",
+			headline: "Ready to try it with your team?",
 			description:
-				"If your team is outgrowing chat-based planning but not looking for a heavier system, Orgo can be the calmer middle ground.",
-			primaryCta: "Talk through pricing",
-			secondaryCta: "Explore the homepage",
+				"If you’ve outgrown chat-only planning but don’t want a heavyweight system, we’d love to help you find a fit.",
+			primaryLabel: "Talk to us",
+			secondaryLabel: "Back to home",
 		},
 	},
 	ar: {
+		metaTitle: "الفرق",
+		metaDescription:
+			"كيف تستخدم الفرق Orgo لتخطيط أسبوعي أوضح—إيقاع واحد، اجتماعات أخف، وتحديثات بلغتين في مكان واحد.",
 		hero: {
-			eyebrow: "للفرق",
-			title: "نظّموا التخطيط الأسبوعي بهدوء واجتماعات أقل.",
+			title: "إيقاع أهدأ للأسبوع القادم.",
 			description:
-				"يساعد Orgo فرق المنتج والعمليات والإدارة على بناء إيقاع مشترك للالتزامات والقرارات والمتابعة دون تحويل كل تحديث إلى اجتماع جديد.",
+				"امنحوا فرق المنتج والعمليات والإدارة مكانًا واحدًا واضحًا للأولويات والملاحظات والمتابعة—دون أن يصبح يومكم سلسلة اجتماعات حالة.",
 			primaryCta: "اطّلع على الأسعار",
 			secondaryCta: "اقرأ المدوّنة",
 		},
+		signalsAsideTitle: "ما الذي يتغيّر للفريق",
 		signals: [
-			{ label: "إيقاع أسبوعي", value: "أولويات وملاحظات ونقاط مراجعة مشتركة في مكان واحد." },
-			{ label: "أثر للقرارات", value: "احتفظ بالسياق حتى تبقى القرارات مفهومة بعد أيام." },
-			{ label: "هدوء للفريق", value: "مطاردة أقل وتوضيح أكبر لما أُنجز وما تأخر ولماذا." },
-		],
-		pillars: [
 			{
-				title: "خطّطوا مع السياق لا مع قائمة مهام فقط",
-				body: "اجمعوا الأهداف وملاحظات الاجتماعات والخطوات التالية في تدفق واحد حتى يرى الجميع الصورة الكاملة وراء العمل.",
+				label: "إيقاع أسبوعي",
+				value: "الأولويات والملاحظات ونقاط المراجعة تبقى في خيط واحد.",
 			},
 			{
-				title: "راجعوا التقدم دون إعادة سرد القصة",
-				body: "تصبح الاجتماعات اليومية أو الأسبوعية أخف عندما يكون سجل العمل منظمًا مسبقًا قبل بدء الاجتماع.",
+				label: "أثر للقرارات",
+				value: "السياق يبقى ظاهرًا حتى تظل القرارات مفهومة الأسبوع التالي.",
 			},
 			{
-				title: "حافظوا على الاتساق بين اللغات",
-				body: "الأساس الحالي للمنتج يدعم النشر بلغتين، مما يساعد الفرق المختلطة اللغة على مشاركة التحديثات بثقة.",
+				label: "ضجيج أقل",
+				value: "رؤية ما اكتمل وما تأخر ولماذا—دون مطاردة جديدة في المحادثات.",
 			},
 		],
 		playbook: {
-			eyebrow: "إيقاع الفريق",
-			title: "نظام أسبوعي عملي وواضح.",
+			sectionName: "دليل الفريق",
+			title: "نظام خفيف يمكن الاعتماد عليه.",
 			description:
-				"بدلًا من تشتيت التحديثات بين المستندات والمحادثات والتقويم، يوفّر Orgo إيقاعًا خفيفًا يمكن للفريق الوثوق به.",
+				"عندما لا تتشتت التحديثات بين المستندات والمحادثات والتقويم، يصبح الأسبوع أسهل قراءة وأسهل توجيهًا.",
 			steps: [
 				{
 					title: "بداية الأسبوع: تثبيت الالتزامات",
-					body: "اكتبوا ما يهم هذا الأسبوع، ومن يملكه، وكيف يبدو النجاح قبل أن يبدأ التشتت في سحب الفريق في اتجاهات مختلفة.",
+					body: "حدّدوا ما يهم، من يملكه، وكيف يبدو الإنجاز قبل أن يبعثر الأسبوع الجميع.",
 				},
 				{
-					title: "منتصف الأسبوع: كشف العوائق مبكرًا",
-					body: "استخدموا الملاحظات المشتركة وتصنيف مسارات العمل لرصد الغموض قبل أن يتحول إلى ضغط في اللحظة الأخيرة.",
+					title: "منتصف الأسبوع: إبراز العوائق",
+					body: "الملاحظات المشتركة والملاك الواضحون يكشفون الغموض قبل أن يتحول لأزمة وقت.",
 				},
 				{
-					title: "نهاية الأسبوع: مراجعة وإعادة ضبط",
-					body: "اختموا الأسبوع بمراجعة قصيرة تُبقي القرارات والنتائج والخطوات التالية واضحة للأسبوع القادم.",
+					title: "نهاية الأسبوع: مراجعة وضبط",
+					body: "اختموا بمراجعة قصيرة تُبقي القرارات والخطوات التالية جاهزة للاثنين.",
+				},
+			],
+		},
+		pillars: {
+			sectionName: "كيف نفكر في الفرق",
+			title: "وضوح دون تعقيد إضافي.",
+			description: "بضع عادات تحافظ على هدوء التخطيط مع نمو الفريق.",
+			items: [
+				{
+					title: "سياق لا قائمة مهام فقط",
+					body: "الأهداف وملاحظات الاجتماعات والخطوات التالية تروي قصة واحدة يفهمها الجميع.",
+				},
+				{
+					title: "مراجعات لا تبدأ من الصفر",
+					body: "اللقاءات اليومية أو الأسبوعية أخف عندما يكون السجل مرتبًا مسبقًا.",
+				},
+				{
+					title: "ثنائية اللغة من الأساس",
+					body: "العربية والإنجليزية بنفس الاهتمام—للفرق والجهات المختلطة اللغة.",
 				},
 			],
 		},
 		roster: {
-			eyebrow: "الأشخاص",
-			title: "الأشخاص الذين يصوغون سير العمل",
+			sectionName: "الأشخاص",
+			title: "من وراء سير العمل",
 			description:
-				"تبدو طبقة الفرق في Orgo أقوى عندما يبقى الأشخاص وراء المنتج والمحتوى والتجربة العربية ظاهرين وواضحين.",
+				"الفريق الصغير الذي يبني المنتج والأنظمة التحريرية والتجربة العربية—نفس الوجوه في صفحة عنّا.",
 		},
-		closing: {
-			title: "مصمم للفرق التي تريد وضوحًا دون تعقيد إضافي.",
+		cta: {
+			sectionName: "الخطوة التالية",
+			headline: "جاهزون لتجربته مع فريقكم؟",
 			description:
-				"إذا كان فريقك تجاوز التخطيط عبر المحادثات لكنه لا يريد نظامًا أثقل، فقد يكون Orgo هو المساحة الهادئة المناسبة بينهما.",
-			primaryCta: "تحدّث عن الأسعار",
-			secondaryCta: "استكشف الصفحة الرئيسية",
+				"إذا تجاوزتم التخطيط عبر المحادثات ولا تريدون نظامًا ثقيلًا، يسعدنا مساعدتكم على إيجاد ما يناسبكم.",
+			primaryLabel: "تواصل معنا",
+			secondaryLabel: "الصفحة الرئيسية",
 		},
 	},
 };
@@ -185,8 +220,8 @@ export function getTeamsPageContent(lang: Language) {
 			primaryHref: getLocalizedPath(lang, "/pricing"),
 			secondaryHref: getLocalizedPath(lang, "/blog"),
 		},
-		closing: {
-			...content.closing,
+		cta: {
+			...content.cta,
 			primaryHref: getLocalizedPath(lang, "/contact"),
 			secondaryHref: getLocalizedPath(lang, "/"),
 		},

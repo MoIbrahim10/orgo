@@ -1,6 +1,7 @@
 ---
 import { getCollection, getEntries } from "astro:content";
 import BlogArchiveView from "../../../../../components/blog/BlogArchiveView.astro";
+import SiteMainStack from "../../../../../components/layout/SiteMainStack.astro";
 import { getBlogCoverImage } from "../../../../../data/media";
 import Layout from "../../../../../layouts/Layout.astro";
 import { supportedLanguages } from "../../../../../types/translations";
@@ -97,6 +98,7 @@ const metadata = createArchiveMetadata(lang, {
 ---
 
 <Layout {...metadata}>
+	<SiteMainStack>
 	<BlogArchiveView
 		authorsByPostId={authorsByPostId}
 		breadcrumbs={breadcrumbs}
@@ -111,4 +113,5 @@ const metadata = createArchiveMetadata(lang, {
 		]}
 		title={pageTitle}
 	/>
+	</SiteMainStack>
 </Layout>

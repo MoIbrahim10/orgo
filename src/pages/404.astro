@@ -1,10 +1,13 @@
 ---
+import ActionLink from "../components/ui/ActionLink.astro";
 import Layout from "../layouts/Layout.astro";
 import { buildLocalePathMap, getLanguageFromPathname, getLocalizedPath } from "../utils/routing";
 import { t } from "../utils/i18n";
 
 const lang = getLanguageFromPathname(Astro.url.pathname);
 const homePaths = buildLocalePathMap("/");
+const homeHref = getLocalizedPath(lang);
+const pricingHref = getLocalizedPath(lang, "/pricing");
 ---
 
 <Layout
@@ -16,17 +19,26 @@ const homePaths = buildLocalePathMap("/");
 	pageTitle={t(lang, "pages.errors.not_found.title")}
 	showLocaleSuggestion={false}
 >
-	<section class="mx-auto flex max-w-3xl flex-col gap-4 px-6 py-24 text-center">
-		<p class="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">404</p>
-		<h1 class="text-4xl font-semibold tracking-tight text-slate-950">
-			{t(lang, "pages.errors.not_found.title")}
-		</h1>
-		<p class="text-lg text-slate-600">{t(lang, "pages.errors.not_found.description")}</p>
-		<a
-			class="mx-auto rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700"
-			href={getLocalizedPath(lang)}
-		>
-			{t(lang, "pages.errors.not_found.cta")}
-		</a>
-	</section>
+	<div class="flex flex-col gap-24 py-10">
+		<div class="home-main-stack mx-auto flex w-full max-w-[914px] flex-col items-center gap-8 pb-12 text-center">
+			<p class="font-display text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+				{t(lang, "pages.errors.not_found.eyebrow")}
+			</p>
+			<p class="text-sm font-medium tabular-nums tracking-[0.2em] text-slate-400">404</p>
+			<h1 class="font-display max-w-2xl text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
+				{t(lang, "pages.errors.not_found.title")}
+			</h1>
+			<p class="max-w-xl text-lg leading-8 text-slate-600">
+				{t(lang, "pages.errors.not_found.description")}
+			</p>
+			<div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+				<ActionLink href={homeHref} variant="primary">
+					{t(lang, "pages.errors.not_found.cta")}
+				</ActionLink>
+				<ActionLink href={pricingHref} variant="secondary">
+					{t(lang, "pages.errors.not_found.secondary_cta")}
+				</ActionLink>
+			</div>
+		</div>
+	</div>
 </Layout>

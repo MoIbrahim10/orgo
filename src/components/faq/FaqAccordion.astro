@@ -15,29 +15,207 @@ const entries = await Promise.all(
 );
 ---
 
-<div class="grid gap-4">
-	{entries.map(({ item, Content }) => (
-		<details class="group rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
-			<summary class="flex cursor-pointer list-none items-start justify-between gap-4">
-				<div class="space-y-3">
-					<p class="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
-						{item.data.category}
-					</p>
-					<h2 class="font-display text-2xl font-semibold tracking-tight text-slate-950">
-						{item.data.question}
-					</h2>
-					<p class="text-base leading-7 text-slate-600">{item.data.answer}</p>
+<div class="faq-accordion">
+	{
+		entries.map(({ item, Content }, index) => {
+			const triggerId = `faq-trigger-${index}`;
+			const panelId = `faq-panel-${index}`;
+			return (
+				<div class="faq-accordion__item" data-faq-item>
+					<button
+						type="button"
+						class="faq-accordion__trigger"
+						id={triggerId}
+						aria-expanded="false"
+						aria-controls={panelId}
+						data-faq-trigger
+					>
+						<div class="faq-accordion__trigger-main">
+							<p class="faq-accordion__category">{item.data.category}</p>
+							<span class="faq-accordion__question" role="heading" aria-level="2">
+								{item.data.question}
+							</span>
+							<p class="faq-accordion__answer-preview">{item.data.answer}</p>
+						</div>
+						<span aria-hidden="true" class="faq-accordion__chevron">
+							+
+						</span>
+					</button>
+					<div id={panelId} class="faq-accordion__panel" data-faq-panel role="region" aria-labelledby={triggerId}>
+						<div class="faq-accordion__panel-inner" data-faq-panel-inner inert>
+							<div class="faq-accordion__body blog-prose">
+								<Content />
+							</div>
+						</div>
+					</div>
 				</div>
-				<span
-					aria-hidden="true"
-					class="mt-1 text-xl text-slate-400 transition group-open:rotate-45 group-open:text-slate-700"
-				>
-					+
-				</span>
-			</summary>
-			<div class="blog-prose mt-5 border-t border-slate-200 pt-5">
-				<Content />
-			</div>
-		</details>
-	))}
+			);
+		})
+	}
 </div>
+
+<script>
+	function initFaqAccordions() {
+		document.querySelectorAll(".faq-accordion").forEach((root) => {
+			root.querySelectorAll("[data-faq-item]").forEach((item) => {
+				const trigger = item.querySelector("[data-faq-trigger]");
+				const panel = item.querySelector("[data-faq-panel]");
+				const inner = item.querySelector("[data-faq-panel-inner]");
+				if (!(trigger instanceof HTMLButtonElement) || !(panel instanceof HTMLElement) || !(inner instanceof HTMLElement)) {
+					return;
+				}
+
+				if (trigger.dataset.faqBound === "true") {
+					return;
+				}
+				trigger.dataset.faqBound = "true";
+
+				trigger.addEventListener("click", () => {
+					const expanded = trigger.getAttribute("aria-expanded") === "true";
+					const next = !expanded;
+					trigger.setAttribute("aria-expanded", String(next));
+					panel.classList.toggle("is-open", next);
+					item.classList.toggle("is-open", next);
+					if (next) {
+						inner.removeAttribute("inert");
+					} else {
+						inner.setAttribute("inert", "");
+					}
+				});
+			});
+		});
+	}
+
+	initFaqAccordions();
+	document.addEventListener("astro:page-load", initFaqAccordions);
+</script>
+
+<style>
+	.faq-accordion {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.faq-accordion__item {
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		box-shadow: var(--theme-shadow-soft);
+		overflow: hidden;
+		padding: 0;
+	}
+
+	html[data-theme="dark"] .faq-accordion__item {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.faq-accordion__trigger {
+		align-items: flex-start;
+		background: transparent;
+		border: none;
+		color: inherit;
+		cursor: pointer;
+		display: flex;
+		gap: 1rem;
+		justify-content: space-between;
+		padding: 1.5rem 1.25rem;
+		text-align: start;
+		width: 100%;
+	}
+
+	.faq-accordion__trigger:focus-visible {
+		outline: 2px solid color-mix(in srgb, var(--action-link-primary-gradient-middle) 65%, transparent);
+		outline-offset: 2px;
+	}
+
+	.faq-accordion__trigger-main {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		min-width: 0;
+	}
+
+	.faq-accordion__category {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.18em;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.faq-accordion__question {
+		color: var(--foreground-primary);
+		display: block;
+		font-family: var(--font-display-latin);
+		font-size: 1.5rem;
+		font-weight: 600;
+		line-height: 1.2;
+		margin: 0;
+	}
+
+	:global(body.locale-arabic) .faq-accordion__question {
+		font-family: var(--font-display-arabic);
+	}
+
+	.faq-accordion__answer-preview {
+		color: var(--foreground-secondary);
+		font-family: var(--font-ui);
+		font-size: 16px;
+		line-height: 1.45;
+		margin: 0;
+	}
+
+	.faq-accordion__chevron {
+		color: var(--foreground-tertiary);
+		flex-shrink: 0;
+		font-size: 1.25rem;
+		line-height: 1;
+		margin-top: 0.15rem;
+		transition:
+			color 0.2s ease,
+			transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+	}
+
+	.faq-accordion__item.is-open .faq-accordion__chevron {
+		color: var(--foreground-secondary);
+		transform: rotate(45deg);
+	}
+
+	.faq-accordion__panel {
+		border-top: 1px solid transparent;
+		display: grid;
+		grid-template-rows: 0fr;
+		transition:
+			grid-template-rows 0.4s cubic-bezier(0.33, 1, 0.68, 1),
+			border-color 0.25s ease;
+	}
+
+	.faq-accordion__panel.is-open {
+		border-top-color: var(--page-border);
+		grid-template-rows: 1fr;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.faq-accordion__panel {
+			transition: border-color 0.15s ease;
+		}
+
+		.faq-accordion__chevron {
+			transition: color 0.15s ease;
+		}
+	}
+
+	.faq-accordion__panel-inner {
+		min-height: 0;
+		overflow: hidden;
+	}
+
+	.faq-accordion__body {
+		padding: 0 1.25rem 1.5rem;
+		padding-top: 1.25rem;
+	}
+</style>

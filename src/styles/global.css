@@ -100,11 +100,6 @@
 	--logo-inset-highlight: oklch(100% 0 0deg / 84%);
 	--brand-ink: oklch(20.8% 0.042 265.755deg);
 	--brand-line: oklch(70.4% 0.04 256.788deg / 18%);
-	--brand-mint: oklch(98.2% 0.018 155.826deg);
-	--brand-rose: oklch(97.1% 0.013 17.38deg);
-	--brand-sky: oklch(97.7% 0.013 236.62deg);
-	--brand-sun: oklch(98% 0.017 78.9deg);
-	--brand-contrast: oklch(12.9% 0.042 264.695deg);
 	--page-bg: var(--surface-canvas);
 	--page-surface: oklch(100% 0 0deg / 88%);
 	--page-surface-solid: oklch(100% 0 0deg);
@@ -200,11 +195,6 @@ html[data-theme="dark"] {
 	--logo-inset-highlight: oklch(100% 0 0deg / 19%);
 	--brand-ink: oklch(92% 0 0deg);
 	--brand-line: oklch(72% 0 0deg / 22%);
-	--brand-mint: oklch(75% 0.12 160deg / 18%);
-	--brand-rose: oklch(69% 0.16 18deg / 18%);
-	--brand-sky: oklch(74% 0.11 230deg / 18%);
-	--brand-sun: oklch(78% 0.13 82deg / 18%);
-	--brand-contrast: oklch(98.5% 0 0deg);
 	--page-bg: var(--surface-canvas);
 	--page-surface: oklch(21.5% 0 0deg / 88%);
 	--page-surface-solid: oklch(22.5% 0 0deg);
@@ -472,6 +462,7 @@ html[data-theme="dark"] .theme-toggle-moon {
 	transition: none !important;
 }
 
+/* Map legacy Tailwind `slate-*` utilities to theme tokens in dark mode (blog + illustrative UI). */
 html[data-theme="dark"] .text-slate-950,
 html[data-theme="dark"] .text-slate-900,
 html[data-theme="dark"] .text-white {

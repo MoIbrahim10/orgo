@@ -1,28 +1,28 @@
 {
-	"id": "ahmed-ali",
+	"id": "youssef-mansour",
 	"order": 3,
 	"location": "Cairo, Egypt",
-	"email": "ahmed@orgo.app",
-	"portfolio": "https://ahmedali.dev",
-	"availability": "Arabic UX, bilingual content design, and regional product adaptation.",
+	"email": "youssef.mansour@orgo.app",
+	"portfolio": "https://x.com/m0code",
+	"availability": "Arabic UX reviews, bilingual copy alignment, and RTL implementation guidance.",
 	"image": {
 		"src": "/images/authors/ahmed.jpg",
-		"alt": "Portrait of Ahmed Ali"
+		"alt": "Illustrated portrait placeholder for Youssef Mansour"
 	},
 	"localized": {
 		"en": {
-			"name": "Ahmed Ali",
-			"role": "Arabic experience designer",
-			"summary": "Leads Arabic UX quality, localization tone, and culturally fluent product decisions.",
-			"bio": "Ahmed focuses on making Orgo feel native in Arabic, not merely translated. He brings a strong eye for right-to-left layouts, tone, and the small experience decisions that make bilingual products feel respectful and natural.",
-			"focusAreas": ["Arabic UX", "Localization quality", "RTL design"]
+			"name": "Youssef Mansour",
+			"role": "Arabic experience lead",
+			"summary": "Makes the Arabic surface feel native — typography, tone, and the small layout choices that build trust.",
+			"bio": "Youssef collaborates with design and engineering on RTL behavior, broken plurals, and formality levels that match real users. He runs regular audits so bilingual mode is not an afterthought when you ship.",
+			"focusAreas": ["Arabic UX", "Localization & tone", "RTL QA"]
 		},
 		"ar": {
-			"name": "أحمد علي",
-			"role": "مصمم التجربة العربية",
-			"summary": "يقود جودة التجربة العربية ونبرة الترجمة والقرارات التي تجعل المنتج طبيعيًا ثقافيًا.",
-			"bio": "يركز أحمد على جعل Orgo يبدو منتجًا عربيًا أصيلًا لا مجرد واجهة مترجمة. يهتم بتفاصيل الاتجاه من اليمين إلى اليسار ونبرة اللغة والقرارات الصغيرة التي تجعل المنتج الثنائي اللغة محترمًا وطبيعيًا.",
-			"focusAreas": ["تجربة عربية", "جودة الترجمة", "تصميم RTL"]
+			"name": "يوسف منصور",
+			"role": "قائد التجربة العربية",
+			"summary": "يجعل الواجهة العربية تبدو أصيلة — خطًا ونبرة وقرارات تخطيط صغيرة تبني الثقة.",
+			"bio": "يتعاون يوسف مع التصميم والهندسة على سلوك RTL وجمع التكسير ومستويات الرسمية المناسبة للمستخدمين الحقيقيين. يجري مراجعات منتظمة كي لا تصبح الطريقة ثنائية اللغة ملحقًا عند الإطلاق.",
+			"focusAreas": ["تجربة عربية", "التوطين والنبرة", "جودة RTL"]
 		}
 	}
 }

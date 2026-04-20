@@ -1,70 +1,242 @@
 ---
-import type { CollectionEntry } from "astro:content";
-import ResponsiveMedia from "../common/ResponsiveMedia.astro";
-import { getAuthorAvatarImage } from "../../data/media";
-import type { Language } from "../../types/translations";
-import { getLocalizedPerson } from "../../utils/people";
+import type { CollectionEntry } from 'astro:content';
+import PersonAvatar from './PersonAvatar.astro';
+import type { Language } from '../../types/translations';
+import { getLocalizedPerson } from '../../utils/people';
 
 interface Props {
-	lang: Language;
-	people: CollectionEntry<"people">[];
+  lang: Language;
+  people: CollectionEntry<'people'>[];
 }
 
 const { lang, people } = Astro.props as Props;
 ---
 
-<div class="grid gap-6 lg:grid-cols-3">
-	{people.map((person) => {
-		const localizedPerson = getLocalizedPerson(person, lang);
-		const avatar = getAuthorAvatarImage(person.data.id);
+<div class="people-grid">
+  {
+    people.map((person) => {
+      const localizedPerson = getLocalizedPerson(person, lang);
+      const focusLabel = lang === 'ar' ? 'مجالات التركيز' : 'Focus';
 
-		return (
-			<article class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
-				<div class="flex items-center gap-4">
-					{avatar && (
-						<ResponsiveMedia
-							alt={localizedPerson.image?.alt ?? localizedPerson.name}
-							height={80}
-							imgClass="h-20 w-20 rounded-full border border-slate-200 bg-slate-50 object-cover"
-							mode="image"
-							src={avatar}
-							width={80}
-						/>
-					)}
-					<div>
-						<h3 class="font-display text-2xl font-semibold tracking-tight text-slate-950">
-							{localizedPerson.name}
-						</h3>
-						<p class="mt-2 text-sm font-medium uppercase tracking-[0.18em] text-slate-500">
-							{localizedPerson.role}
-						</p>
-					</div>
-				</div>
-				<p class="mt-5 text-base leading-7 text-slate-600">{localizedPerson.summary}</p>
-				<p class="mt-4 text-sm leading-6 text-slate-500">{localizedPerson.bio}</p>
-				{localizedPerson.focusAreas.length > 0 && (
-					<ul class="mt-5 flex flex-wrap gap-2">
-						{localizedPerson.focusAreas.map((focusArea) => (
-							<li class="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700">
-								{focusArea}
-							</li>
-						))}
-					</ul>
-				)}
-				<div class="mt-6 flex flex-wrap gap-3 text-sm text-slate-500">
-					{localizedPerson.location && <span>{localizedPerson.location}</span>}
-					{localizedPerson.portfolio && (
-						<a
-							class="font-medium text-slate-700 transition hover:text-slate-950"
-							href={localizedPerson.portfolio}
-							rel="noreferrer"
-							target="_blank"
-						>
-							{lang === "ar" ? "الأعمال" : "Portfolio"}
-						</a>
-					)}
-				</div>
-			</article>
-		);
-	})}
+      return (
+        <article class="person-card">
+          <div class="person-card__figure">
+            <div class="person-card__avatar">
+              <PersonAvatar
+                alt={localizedPerson.image?.alt ?? localizedPerson.name}
+                personId={person.id}
+              />
+            </div>
+          </div>
+          <div class="person-card__body">
+            <div>
+              <h3 class="person-card__name">{localizedPerson.name}</h3>
+              <p class="person-card__role">{localizedPerson.role}</p>
+            </div>
+            <p class="person-card__summary">{localizedPerson.summary}</p>
+            <p class="person-card__bio">{localizedPerson.bio}</p>
+            {localizedPerson.focusAreas.length > 0 && (
+              <div class="person-card__focus">
+                <p class="person-card__focus-label">{focusLabel}</p>
+                <ul class="person-card__tags">
+                  {localizedPerson.focusAreas.map((focusArea) => (
+                    <li>{focusArea}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <div class="person-card__footer">
+              {localizedPerson.location && <span class="person-card__location">{localizedPerson.location}</span>}
+              {localizedPerson.portfolio && (
+                <a
+                  class="person-card__link"
+                  href={localizedPerson.portfolio}
+                  rel="noreferrer"
+                  target="_blank">
+                  {lang === 'ar' ? 'الأعمال' : 'Portfolio'}
+                </a>
+              )}
+            </div>
+          </div>
+        </article>
+      );
+    })
+  }
 </div>
+
+<style>
+  .people-grid {
+    display: grid;
+    gap: clamp(1.25rem, 3vw, 1.75rem);
+    grid-template-columns: 1fr;
+    margin-top: clamp(1.75rem, 4.5vw, 2.75rem);
+  }
+
+  @media (width >= 900px) {
+    .people-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .person-card {
+    background: var(--feature-spotlight-card-surface);
+    border: 1px solid var(--page-border);
+    border-radius: var(--feature-spotlight-card-radius);
+    box-shadow: var(--theme-shadow-soft);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.25s ease;
+  }
+
+  html[data-theme='dark'] .person-card {
+    box-shadow:
+      var(--theme-shadow-soft),
+      inset 0 1px 0 rgb(255 255 255 / 6%);
+  }
+
+  .person-card:hover {
+    border-color: color-mix(in srgb, var(--foreground-primary) 14%, var(--page-border));
+    box-shadow: var(--theme-shadow-panel);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .person-card:hover {
+      box-shadow: var(--theme-shadow-soft);
+    }
+  }
+
+  .person-card__figure {
+    align-items: center;
+    background: radial-gradient(ellipse 100% 90% at 50% 28%, color-mix(in srgb, var(--foreground-primary) 5%, transparent), var(--page-surface-muted) 52%);
+    display: flex;
+    justify-content: center;
+    min-height: 9.25rem;
+    padding: 1.35rem 1rem 1.15rem;
+    position: relative;
+  }
+
+  html[data-theme='dark'] .person-card__figure {
+    background: radial-gradient(ellipse 100% 90% at 50% 28%, color-mix(in srgb, var(--foreground-primary) 6%, transparent), var(--page-surface-muted) 52%);
+  }
+
+  .person-card__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.2rem 1.25rem 1.45rem;
+  }
+
+  .person-card__name {
+    color: var(--foreground-primary);
+    font-family: var(--font-display-latin);
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  :global(body.locale-arabic) .person-card__name {
+    font-family: var(--font-display-arabic);
+  }
+
+  .person-card__role {
+    color: var(--foreground-tertiary);
+    font-family: var(--font-ui);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1.35;
+    margin: 0.35rem 0 0;
+    text-transform: uppercase;
+  }
+
+  .person-card__summary {
+    color: var(--foreground-secondary);
+    font-family: var(--font-ui);
+    font-size: 0.98rem;
+    font-weight: 400;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .person-card__bio {
+    color: color-mix(in srgb, var(--foreground-secondary) 92%, transparent);
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .person-card__focus {
+    margin-top: 0.15rem;
+  }
+
+  .person-card__focus-label {
+    color: var(--foreground-tertiary);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    margin: 0 0 0.45rem;
+    text-transform: uppercase;
+  }
+
+  .person-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .person-card__tags li {
+    background: color-mix(in srgb, var(--foreground-primary) 6%, var(--page-surface-solid));
+    border: 1px solid color-mix(in srgb, var(--page-border) 80%, transparent);
+    border-radius: 999px;
+    color: var(--foreground-secondary);
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1.2;
+    padding: 0.35rem 0.65rem;
+  }
+
+  html[data-theme='dark'] .person-card__tags li {
+    background: color-mix(in srgb, var(--foreground-primary) 8%, transparent);
+  }
+
+  .person-card__footer {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem 1rem;
+    border-top: 1px solid color-mix(in srgb, var(--foreground-primary) 8%, transparent);
+    font-family: var(--font-ui);
+    font-size: 0.82rem;
+    margin-top: auto;
+    padding-top: 0.85rem;
+  }
+
+  .person-card__location {
+    color: var(--foreground-tertiary);
+  }
+
+  .person-card__link {
+    color: var(--foreground-primary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .person-card__link:hover {
+    opacity: 0.85;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+</style>

@@ -2,27 +2,27 @@
 	"id": "john-doe",
 	"order": 2,
 	"location": "London, United Kingdom",
-	"email": "john@orgo.app",
-	"portfolio": "https://johndoe.com",
-	"availability": "Design systems, product UX, and interface strategy.",
+	"email": "marcus.lindgren@orgo.app",
+	"portfolio": "https://x.com/m0code",
+	"availability": "Design systems reviews, interface audits, and product UX partnerships.",
 	"image": {
 		"src": "/images/authors/john.jpg",
-		"alt": "Portrait of John Doe"
+		"alt": "Illustrated portrait placeholder for Marcus Lindgren"
 	},
 	"localized": {
 		"en": {
-			"name": "John Doe",
-			"role": "Design systems lead",
-			"summary": "Owns interface direction, product polish, and the systems that keep the UI coherent.",
-			"bio": "John works at the intersection of product UX and systems thinking. He focuses on helping Orgo feel calm under pressure, with components and patterns that stay clear as the product grows.",
-			"focusAreas": ["Design systems", "Interface direction", "Product UX"]
+			"name": "Marcus Lindgren",
+			"role": "Lead product designer",
+			"summary": "Keeps the interface coherent as features stack up — tokens, patterns, and a steady hand on craft.",
+			"bio": "Marcus comes from agency and in-house product design. He bridges exploration and discipline: sketching flows with the team, then tightening components so the product still feels breathable when calendars get busy.",
+			"focusAreas": ["Design systems", "Interaction craft", "Design–engineering bridge"]
 		},
 		"ar": {
-			"name": "جون دو",
-			"role": "قائد أنظمة التصميم",
-			"summary": "يقود اتجاه الواجهة وصقل المنتج والأنظمة التي تحافظ على تماسك التجربة.",
-			"bio": "يعمل جون عند تقاطع تجربة المنتج والتفكير المنظومي. يركز على جعل Orgo يبدو هادئًا حتى عندما يزداد تعقيد المنتج، من خلال مكوّنات وأنماط تبقى واضحة وقابلة للتوسّع.",
-			"focusAreas": ["أنظمة التصميم", "اتجاه الواجهة", "تجربة المنتج"]
+			"name": "ماركوس ليندغرين",
+			"role": "مصمم منتج رئيسي",
+			"summary": "يحافظ على تماسك الواجهة مع تراكم الميزات — رموز وأنماط وثبات في التفاصيل.",
+			"bio": "يجمع ماركوس بين خبرة الوكالات والمنتج داخل الشركة. يصل بين الاستكشاف والانضباط: يرسم المسارات مع الفريق ثم يضبط المكوّنات ليبقى المنتج مريحًا حين تصبح الجداول مزدحمة.",
+			"focusAreas": ["أنظمة التصميم", "حرفية التفاعل", "جسر التصميم والهندسة"]
 		}
 	}
 }

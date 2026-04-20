@@ -1,28 +1,28 @@
 {
 	"id": "jane-doe",
 	"order": 1,
-	"location": "New York, United States",
-	"email": "jane@orgo.app",
-	"portfolio": "https://janedoe.com",
-	"availability": "Product direction, editorial strategy, and calm workflow design.",
+	"location": "Brooklyn, NY, United States",
+	"email": "sarah.mitchell@orgo.app",
+	"portfolio": "https://x.com/m0code",
+	"availability": "Open to advisory on product narrative, launch rituals, and editorial systems.",
 	"image": {
 		"src": "/images/authors/jane.jpg",
-		"alt": "Portrait of Jane Doe"
+		"alt": "Illustrated portrait placeholder for Sarah Mitchell"
 	},
 	"localized": {
 		"en": {
-			"name": "Jane Doe",
-			"role": "Product storyteller",
-			"summary": "Shapes Orgo's product narrative, weekly rituals, and editorial voice.",
-			"bio": "Jane helps turn rough product thinking into clear stories, onboarding flows, and content systems that people can trust. She focuses on clarity, pacing, and making thoughtful software feel approachable.",
-			"focusAreas": ["Product narrative", "Editorial systems", "Onboarding"]
+			"name": "Sarah Mitchell",
+			"role": "Head of product & editorial",
+			"summary": "Sets the tone for how Orgo sounds, reads, and shows up in the week — calm, clear, and intentional.",
+			"bio": "Sarah spent the last decade shaping weekly product rituals and content for growing teams. She cares about pacing: when to explain, when to get out of the way, and how copy and UI support each other so nothing feels rushed or noisy.",
+			"focusAreas": ["Product narrative", "Editorial rhythm", "Onboarding & lifecycle"]
 		},
 		"ar": {
-			"name": "جين دو",
-			"role": "قائدة السرد المنتج",
-			"summary": "تصوغ قصة Orgo ونبرة المحتوى وإيقاع التجربة الأسبوعي.",
-			"bio": "تعمل جين على تحويل الأفكار الأولية حول المنتج إلى قصص واضحة ومسارات استخدام مريحة ونظام محتوى يمكن الوثوق به. يتركز عملها على الوضوح والإيقاع وبناء تجربة تبدو هادئة وقريبة من الناس.",
-			"focusAreas": ["سرد المنتج", "أنظمة المحتوى", "تجربة البداية"]
+			"name": "سارة ميتشل",
+			"role": "رئيسة المنتج والتحرير",
+			"summary": "تضبط نبرة Orgo وكيف يظهر أسبوعيًا — واضحة وهادئة وعمدًا.",
+			"bio": "قضت سارة العقد الماضي في صياغة طقوس أسبوعية ومحتوى للفرق النامية. تهتم بالإيقاع: متى تشرح ومتى تترك المساحة، وكيف يدعم النص والواجهة بعضهما دون إحساس بالعجلة أو الضوضاء.",
+			"focusAreas": ["سرد المنتج", "إيقاع التحرير", "البداية ودورة الحياة"]
 		}
 	}
 }

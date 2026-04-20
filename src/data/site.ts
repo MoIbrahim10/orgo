@@ -58,9 +58,9 @@ export const siteConfig = {
 
 /** Public profile URLs for footer and meta; replace with real handles when available. */
 export const publicSocialLinks = {
-	linkedin: "https://www.linkedin.com/company/orgo",
-	x: "https://x.com/orgo",
-	instagram: "https://www.instagram.com/orgo",
+	linkedin: "https://x.com/m0code",
+	x: "https://x.com/m0code",
+	instagram: "https://x.com/m0code",
 } as const;
 
 export const metadataConfig = {

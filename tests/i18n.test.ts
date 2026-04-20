@@ -68,11 +68,11 @@ describe("translations", () => {
 
 	test("maps translated navigation labels", () => {
 		expect(getHeaderTranslations("en").links).toEqual([
-			{ href: "/about", label: "About" },
-			{ href: "/teams", label: "Teams" },
-			{ href: "/pricing", label: "Pricing" },
-			{ href: "/blog", label: "Blog" },
-			{ href: "/contact", label: "Contact" },
+			{ href: "/about", label: "About", localeAbsolute: false },
+			{ href: "/teams", label: "Teams", localeAbsolute: false },
+			{ href: "/pricing", label: "Pricing", localeAbsolute: false },
+			{ href: "/blog", label: "Blog", localeAbsolute: false },
+			{ href: "/contact", label: "Contact", localeAbsolute: false },
 		]);
 	});
 });

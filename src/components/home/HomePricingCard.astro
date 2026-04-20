@@ -3,13 +3,16 @@ import type { HomePlan } from "../../types/home";
 import type { Language } from "../../types/translations";
 
 interface Props {
+	/** When set, used for the card CTA instead of `plan.href` (e.g. contact on the pricing page). */
+	ctaHref?: string;
 	featuresHeading: string;
 	lang: Language;
 	perMonth: string;
 	plan: HomePlan;
 }
 
-const { featuresHeading, lang, perMonth, plan } = Astro.props as Props;
+const { ctaHref, featuresHeading, lang, perMonth, plan } = Astro.props as Props;
+const resolvedCtaHref = ctaHref ?? plan.href;
 const isElevate = plan.accent === "dark";
 const isArabic = lang === "ar";
 ---
@@ -72,7 +75,7 @@ const isArabic = lang === "ar";
 			"home-pricing-card__cta",
 			isElevate ? "home-pricing-card__cta--primary" : "home-pricing-card__cta--secondary",
 		]}
-		href={plan.href}
+		href={resolvedCtaHref}
 	>
 		<span class="home-pricing-card__cta-label">{plan.cta}</span>
 	</a>

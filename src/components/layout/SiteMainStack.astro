@@ -1,0 +1,24 @@
+---
+/**
+ * Matches the home page shell: outer `py-10` + `gap-24`, inner `home-main-stack`
+ * at `max-w-[914px]` with `gap-36` between sections.
+ */
+interface Props {
+	class?: string;
+	stackClass?: string;
+}
+
+const { class: className, stackClass } = Astro.props as Props;
+---
+
+<div class:list={["flex flex-col gap-24 py-10", className]}>
+	<slot name="lead" />
+	<div
+		class:list={[
+			"home-main-stack mx-auto flex w-full max-w-[914px] flex-col gap-36 pb-12",
+			stackClass,
+		]}
+	>
+		<slot />
+	</div>
+</div>
