@@ -87,6 +87,13 @@ const imageSrc = workspaceSrc[lang] ?? workspaceEn.src;
 		padding-inline: var(--layout-gutter);
 	}
 
+	/* Arabic artwork is mirrored; swap glows so violet/amber align with card colors */
+	:global(body.locale-arabic) .home-workspace-glance__top {
+		background-image:
+			radial-gradient(ellipse 55% 85% at 86% 62%, var(--wg-glow-violet), transparent 58%),
+			radial-gradient(ellipse 52% 80% at 14% 58%, var(--wg-glow-amber), transparent 55%);
+	}
+
 	.home-workspace-glance__intro {
 		margin-inline: auto;
 		max-width: var(--layout-width-navbar);

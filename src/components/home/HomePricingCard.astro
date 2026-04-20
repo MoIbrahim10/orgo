@@ -1,0 +1,341 @@
+---
+import type { HomePlan } from "../../types/home";
+import type { Language } from "../../types/translations";
+
+interface Props {
+	featuresHeading: string;
+	lang: Language;
+	perMonth: string;
+	plan: HomePlan;
+}
+
+const { featuresHeading, lang, perMonth, plan } = Astro.props as Props;
+const isElevate = plan.accent === "dark";
+const isArabic = lang === "ar";
+---
+
+<article
+	class:list={["home-pricing-card", isElevate && "home-pricing-card--elevate"]}
+>
+	<div class="home-pricing-card__features">
+		<p class="home-pricing-card__features-title">{featuresHeading}</p>
+		<ul class="home-pricing-card__feature-list">
+			{
+				plan.features.map((feature) => (
+					<li class="home-pricing-card__feature-item">
+						<svg
+							class="home-pricing-card__check"
+							width="9"
+							height="9"
+							viewBox="0 0 9 9"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							aria-hidden="true"
+						>
+							<path
+								d="M1 4.875L3.5 8L8 1"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+						<p class="home-pricing-card__feature-text">{feature}</p>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+	<div class="home-pricing-card__detail">
+		<h3 class="home-pricing-card__name">{plan.title}</h3>
+		<p class="home-pricing-card__blurb">{plan.description}</p>
+		<div class="home-pricing-card__price-row">
+			{
+				isArabic ? (
+					<>
+						<span class="home-pricing-card__period home-pricing-card__period--ar-suffix">
+							<span class="home-pricing-card__per-month">{perMonth}</span>
+						</span>
+						<span class="home-pricing-card__amount">${plan.price}</span>
+					</>
+				) : (
+					<>
+						<span class="home-pricing-card__amount">${plan.price}</span>
+						<span class="home-pricing-card__period">{perMonth}</span>
+					</>
+				)
+			}
+		</div>
+	</div>
+	<a
+		class:list={[
+			"home-pricing-card__cta",
+			isElevate ? "home-pricing-card__cta--primary" : "home-pricing-card__cta--secondary",
+		]}
+		href={plan.href}
+	>
+		<span class="home-pricing-card__cta-label">{plan.cta}</span>
+	</a>
+</article>
+
+<style>
+	.home-pricing-card {
+		--hp-primary-text: #eaeaea;
+		--hp-secondary-text: rgb(255 255 255 / 65%);
+
+		border-radius: 10px;
+		box-shadow: inset 0 3px 20.2px rgb(255 255 255 / 12%);
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+		justify-content: center;
+		padding: 22px 18px 18px;
+	}
+
+	.home-pricing-card:not(.home-pricing-card--elevate) {
+		background:
+			linear-gradient(137.06deg, #141414 24.05%, #0d0d0d 75.84%), #000;
+	}
+
+	.home-pricing-card--elevate {
+		background: #000;
+		isolation: isolate;
+		position: relative;
+	}
+
+	.home-pricing-card--elevate::before {
+		background:
+			linear-gradient(
+				190.97deg,
+				rgb(112 33 193 / 0%) 41.42%,
+				rgb(126 0 255 / 13%) 87.33%
+			),
+			linear-gradient(
+				349.13deg,
+				rgb(202 27 100 / 13%) 9.33%,
+				rgb(214 75 133 / 0%) 35.29%
+			),
+			radial-gradient(
+				98.18% 102.64% at 50% 98.02%,
+				rgb(214 94 14 / 16%) 0%,
+				rgb(231 130 62 / 0%) 76.5%
+			),
+			#000;
+		border-radius: 10px;
+		content: "";
+		inset: 0;
+		pointer-events: none;
+		position: absolute;
+		z-index: 0;
+	}
+
+	:global(body.locale-arabic) .home-pricing-card--elevate::before {
+		transform: scaleX(-1);
+	}
+
+	.home-pricing-card--elevate > * {
+		position: relative;
+		z-index: 1;
+	}
+
+	.home-pricing-card__features {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		padding-inline: 4px;
+	}
+
+	.home-pricing-card__features-title {
+		color: var(--hp-primary-text);
+		font-family: var(--font-ui);
+		font-size: 0.875rem;
+		font-weight: 500;
+		line-height: 1.25;
+		margin: 0 0 2px;
+		letter-spacing: 0.01em;
+	}
+
+	.home-pricing-card__feature-list {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.home-pricing-card__feature-item {
+		align-items: center;
+		display: flex;
+		flex-direction: row;
+		gap: 6px;
+		margin: 0;
+	}
+
+	.home-pricing-card__check {
+		color: var(--hp-secondary-text);
+		flex-shrink: 0;
+	}
+
+	.home-pricing-card__feature-text {
+		color: var(--hp-secondary-text);
+		font-family: var(--font-ui);
+		font-size: 0.75rem;
+		font-weight: 400;
+		line-height: 1.35;
+		margin: 0;
+	}
+
+	.home-pricing-card__detail {
+		background: rgb(255 255 255 / 6%);
+		border-radius: 10px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		padding: 16px;
+	}
+
+	.home-pricing-card__name {
+		color: var(--hp-primary-text);
+		font-family: var(--font-ui);
+		font-size: 1rem;
+		font-weight: 500;
+		line-height: 1.25;
+		margin: 0 0 2px;
+	}
+
+	:global(body.locale-arabic) .home-pricing-card__name {
+		font-family: var(--font-sans-arabic);
+	}
+
+	.home-pricing-card__blurb {
+		color: var(--hp-secondary-text);
+		font-family: var(--font-ui);
+		font-size: 0.75rem;
+		font-weight: 400;
+		line-height: 1.45;
+		margin: 0;
+	}
+
+	.home-pricing-card__price-row {
+		align-items: baseline;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 4px 6px;
+		justify-content: flex-start;
+		width: 100%;
+	}
+
+	:global(body.locale-arabic) .home-pricing-card__price-row {
+		direction: ltr;
+		justify-content: flex-end;
+	}
+
+	.home-pricing-card__amount {
+		color: var(--hp-primary-text);
+		font-family: var(--font-ui);
+		font-size: 1.875rem;
+		font-variant-numeric: tabular-nums;
+		font-weight: 600;
+		line-height: 1.1;
+	}
+
+	.home-pricing-card__period {
+		color: var(--hp-secondary-text);
+		font-family: var(--font-ui);
+		font-size: 0.75rem;
+		font-weight: 400;
+	}
+
+	/* Month first in DOM, row-reverse + ltr → visual order "/ شهر" under RTL page */
+	.home-pricing-card__period--ar-suffix {
+		align-items: baseline;
+		direction: ltr;
+		display: inline-flex;
+		flex-direction: row-reverse;
+		gap: 0.35em;
+		unicode-bidi: isolate;
+	}
+
+	.home-pricing-card__per-month {
+		color: var(--hp-secondary-text);
+		flex: none;
+		font-family: var(--font-sans-arabic);
+		font-size: 0.75rem;
+		font-weight: 400;
+		line-height: 1.35;
+	}
+
+	.home-pricing-card__cta {
+		align-items: center;
+		border-radius: 6px;
+		cursor: pointer;
+		display: flex;
+		font-family: var(--font-ui);
+		font-size: 1rem;
+		justify-content: center;
+		line-height: 1.25;
+		min-height: 2.75rem;
+		overflow: hidden;
+		padding: 11px 18px;
+		position: relative;
+		text-decoration: none;
+		transition: filter 0.3s ease-in-out;
+		width: 100%;
+	}
+
+	.home-pricing-card__cta-label {
+		position: relative;
+		z-index: 2;
+	}
+
+	.home-pricing-card__cta--primary {
+		box-shadow: inset 0 1px 6.6px rgb(255 255 255 / 32%);
+		color: #eaeaea;
+		font-weight: 600;
+	}
+
+	.home-pricing-card__cta--primary {
+		background: linear-gradient(281deg, #e98426 0%, #d64988 50%, #5b0ac1 100%);
+	}
+
+	:global(body.locale-arabic) .home-pricing-card__cta--primary {
+		background: linear-gradient(281deg, #5b0ac1 0%, #d64988 50%, #e98426 100%);
+	}
+
+	.home-pricing-card__cta--primary::before {
+		background: inherit;
+		content: "";
+		inset: 0;
+		position: absolute;
+		transition: filter 0.3s ease-in-out;
+		z-index: 1;
+	}
+
+	.home-pricing-card__cta--primary:hover::before {
+		filter: brightness(1.1) contrast(1.1) blur(10px);
+	}
+
+	.home-pricing-card__cta--secondary {
+		background: linear-gradient(281deg, #2a2929 50%, #414040 100%);
+		border: 1px solid #3b3b3b;
+		box-shadow:
+			inset 0 1px 6.6px rgb(255 255 255 / 20%),
+			0 0 0 3px rgb(255 255 255 / 4%);
+		color: #fff;
+		font-weight: 500;
+	}
+
+	.home-pricing-card__cta--secondary::before {
+		background: inherit;
+		content: "";
+		inset: 0;
+		position: absolute;
+		transition: filter 0.3s ease-in-out;
+		z-index: 1;
+	}
+
+	.home-pricing-card__cta--secondary:hover::before {
+		filter: brightness(1.5) blur(3px);
+	}
+</style>

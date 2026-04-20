@@ -1,155 +1,88 @@
 ---
-import ActionLink from "../../components/ui/ActionLink.astro";
-import HomeFeatureStory from "../../components/home/HomeFeatureStory.astro";
-import HomeHero from "../../components/home/HomeHero.astro";
-import HomeFeatureSpotlightSection from "../../components/home/HomeFeatureSpotlightSection.astro";
-import HomeConnectedToolsSection from "../../components/home/HomeConnectedToolsSection.astro";
-import HomeWorkspaceGlanceSection from "../../components/home/HomeWorkspaceGlanceSection.astro";
-import HomePerspectivesSection from "../../components/home/HomePerspectivesSection.astro";
-import HomeProposalSection from "../../components/home/HomeProposalSection.astro";
-import HomeStoriesSection from "../../components/home/HomeStoriesSection.astro";
-import HomeWorkflowSection from "../../components/home/HomeWorkflowSection.astro";
-import MarketingIcon from "../../components/home/MarketingIcon.astro";
-import MarketingEyebrow from "../../components/ui/MarketingEyebrow.astro";
-import PageSection from "../../components/ui/PageSection.astro";
-import SectionIntro from "../../components/ui/SectionIntro.astro";
-import { getHomePageContent } from "../../data/translations/home";
-import Layout from "../../layouts/Layout.astro";
-import { getSiteTranslations } from "../../data/translations/site";
-import {
-	getLanguageFromParams,
-	getLocalizedPath,
-	getLocaleStaticPaths,
-} from "../../utils/routing";
+import ActionLink from '../../components/ui/ActionLink.astro';
+import HomeFeatureStory from '../../components/home/HomeFeatureStory.astro';
+import HomeHero from '../../components/home/HomeHero.astro';
+import HomeFeatureSpotlightSection from '../../components/home/HomeFeatureSpotlightSection.astro';
+import HomeConnectedToolsSection from '../../components/home/HomeConnectedToolsSection.astro';
+import HomePricingSection from '../../components/home/HomePricingSection.astro';
+import HomeWorkspaceGlanceSection from '../../components/home/HomeWorkspaceGlanceSection.astro';
+import HomePerspectivesSection from '../../components/home/HomePerspectivesSection.astro';
+import HomeProposalSection from '../../components/home/HomeProposalSection.astro';
+import HomeStoriesSection from '../../components/home/HomeStoriesSection.astro';
+import HomeWorkflowSection from '../../components/home/HomeWorkflowSection.astro';
+import MarketingEyebrow from '../../components/ui/MarketingEyebrow.astro';
+import PageSection from '../../components/ui/PageSection.astro';
+import { getHomePageContent } from '../../data/translations/home';
+import Layout from '../../layouts/Layout.astro';
+import { getSiteTranslations } from '../../data/translations/site';
+import { getLanguageFromParams, getLocalizedPath, getLocaleStaticPaths } from '../../utils/routing';
 
 export function getStaticPaths() {
-	return getLocaleStaticPaths();
+  return getLocaleStaticPaths();
 }
 
 const lang = getLanguageFromParams(Astro.params.lang);
 const siteTranslations = getSiteTranslations(lang);
 const homeContent = getHomePageContent(lang);
-const pricingHref = getLocalizedPath(lang, "/pricing");
-const aboutHref = getLocalizedPath(lang, "/about");
-const bilingualPlanningHref = getLocalizedPath(lang, "/bilingual-planning");
+const pricingHref = getLocalizedPath(lang, '/pricing');
+const aboutHref = getLocalizedPath(lang, '/about');
+const bilingualPlanningHref = getLocalizedPath(lang, '/bilingual-planning');
 ---
 
-<Layout lang={lang} pageDescription={homeContent.hero.description} pageTitle={siteTranslations.title}>
-	<div class="py-10 flex flex-col gap-24">
-		<HomeHero
-			content={homeContent.hero}
-			lang={lang}
-			primaryHref={pricingHref}
-			secondaryHref={bilingualPlanningHref}
-		/>
+<Layout
+  lang={lang}
+  pageDescription={homeContent.hero.description}
+  pageTitle={siteTranslations.title}>
+  <div class="py-10 flex flex-col gap-24">
+    <HomeHero
+      content={homeContent.hero}
+      lang={lang}
+      primaryHref={pricingHref}
+      secondaryHref={bilingualPlanningHref}
+    />
     <div class="home-main-stack flex flex-col gap-36 max-w-[914px] mx-auto">
+      <HomeFeatureSpotlightSection content={homeContent.featureSpotlight} />
+      <HomeWorkspaceGlanceSection
+        content={homeContent.workspaceGlance}
+        lang={lang}
+      />
+      <HomeConnectedToolsSection content={homeContent.connectedTools} />
+      <HomePricingSection content={homeContent.pricing} lang={lang} />
 
-		<HomeFeatureSpotlightSection content={homeContent.featureSpotlight} />
-		<HomeWorkspaceGlanceSection content={homeContent.workspaceGlance} lang={lang} />
-		<HomeConnectedToolsSection content={homeContent.connectedTools} />
-
-    
-		{
-			homeContent.features.map((story) => (
-				<HomeFeatureStory story={story} />
-			))
-		}
-		<HomeWorkflowSection content={homeContent.workflow} />
-		<HomeStoriesSection content={homeContent.stories} />
-		<HomeProposalSection
-			content={homeContent.proposal}
-			primaryHref={pricingHref}
-			secondaryHref={bilingualPlanningHref}
-		/>
-		<PageSection id="pricing">
-			<SectionIntro
-				description={homeContent.pricing.description}
-				eyebrow={homeContent.pricing.eyebrow}
-				title={homeContent.pricing.title}
-			/>
-			<div class="mt-10 grid gap-6 lg:grid-cols-2">
-					{
-						homeContent.pricing.plans.map((plan) => (
-							<article
-								class:list={[
-									"marketing-panel rounded-4xl border p-6 sm:p-8",
-									plan.accent === "dark"
-										? "border-slate-900 bg-slate-950 text-white shadow-[0_28px_80px_rgba(15,23,42,0.18)]"
-										: "border-slate-200 bg-white text-slate-950",
-								]}
-							>
-								<p
-									class:list={[
-										"inline-flex rounded-full px-3 py-1 text-xs font-medium uppercase tracking-[0.2em]",
-										plan.accent === "dark"
-											? "bg-white/10 text-white/70"
-											: "bg-amber-100 text-amber-900",
-									]}
-								>
-									{plan.eyebrow}
-								</p>
-								<h3 class="mt-5 text-3xl font-semibold">{plan.title}</h3>
-								<p
-									class:list={[
-										"mt-3 text-base leading-7",
-										plan.accent === "dark" ? "text-slate-300" : "text-slate-600",
-									]}
-								>
-									{plan.description}
-								</p>
-								<ul class="mt-6 grid gap-3">
-									{
-										plan.features.map((feature) => (
-											<li class="flex items-start gap-3">
-												<div
-													class:list={[
-														"mt-0.5 rounded-full p-1.5",
-														plan.accent === "dark" ? "bg-white/10 text-white" : "bg-slate-950 text-white",
-													]}
-												>
-													<MarketingIcon className="h-3.5 w-3.5" name="check-circle" />
-												</div>
-												<span class:list={[plan.accent === "dark" ? "text-slate-200" : "text-slate-700"]}>
-													{feature}
-												</span>
-											</li>
-										))
-									}
-								</ul>
-								<ActionLink
-									class="mt-8"
-									href={plan.href}
-									variant={plan.accent === "dark" ? "inverted" : "primary"}
-								>
-									{plan.cta}
-								</ActionLink>
-							</article>
-						))
-					}
-			</div>
-		</PageSection>
-		<HomePerspectivesSection content={homeContent.perspectives} />
-		<PageSection class="pt-0">
-			<div class="marketing-panel mx-auto max-w-6xl rounded-4xl border border-slate-200 bg-linear-to-br from-amber-50 via-white to-sky-50 px-6 py-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10 lg:px-12">
-				<div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-					<div class="max-w-3xl">
-						<MarketingEyebrow>{siteTranslations.title}</MarketingEyebrow>
-						<h2 class="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
-							{homeContent.cta.title}
-						</h2>
-						<p class="mt-5 text-lg leading-8 text-slate-600">{homeContent.cta.description}</p>
-					</div>
-					<div class="flex flex-wrap gap-4">
-						<ActionLink href={pricingHref} variant="primary">
-							{homeContent.cta.primaryCta}
-						</ActionLink>
-						<ActionLink href={aboutHref} variant="secondary">
-							{homeContent.cta.secondaryCta}
-						</ActionLink>
-					</div>
-				</div>
-			</div>
-		</PageSection>
+      {homeContent.features.map((story) => <HomeFeatureStory story={story} />)}
+      <HomeWorkflowSection content={homeContent.workflow} />
+      <HomeStoriesSection content={homeContent.stories} />
+      <HomeProposalSection
+        content={homeContent.proposal}
+        primaryHref={pricingHref}
+        secondaryHref={bilingualPlanningHref}
+      />
+      <HomePerspectivesSection content={homeContent.perspectives} />
+      <PageSection class="pt-0">
+        <div class="marketing-panel mx-auto max-w-6xl rounded-4xl border border-slate-200 bg-linear-to-br from-amber-50 via-white to-sky-50 px-6 py-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10 lg:px-12">
+          <div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div class="max-w-3xl">
+              <MarketingEyebrow>{siteTranslations.title}</MarketingEyebrow>
+              <h2 class="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
+                {homeContent.cta.title}
+              </h2>
+              <p class="mt-5 text-lg leading-8 text-slate-600">{homeContent.cta.description}</p>
+            </div>
+            <div class="flex flex-wrap gap-4">
+              <ActionLink
+                href={pricingHref}
+                variant="primary">
+                {homeContent.cta.primaryCta}
+              </ActionLink>
+              <ActionLink
+                href={aboutHref}
+                variant="secondary">
+                {homeContent.cta.secondaryCta}
+              </ActionLink>
+            </div>
+          </div>
+        </div>
+      </PageSection>
     </div>
-	</div>
+  </div>
 </Layout>

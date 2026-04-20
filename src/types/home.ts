@@ -68,6 +68,8 @@ export type HomePlan = {
 	eyebrow: string;
 	features: string[];
 	href: string;
+	/** Monthly amount without currency symbol, e.g. "9.95" */
+	price: string;
 	title: string;
 };
 
@@ -121,6 +123,8 @@ export type HomePageContent = {
 	pricing: {
 		description: string;
 		eyebrow: string;
+		featuresHeading: string;
+		perMonth: string;
 		plans: HomePlan[];
 		title: string;
 	};

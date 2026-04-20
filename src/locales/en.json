@@ -126,17 +126,24 @@
 			"reflect_body": "End the cycle with memory, not guesswork, so next week starts smarter."
 		},
 		"pricing": {
-			"eyebrow": "Simple plans",
-			"title": "Start with the essentials, grow into a deeper system",
-			"description": "The homepage gives the shape of the offer. The pricing page holds the fuller detail once plans are finalized.",
+			"eyebrow": "pricing",
+			"title": "Flexible Plans for Every Need",
+			"description": "Find the perfect plan to match your needs — transparent pricing, no hidden fees.",
+			"features_heading": "Features",
+			"per_month": "/month",
+			"starter_price": "9.95",
+			"pro_price": "19.95",
+			"card_cta": "Get started",
 			"starter_eyebrow": "For lighter routines",
 			"pro_eyebrow": "For deeper systems",
-			"starter_point_one": "Weekly planning and lightweight journaling",
-			"starter_point_two": "A clean home for notes, priorities, and routines",
-			"starter_point_three": "Ideal for personal organization",
-			"pro_point_one": "Richer workflows and deeper review habits",
-			"pro_point_two": "Advanced structure for connected planning",
-			"pro_point_three": "Built for people who want one serious system",
+			"starter_point_one": "Unified calendar",
+			"starter_point_two": "Task management",
+			"starter_point_three": "Basic journaling",
+			"starter_point_four": "Email support",
+			"pro_point_one": "All basic plan features",
+			"pro_point_two": "Custom prompts",
+			"pro_point_three": "Advanced journaling",
+			"pro_point_four": "Unlimited integrations",
 			"primary_cta": "See full pricing",
 			"secondary_cta": "Start with the journal"
 		},
@@ -176,12 +183,12 @@
 			"intro": "The marketing site is ready for a pricing section, but the actual product plans are still placeholder content.",
 			"plans": {
 				"starter": {
-					"title": "Starter",
-					"description": "For personal organization and lightweight planning."
+					"title": "Basic",
+					"description": "Perfect for those seeking to order their routine without overwhelming complexity."
 				},
 				"pro": {
-					"title": "Pro",
-					"description": "For deeper workflows, richer journaling, and advanced productivity features."
+					"title": "Elevate",
+					"description": "Designed for those who want to elevate their productivity and mindfulness."
 				}
 			}
 		},
