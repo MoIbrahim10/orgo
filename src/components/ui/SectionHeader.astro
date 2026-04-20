@@ -6,6 +6,7 @@ interface Props {
 	headline: string;
 	headlineId?: string;
 	headlineTag?: "h1" | "h2" | "h3";
+	revealStagger?: boolean;
 	sectionName: string;
 }
 
@@ -16,6 +17,7 @@ const {
 	headline,
 	headlineId,
 	headlineTag = "h2",
+	revealStagger = false,
 	sectionName,
 } = Astro.props as Props;
 
@@ -23,9 +25,19 @@ const TitleTag = headlineTag;
 ---
 
 <header class:list={["section-header", className]} data-align={align}>
-	<p class="label">{sectionName}</p>
-	<TitleTag class="headline" id={headlineId}>{headline}</TitleTag>
-	<p class="description">{description}</p>
+	<p class:list={["label", revealStagger && "home-reveal"]} style={revealStagger ? "--reveal-index: 0" : undefined}>
+		{sectionName}
+	</p>
+	<TitleTag
+		class:list={["headline", revealStagger && "home-reveal"]}
+		id={headlineId}
+		style={revealStagger ? "--reveal-index: 1" : undefined}
+	>
+		{headline}
+	</TitleTag>
+	<p class:list={["description", revealStagger && "home-reveal"]} style={revealStagger ? "--reveal-index: 2" : undefined}>
+		{description}
+	</p>
 </header>
 
 <style>
@@ -35,7 +47,7 @@ const TitleTag = headlineTag;
 		flex-direction: column;
 		gap: 8px;
 		justify-content: center;
-		max-width: 42rem;
+		max-width: min(42rem, 88%);
 		padding: 0;
 		text-align: start;
 	}

@@ -1,71 +1,78 @@
 ---
-import FeatureSpotlightCard from "../ui/FeatureSpotlightCard.astro";
-import type { HomePageContent } from "../../types/home";
-import SectionHeader from "../ui/SectionHeader.astro";
+import FeatureSpotlightCard from '../ui/FeatureSpotlightCard.astro';
+import type { HomePageContent } from '../../types/home';
+import SectionHeader from '../ui/SectionHeader.astro';
 
 interface Props {
-	content: HomePageContent["featureSpotlight"];
+  content: HomePageContent['featureSpotlight'];
 }
 
 const { content } = Astro.props as Props;
 ---
 
-<section class="feature-spotlight" aria-labelledby="feature-spotlight-heading" data-home-reveal-section>
-	<div class="feature-spotlight__intro home-reveal" style="--reveal-index: 0">
-		<SectionHeader
-			align="start"
-			description={content.description}
-			headline={content.headline}
-			headlineId="feature-spotlight-heading"
-			headlineTag="h2"
-			sectionName={content.sectionName}
-		/>
-	</div>
-	<div class="grid">
-		{
-			content.cards.map((card, index) => (
-				<div class="feature-spotlight__cell home-reveal" style={`--reveal-index: ${index + 1}`}>
-					<FeatureSpotlightCard
-						cardIndex={index}
-						description={card.body}
-						icon={card.icon}
-						title={card.title}
-					/>
-				</div>
-			))
-		}
-	</div>
+<section
+  class="feature-spotlight"
+  aria-labelledby="feature-spotlight-heading"
+  data-home-reveal-section>
+  <div
+    class="feature-spotlight__intro home-reveal"
+    style="--reveal-index: 0">
+    <SectionHeader
+      align="start"
+      description={content.description}
+      headline={content.headline}
+      headlineId="feature-spotlight-heading"
+      headlineTag="h2"
+      sectionName={content.sectionName}
+    />
+  </div>
+  <div class="grid">
+    {
+      content.cards.map((card, index) => (
+        <div
+          class="feature-spotlight__cell home-reveal"
+          style={`--reveal-index: ${index + 1}`}>
+          <FeatureSpotlightCard
+            cardIndex={index}
+            description={card.body}
+            icon={card.icon}
+            title={card.title}
+          />
+        </div>
+      ))
+    }
+  </div>
 </section>
 
 <style>
-	.feature-spotlight {
-		display: flex;
-		flex-direction: column;
-		gap: 48px;
-		margin-inline: auto;
-		max-width: var(--layout-width-navbar);
-		width: 100%;
-	}
+  .feature-spotlight {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    margin-inline: auto;
+    max-width: var(--layout-width-navbar);
+    width: 100%;
+  }
 
-	.feature-spotlight__cell {
-		min-width: 0;
-	}
+  .feature-spotlight__cell {
+    min-width: 0;
+  }
 
-	.grid {
-		display: grid;
-		gap: 24px;
-		grid-template-columns: 1fr;
-	}
+  .grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr;
+  }
 
-	@media (width >= 640px) {
-		.grid {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
-	}
+  @media (width >= 640px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
 
-	@media (width >= 1024px) {
-		.grid {
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-		}
-	}
+  @media (width >= 1024px) {
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
 </style>

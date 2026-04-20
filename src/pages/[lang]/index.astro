@@ -3,6 +3,7 @@ import ActionLink from "../../components/ui/ActionLink.astro";
 import HomeFeatureStory from "../../components/home/HomeFeatureStory.astro";
 import HomeHero from "../../components/home/HomeHero.astro";
 import HomeFeatureSpotlightSection from "../../components/home/HomeFeatureSpotlightSection.astro";
+import HomeWorkspaceGlanceSection from "../../components/home/HomeWorkspaceGlanceSection.astro";
 import HomePerspectivesSection from "../../components/home/HomePerspectivesSection.astro";
 import HomeProposalSection from "../../components/home/HomeProposalSection.astro";
 import HomeStoriesSection from "../../components/home/HomeStoriesSection.astro";
@@ -40,9 +41,10 @@ const bilingualPlanningHref = getLocalizedPath(lang, "/bilingual-planning");
 			primaryHref={pricingHref}
 			secondaryHref={bilingualPlanningHref}
 		/>
-    <div class="flex flex-col gap-36 max-w-[914px] mx-auto">
+    <div class="home-main-stack flex flex-col gap-36 max-w-[914px] mx-auto">
 
 		<HomeFeatureSpotlightSection content={homeContent.featureSpotlight} />
+		<HomeWorkspaceGlanceSection content={homeContent.workspaceGlance} lang={lang} />
 		{
 			homeContent.features.map((story) => (
 				<HomeFeatureStory story={story} />

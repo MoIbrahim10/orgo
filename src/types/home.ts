@@ -91,6 +91,12 @@ export type HomePageContent = {
 		headline: string;
 		sectionName: string;
 	};
+	workspaceGlance: {
+		description: string;
+		headline: string;
+		imageAlt: string;
+		sectionName: string;
+	};
 	features: HomeFeatureStory[];
 	hero: {
 		badges: string[];

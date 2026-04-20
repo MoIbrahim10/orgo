@@ -1,0 +1,169 @@
+---
+import workspaceAr from "../../assets/home/ar/workspace.svg";
+import workspaceEn from "../../assets/home/en/workspace.svg";
+import type { HomePageContent } from "../../types/home";
+import type { Language } from "../../types/translations";
+import SectionHeader from "../ui/SectionHeader.astro";
+
+const workspaceSrc: Record<Language, string> = {
+	ar: workspaceAr.src,
+	en: workspaceEn.src,
+};
+
+interface Props {
+	content: HomePageContent["workspaceGlance"];
+	lang: Language;
+}
+
+const { content, lang } = Astro.props as Props;
+const imageSrc = workspaceSrc[lang] ?? workspaceEn.src;
+---
+
+<section
+	class="home-workspace-glance"
+	aria-labelledby="home-workspace-glance-heading"
+	data-home-reveal-section
+>
+	<div class="home-workspace-glance__inner">
+		<div class="home-workspace-glance__top">
+			<div class="home-workspace-glance__intro">
+				<SectionHeader
+					align="center"
+					description={content.description}
+					headline={content.headline}
+					headlineId="home-workspace-glance-heading"
+					headlineTag="h2"
+					revealStagger
+					sectionName={content.sectionName}
+				/>
+			</div>
+			<div class="home-workspace-glance__figure">
+				<div class="home-workspace-glance__visual home-reveal" style="--reveal-index: 3">
+					<div class="home-workspace-glance__art">
+						<div class="home-workspace-glance__img-clip">
+							<img
+								class="home-workspace-glance__img"
+								src={imageSrc}
+								alt={content.imageAlt}
+								width="913"
+								height="447"
+								loading="lazy"
+								decoding="async"
+							/>
+						</div>
+						<div class="home-workspace-glance__cutoff" aria-hidden="true"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.home-workspace-glance {
+		--wg-top: #fff;
+		--wg-glow-violet: rgb(139 92 246 / 22%);
+		--wg-glow-amber: rgb(251 146 60 / 20%);
+
+		isolation: isolate;
+		margin-inline: calc(50% - 50vw);
+		overflow: visible;
+		width: 100vw;
+		z-index: 0;
+	}
+
+	:global(html[data-theme="dark"]) .home-workspace-glance {
+		--wg-top: oklch(16% 0 0deg);
+		--wg-glow-violet: rgb(167 139 250 / 14%);
+		--wg-glow-amber: rgb(251 191 36 / 12%);
+	}
+
+	.home-workspace-glance__top {
+		background-color: var(--wg-top);
+		background-image:
+			radial-gradient(ellipse 55% 85% at 14% 62%, var(--wg-glow-violet), transparent 58%),
+			radial-gradient(ellipse 52% 80% at 86% 58%, var(--wg-glow-amber), transparent 55%);
+		padding-block: 0 0;
+		padding-inline: var(--layout-gutter);
+	}
+
+	.home-workspace-glance__intro {
+		margin-inline: auto;
+		max-width: var(--layout-width-navbar);
+		padding-block: 8px 0;
+		width: 100%;
+	}
+
+	.home-workspace-glance__intro :global(.section-header) {
+		max-width: 36rem;
+	}
+
+	.home-workspace-glance__figure {
+		display: flex;
+		justify-content: center;
+		margin-block: 28px 0;
+		width: 100%;
+	}
+
+	.home-workspace-glance__visual {
+		display: flex;
+		justify-content: center;
+		width: 100%;
+	}
+
+	.home-workspace-glance__art {
+		/*
+			Cut height scales with art width (913×447). SVG blur extends past the layout box;
+			overflow on __img-clip hard-clips raster (including glow) so nothing leaks below.
+		*/
+		--wg-cut: clamp(
+			4.5rem,
+			calc(100% * 447 / 913 * 0.4),
+			11.875rem
+		);
+		margin-inline: auto;
+		max-width: min(100%, 57.0625rem);
+		position: relative;
+		width: 100%;
+	}
+
+	/* Padding-box height = visible slice above cutoff; overflow clips feGaussianBlur bleed */
+	.home-workspace-glance__img-clip {
+		height: 0;
+		margin: 0;
+		max-width: 100%;
+		overflow: hidden;
+		padding-bottom: max(0px, calc(100% * 447 / 913 - var(--wg-cut)));
+		position: relative;
+		width: 100%;
+	}
+
+	.home-workspace-glance__img {
+		display: block;
+		height: auto;
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: 100%;
+		z-index: 0;
+	}
+
+	.home-workspace-glance__cutoff {
+		background: var(--page-bg);
+		box-sizing: border-box;
+		height: var(--wg-cut);
+		left: 50%;
+		margin-left: -50vw;
+		pointer-events: none;
+		position: absolute;
+		top: 100%;
+		width: 100vw;
+		z-index: 1;
+	}
+
+	@media (width >= 640px) {
+		.home-workspace-glance__figure {
+			margin-block-start: 36px;
+		}
+	}
+</style>

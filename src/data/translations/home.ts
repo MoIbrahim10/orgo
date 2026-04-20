@@ -169,6 +169,12 @@ export function getHomePageContent(lang: Language): HomePageContent {
 				},
 			],
 		},
+		workspaceGlance: {
+			sectionName: t(lang, "home.workspace_glance.section_name"),
+			headline: t(lang, "home.workspace_glance.headline"),
+			description: t(lang, "home.workspace_glance.description"),
+			imageAlt: t(lang, "home.workspace_glance.image_alt"),
+		},
 		features: [
 			{
 				id: "features",

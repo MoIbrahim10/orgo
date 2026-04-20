@@ -585,6 +585,12 @@ html[data-theme="dark"] :is(a, button, summary).bg-white\/90:hover {
 }
 /* stylelint-enable selector-class-pattern */
 
+/* Workspace cutoff is full-bleed; lift following blocks so it never paints over their text */
+.home-main-stack > .home-workspace-glance ~ * {
+	position: relative;
+	z-index: 1;
+}
+
 /* Scroll-in reveal (home hero, feature spotlight, …) — paired with HomeRevealSectionsScript */
 [data-home-reveal-section] .home-reveal {
 	opacity: 0;

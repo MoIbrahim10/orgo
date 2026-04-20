@@ -53,6 +53,12 @@
 			"card_privacy_title": "Data privacy",
 			"card_privacy_body": "Your information is yours alone. We prioritize your privacy with state-of-the-art encryption."
 		},
+		"workspace_glance": {
+			"section_name": "Workspace",
+			"headline": "See everything at a glance",
+			"description": "Where plans, notes, and the week ahead come together in one calm view.",
+			"image_alt": "Stacked planner cards showing meetings, a checklist, and weekly notes in one workspace."
+		},
 		"hero": {
 			"eyebrow": "All your planning and journaling in one place",
 			"title": "Your Life, Beautifully Organized",
