@@ -1,5 +1,4 @@
 ---
-import ActionLink from '../../components/ui/ActionLink.astro';
 import HomeHero from '../../components/home/HomeHero.astro';
 import HomeFeatureSpotlightSection from '../../components/home/HomeFeatureSpotlightSection.astro';
 import HomeBenefitsSection from '../../components/home/HomeBenefitsSection.astro';
@@ -9,9 +8,8 @@ import HomeSocialProofSection from '../../components/home/HomeSocialProofSection
 import HomeWorkspaceGlanceSection from '../../components/home/HomeWorkspaceGlanceSection.astro';
 import HomePerspectivesSection from '../../components/home/HomePerspectivesSection.astro';
 import HomeProposalSection from '../../components/home/HomeProposalSection.astro';
+import HomeCtaSection from '../../components/home/HomeCtaSection.astro';
 import HomeWorkflowSection from '../../components/home/HomeWorkflowSection.astro';
-import MarketingEyebrow from '../../components/ui/MarketingEyebrow.astro';
-import PageSection from '../../components/ui/PageSection.astro';
 import { getHomePageContent } from '../../data/translations/home';
 import Layout from '../../layouts/Layout.astro';
 import { getSiteTranslations } from '../../data/translations/site';
@@ -58,31 +56,12 @@ const bilingualPlanningHref = getLocalizedPath(lang, '/bilingual-planning');
         secondaryHref={bilingualPlanningHref}
       />
       <HomePerspectivesSection content={homeContent.perspectives} />
-      <PageSection class="pt-0">
-        <div class="marketing-panel mx-auto max-w-6xl rounded-4xl border border-slate-200 bg-linear-to-br from-amber-50 via-white to-sky-50 px-6 py-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:px-8 sm:py-10 lg:px-12">
-          <div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-            <div class="max-w-3xl">
-              <MarketingEyebrow>{siteTranslations.title}</MarketingEyebrow>
-              <h2 class="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-[2.7rem] sm:leading-[1.08]">
-                {homeContent.cta.title}
-              </h2>
-              <p class="mt-5 text-lg leading-8 text-slate-600">{homeContent.cta.description}</p>
-            </div>
-            <div class="flex flex-wrap gap-4">
-              <ActionLink
-                href={pricingHref}
-                variant="primary">
-                {homeContent.cta.primaryCta}
-              </ActionLink>
-              <ActionLink
-                href={aboutHref}
-                variant="secondary">
-                {homeContent.cta.secondaryCta}
-              </ActionLink>
-            </div>
-          </div>
-        </div>
-      </PageSection>
+      <HomeCtaSection
+        content={homeContent.cta}
+        eyebrow={siteTranslations.title}
+        primaryHref={pricingHref}
+        secondaryHref={aboutHref}
+      />
     </div>
   </div>
 </Layout>
