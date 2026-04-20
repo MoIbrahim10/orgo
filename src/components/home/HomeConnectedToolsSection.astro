@@ -1,0 +1,121 @@
+---
+import connectedToolsSvg from '../../assets/connectec-tools.svg';
+import type { HomePageContent } from '../../types/home';
+import SectionHeader from '../ui/SectionHeader.astro';
+
+interface Props {
+  content: HomePageContent['connectedTools'];
+}
+
+const { content } = Astro.props as Props;
+---
+
+<section
+  class="home-connected-tools"
+  aria-labelledby="home-connected-tools-heading"
+  data-home-reveal-section>
+  <div class="home-connected-tools__inner">
+    <div class="home-connected-tools__media">
+      <div
+        class="home-connected-tools__visual home-reveal"
+        style="--reveal-index: 0">
+        <img
+          class="home-connected-tools__img"
+          src={connectedToolsSvg.src}
+          alt=""
+          width="560"
+          height="282"
+          loading="lazy"
+          decoding="async"
+        />
+        <div
+          class="home-connected-tools__overlay"
+          aria-hidden="true">
+        </div>
+      </div>
+      <div class="home-connected-tools__header">
+        <SectionHeader
+          align="center"
+          description={content.description}
+          headline={content.headline}
+          headlineId="home-connected-tools-heading"
+          headlineTag="h2"
+          revealStagger
+          revealStaggerStartIndex={1}
+          sectionName={content.sectionName}
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .home-connected-tools {
+    --ct-overlay: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #fff 66.29%);
+    --ct-section-bg: #fff;
+
+    background: var(--ct-section-bg);
+    isolation: isolate;
+    margin-inline: calc(50% - 50vw);
+    overflow: hidden;
+    width: 100vw;
+  }
+
+  :global(html[data-theme='dark']) .home-connected-tools {
+    --ct-overlay: linear-gradient(180deg, rgba(12, 12, 12, 0) 0%, #0c0c0c 66.29%);
+    --ct-section-bg: #0c0c0c;
+  }
+
+  .home-connected-tools__inner {
+    margin-inline: auto;
+    max-width: var(--layout-width-navbar);
+    padding-block: clamp(2rem, 5vw, 3.5rem);
+    padding-inline: var(--layout-gutter);
+  }
+
+  .home-connected-tools__media {
+    margin-inline: auto;
+    max-width: min(100%, 52rem);
+    position: relative;
+    width: 100%;
+  }
+
+  .home-connected-tools__visual {
+    position: relative;
+    width: 100%;
+  }
+
+  .home-connected-tools__img {
+    display: block;
+    height: auto;
+    width: 100%;
+  }
+
+  .home-connected-tools__overlay {
+    background: var(--ct-overlay);
+    bottom: 0;
+    height: 78%;
+    left: 0;
+    min-height: 11rem;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+  }
+
+  .home-connected-tools__header {
+    align-items: center;
+    bottom: 32px;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    padding-block: clamp(1.25rem, 3.5vw, 2.25rem);
+    padding-inline: clamp(0.75rem, 3vw, 1.5rem);
+    position: absolute;
+    right: 0;
+    z-index: 1;
+  }
+
+  .home-connected-tools__header :global(.section-header) {
+    max-width: 36rem;
+  }
+</style>

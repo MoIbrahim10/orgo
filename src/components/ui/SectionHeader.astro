@@ -7,6 +7,8 @@ interface Props {
 	headlineId?: string;
 	headlineTag?: "h1" | "h2" | "h3";
 	revealStagger?: boolean;
+	/** Added to each stagger step (label, headline, description). Default 0. */
+	revealStaggerStartIndex?: number;
 	sectionName: string;
 }
 
@@ -18,24 +20,35 @@ const {
 	headlineId,
 	headlineTag = "h2",
 	revealStagger = false,
+	revealStaggerStartIndex = 0,
 	sectionName,
 } = Astro.props as Props;
+
+const r0 = revealStaggerStartIndex;
+const r1 = revealStaggerStartIndex + 1;
+const r2 = revealStaggerStartIndex + 2;
 
 const TitleTag = headlineTag;
 ---
 
 <header class:list={["section-header", className]} data-align={align}>
-	<p class:list={["label", revealStagger && "home-reveal"]} style={revealStagger ? "--reveal-index: 0" : undefined}>
+	<p
+		class:list={["label", revealStagger && "home-reveal"]}
+		style={revealStagger ? `--reveal-index: ${r0}` : undefined}
+	>
 		{sectionName}
 	</p>
 	<TitleTag
 		class:list={["headline", revealStagger && "home-reveal"]}
 		id={headlineId}
-		style={revealStagger ? "--reveal-index: 1" : undefined}
+		style={revealStagger ? `--reveal-index: ${r1}` : undefined}
 	>
 		{headline}
 	</TitleTag>
-	<p class:list={["description", revealStagger && "home-reveal"]} style={revealStagger ? "--reveal-index: 2" : undefined}>
+	<p
+		class:list={["description", revealStagger && "home-reveal"]}
+		style={revealStagger ? `--reveal-index: ${r2}` : undefined}
+	>
 		{description}
 	</p>
 </header>

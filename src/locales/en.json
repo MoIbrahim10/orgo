@@ -59,6 +59,11 @@
 			"description": "Where plans, notes, and the week ahead come together in one calm view.",
 			"image_alt": "Stacked planner cards showing meetings, a checklist, and weekly notes in one workspace."
 		},
+		"connected_tools": {
+			"section_name": "Connected tools",
+			"headline": "Works with your existing setup",
+			"description": "Bring your favorite apps together without breaking your flow."
+		},
 		"hero": {
 			"eyebrow": "All your planning and journaling in one place",
 			"title": "Your Life, Beautifully Organized",

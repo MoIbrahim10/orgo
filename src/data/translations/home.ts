@@ -175,6 +175,11 @@ export function getHomePageContent(lang: Language): HomePageContent {
 			description: t(lang, "home.workspace_glance.description"),
 			imageAlt: t(lang, "home.workspace_glance.image_alt"),
 		},
+		connectedTools: {
+			sectionName: t(lang, "home.connected_tools.section_name"),
+			headline: t(lang, "home.connected_tools.headline"),
+			description: t(lang, "home.connected_tools.description"),
+		},
 		features: [
 			{
 				id: "features",

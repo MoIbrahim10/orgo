@@ -97,6 +97,11 @@ export type HomePageContent = {
 		imageAlt: string;
 		sectionName: string;
 	};
+	connectedTools: {
+		description: string;
+		headline: string;
+		sectionName: string;
+	};
 	features: HomeFeatureStory[];
 	hero: {
 		badges: string[];
