@@ -50,9 +50,7 @@ describe("routing helpers", () => {
 
 describe("translations", () => {
 	test("returns translated copy for nested keys", () => {
-		expect(t("en", "home.hero.title")).toBe(
-			"Your Life, Beautifully Organized",
-		);
+		expect(t("en", "home.hero.title")).toBe("Your Life, Beautifully Organized");
 		expect(t("ar", "header.links.blog")).toBe("المدونة");
 	});
 
