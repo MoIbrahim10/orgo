@@ -128,6 +128,16 @@ export type HomePageContent = {
 		plans: HomePlan[];
 		title: string;
 	};
+	socialProof: {
+		description: string;
+		headline: string;
+		sectionName: string;
+		testimonials: Array<{
+			author: string;
+			company: string;
+			content: string;
+		}>;
+	};
 	proposal: {
 		description: string;
 		eyebrow: string;

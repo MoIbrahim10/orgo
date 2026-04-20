@@ -1,0 +1,101 @@
+---
+import type { HomePageContent } from "../../types/home";
+import SectionHeader from "../ui/SectionHeader.astro";
+import HomeTestimonialCard from "./HomeTestimonialCard.astro";
+
+interface Props {
+	content: HomePageContent["socialProof"];
+}
+
+const { content } = Astro.props as Props;
+---
+
+<section
+	class="home-social-proof"
+	aria-labelledby="home-social-proof-heading"
+	data-home-reveal-section
+	id="social-proof"
+>
+	<div class="home-social-proof__inner">
+		<SectionHeader
+			align="center"
+			class="home-social-proof__header"
+			description={content.description}
+			headline={content.headline}
+			headlineId="home-social-proof-heading"
+			headlineTag="h2"
+			revealStagger
+			sectionName={content.sectionName}
+		/>
+		<div class="home-social-proof__grid">
+			{
+				content.testimonials.map((item, index) => (
+					<div
+						class="home-social-proof__cell home-reveal"
+						style={`--reveal-index: ${index + 3}`}
+					>
+						<HomeTestimonialCard {...item} />
+					</div>
+				))
+			}
+		</div>
+		<div class="home-social-proof__fade" aria-hidden="true"></div>
+	</div>
+</section>
+
+<style>
+	.home-social-proof {
+		isolation: isolate;
+		margin-inline: calc(50% - 50vw);
+		overflow: hidden;
+		position: relative;
+		width: 100vw;
+	}
+
+	.home-social-proof__inner {
+		margin-inline: auto;
+		max-width: var(--layout-width-navbar);
+		padding-inline: var(--layout-gutter);
+		position: relative;
+	}
+
+	.home-social-proof :global(.home-social-proof__header.section-header) {
+		max-width: 36rem;
+	}
+
+	.home-social-proof__grid {
+		display: grid;
+		gap: 24px;
+		grid-template-columns: 1fr;
+		margin-top: clamp(2rem, 5vw, 2.5rem);
+		position: relative;
+		z-index: 1;
+	}
+
+	.home-social-proof__cell {
+		min-width: 0;
+	}
+
+	.home-social-proof__fade {
+		background: linear-gradient(to top, var(--page-bg) 0%, transparent 100%);
+		bottom: 0;
+		height: 40%;
+		left: 0;
+		pointer-events: none;
+		position: absolute;
+		right: 0;
+		z-index: 2;
+	}
+
+	@media (width >= 768px) {
+		.home-social-proof__grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (width >= 1024px) {
+		.home-social-proof__grid {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+</style>

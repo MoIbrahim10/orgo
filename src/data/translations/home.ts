@@ -1,7 +1,20 @@
-import type { Language } from "../../types/translations";
+import type { Language, TranslationKey } from "../../types/translations";
 import type { HomePageContent } from "../../types/home";
 import { t } from "../../utils/i18n";
 import { getLocalizedPath } from "../../utils/routing";
+
+const SOCIAL_PROOF_QUOTE_COUNT = 12;
+
+function getSocialProofTestimonials(lang: Language) {
+	return Array.from({ length: SOCIAL_PROOF_QUOTE_COUNT }, (_, i) => {
+		const n = String(i + 1).padStart(2, "0");
+		return {
+			author: t(lang, `home.social_proof.q${n}_author` as TranslationKey),
+			company: t(lang, `home.social_proof.q${n}_company` as TranslationKey),
+			content: t(lang, `home.social_proof.q${n}_body` as TranslationKey),
+		};
+	});
+}
 
 const homeEnhancements: Record<
 	Language,
@@ -179,6 +192,12 @@ export function getHomePageContent(lang: Language): HomePageContent {
 			sectionName: t(lang, "home.connected_tools.section_name"),
 			headline: t(lang, "home.connected_tools.headline"),
 			description: t(lang, "home.connected_tools.description"),
+		},
+		socialProof: {
+			sectionName: t(lang, "home.social_proof.section_name"),
+			headline: t(lang, "home.social_proof.headline"),
+			description: t(lang, "home.social_proof.description"),
+			testimonials: getSocialProofTestimonials(lang),
 		},
 		features: [
 			{

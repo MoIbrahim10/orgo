@@ -1,0 +1,135 @@
+---
+interface Props {
+	author: string;
+	company: string;
+	content: string;
+	avatar?: string;
+}
+
+const { author, company, content, avatar } = Astro.props;
+
+const initials = author
+	? author
+			.split(" ")
+			.map((word) => word[0])
+			.slice(0, 2)
+			.join("")
+			.toUpperCase()
+	: "?";
+
+const byline = `${author} @ ${company}`;
+---
+
+<article class="home-testimonial-card group relative flex min-h-28 items-start gap-3 overflow-hidden rounded-xl p-6">
+	<span
+		aria-hidden="true"
+		class="home-testimonial-card__accent pointer-events-none absolute left-0 top-0 h-full w-1 bg-linear-to-t from-orange-500 via-pink-500 to-violet-800 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+	>
+	</span>
+	{
+		avatar ? (
+			<img
+				src={avatar}
+				alt=""
+				class="h-9 w-9 shrink-0 rounded-full bg-zinc-300 object-cover"
+			/>
+		) : (
+			<svg
+				width="36"
+				height="36"
+				viewBox="0 0 36 36"
+				fill="none"
+				xmlns="http://www.w3.org/2000/svg"
+				class="home-testimonial-card__avatar-svg shrink-0 rounded-full"
+				aria-hidden="true"
+			>
+				<circle class="home-testimonial-card__avatar-disc" cx="18" cy="18" r="18" />
+				<text
+					x="50%"
+					y="50%"
+					text-anchor="middle"
+					dy="0.35em"
+					class="home-testimonial-card__avatar-initial"
+					font-size="14"
+					font-family="var(--font-ui), system-ui, sans-serif"
+					font-weight="500"
+				>
+					{initials}
+				</text>
+			</svg>
+		)
+	}
+	<div class="flex min-w-0 flex-1 flex-col justify-center gap-1.5">
+		<h3 class="home-testimonial-card__byline font-ui text-sm font-medium">
+			{byline}
+		</h3>
+		<p class="home-testimonial-card__quote font-ui max-w-prose text-xs font-normal leading-snug">
+			{content}
+		</p>
+	</div>
+</article>
+
+<style>
+	.font-ui {
+		font-family: var(--font-ui), system-ui, sans-serif;
+	}
+
+	.home-testimonial-card {
+		background: var(--page-surface-muted);
+		border: 1px solid var(--page-border);
+		box-shadow:
+			inset 0 3px 3px oklch(20.8% 0.042 265.755deg / 4%),
+			0 1px 0 oklch(100% 0 0deg / 35%);
+		color: var(--foreground-primary);
+		transition:
+			background-color 0.3s ease-out,
+			border-color 0.3s ease-out,
+			box-shadow 0.3s ease-out,
+			transform 0.3s ease-out;
+	}
+
+	.home-testimonial-card:hover {
+		background: var(--page-surface-solid);
+		border-color: var(--page-border-strong);
+		box-shadow:
+			inset 0 3px 3px oklch(20.8% 0.042 265.755deg / 5%),
+			var(--theme-shadow-soft);
+		transform: translateY(-2px);
+	}
+
+	.home-testimonial-card__byline {
+		color: var(--foreground-primary);
+	}
+
+	.home-testimonial-card__quote {
+		color: var(--foreground-secondary);
+	}
+
+	.home-testimonial-card__avatar-disc {
+		fill: oklch(92% 0 0deg);
+	}
+
+	.home-testimonial-card__avatar-initial {
+		fill: oklch(30% 0 0deg);
+	}
+
+	html[data-theme="dark"] .home-testimonial-card {
+		background: var(--page-surface-solid);
+		box-shadow: inset 0 3px 3px rgb(0 0 0 / 25%);
+	}
+
+	html[data-theme="dark"] .home-testimonial-card:hover {
+		background: var(--page-surface-muted);
+		box-shadow:
+			inset 0 3px 3px rgb(0 0 0 / 20%),
+			0 12px 40px rgb(0 0 0 / 35%);
+	}
+
+	html[data-theme="dark"] .home-testimonial-card__avatar-disc {
+		fill: #303030;
+	}
+
+	html[data-theme="dark"] .home-testimonial-card__avatar-initial {
+		fill: #f9fafb;
+	}
+</style>
