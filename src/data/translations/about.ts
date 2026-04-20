@@ -66,7 +66,8 @@ const contentByLanguage: Record<Language, AboutPageContent> = {
 		principles: {
 			sectionName: "Principles",
 			title: "How we judge tradeoffs.",
-			description: "A short list we use to keep the product and the marketing site aligned as both evolve.",
+			description:
+				"A short list we use to keep the product and the marketing site aligned as both evolve.",
 			items: [
 				{
 					title: "Clarity before cleverness",
@@ -85,8 +86,7 @@ const contentByLanguage: Record<Language, AboutPageContent> = {
 		people: {
 			sectionName: "People",
 			title: "Who’s behind Orgo",
-			description:
-				"The folks shaping product direction, editorial voice, and bilingual polish.",
+			description: "The folks shaping product direction, editorial voice, and bilingual polish.",
 		},
 		cta: {
 			sectionName: "Next step",
@@ -100,8 +100,7 @@ const contentByLanguage: Record<Language, AboutPageContent> = {
 	ar: {
 		metaTitle: "من نحن",
 		title: "عن Orgo",
-		description:
-			"تخطيط هادئ، وكتابة واعية، وصنعة ثنائية اللغة—من يقف وراء المنتج وأفكاره.",
+		description: "تخطيط هادئ، وكتابة واعية، وصنعة ثنائية اللغة—من يقف وراء المنتج وأفكاره.",
 		hero: {
 			intro:
 				"نبني مساحة واحدة مركّزة لتقويمك وملاحظاتك ومهامك؛ لتبقى الأسابيع القادمة واضحة، بالعربية أو الإنجليزية، من دون ضوضاء.",

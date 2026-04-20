@@ -70,8 +70,7 @@ const contentByLanguage: Record<Language, ContactFlowContent> = {
 		conversationsIntro: {
 			sectionName: "Conversations",
 			title: "Pick a starting point",
-			description:
-				"Each path below opens a different thread—choose what matches your question.",
+			description: "Each path below opens a different thread—choose what matches your question.",
 		},
 		conversations: [
 			{
@@ -132,8 +131,7 @@ const contentByLanguage: Record<Language, ContactFlowContent> = {
 	ar: {
 		metaTitle: "تواصل",
 		title: "ابدأ الحوار المناسب مع Orgo",
-		description:
-			"راسلنا—أسئلة حول الوصول المبكر، أو سير العمل الثنائي اللغة، أو كيف يناسبك Orgo.",
+		description: "راسلنا—أسئلة حول الوصول المبكر، أو سير العمل الثنائي اللغة، أو كيف يناسبك Orgo.",
 		intro:
 			"البريد هو الخط الأنسب. أخبرنا كيف تخطّط وتكتب وتنسّق—نرد بعناية، وغالباً بشكل غير متزامن، ونكمل الحوار فقط عندما يفيد ذلك.",
 		channels: {
