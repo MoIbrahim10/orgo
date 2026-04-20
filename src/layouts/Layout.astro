@@ -6,6 +6,7 @@ import HomeRevealSectionsScript from "../components/common/HomeRevealSectionsScr
 import LayoutHead from "../components/common/LayoutHead.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/header.astro";
+import MobileStickyNav from "../components/MobileStickyNav.astro";
 import LocaleSuggestionBanner from "../components/LocaleSuggestionBanner.astro";
 import { getHtmlLanguage, getLocaleConfig } from "../data/site";
 import { themeMetaColors, themeStorageKey } from "../data/theme";
@@ -83,6 +84,7 @@ const headProps = {
 			<LocaleSuggestionBanner lang={lang} paths={resolvedLocaleAlternates} />
 		)}
 		{!hideHeader && <Header lang={lang} localeSwitcherPaths={resolvedLocaleSwitcherPaths} />}
+		{!hideHeader && <MobileStickyNav lang={lang} localeSwitcherPaths={resolvedLocaleSwitcherPaths} />}
 		<main class="min-h-[calc(100vh-137px)]" id="main-content">
 			<slot />
 		</main>

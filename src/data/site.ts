@@ -56,6 +56,13 @@ export const siteConfig = {
 	themeColor: themeMetaColors.light,
 } as const;
 
+/** Public profile URLs for footer and meta; replace with real handles when available. */
+export const publicSocialLinks = {
+	linkedin: "https://www.linkedin.com/company/orgo",
+	x: "https://x.com/orgo",
+	instagram: "https://www.instagram.com/orgo",
+} as const;
+
 export const metadataConfig = {
 	titleTemplate: `%s | ${siteConfig.name}`,
 	description:

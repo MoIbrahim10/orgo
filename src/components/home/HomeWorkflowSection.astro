@@ -1,9 +1,7 @@
 ---
 import type { HomePageContent } from "../../types/home";
-import PageSection from "../ui/PageSection.astro";
-import SectionIntro from "../ui/SectionIntro.astro";
-import HomeRhythmCard from "./HomeRhythmCard.astro";
 import MarketingIcon from "./MarketingIcon.astro";
+import SectionHeader from "../ui/SectionHeader.astro";
 
 interface Props {
 	content: HomePageContent["workflow"];
@@ -12,29 +10,126 @@ interface Props {
 const { content } = Astro.props as Props;
 ---
 
-<PageSection backdrop="glow" id="workflow" tone="contrast">
-	<SectionIntro
-		description={content.description}
-		eyebrow={content.eyebrow}
-		title={content.title}
-		tone="inverse"
-	/>
-	<div class="mt-10 grid gap-4 lg:grid-cols-4">
-		{
-			content.steps.map((step, index) => (
-				<HomeRhythmCard>
-					<div class="flex items-center justify-between gap-4">
-						<div class="rounded-2xl bg-white/10 p-2 text-white">
-							<MarketingIcon className="h-5 w-5" name={step.icon} />
+<section
+	class="home-workflow"
+	aria-labelledby="home-workflow-heading"
+	data-home-reveal-section
+	id="workflow">
+	<div class="home-workflow__inner">
+		<SectionHeader
+			align="center"
+			class="home-workflow__header"
+			description={content.description}
+			headline={content.headline}
+			headlineId="home-workflow-heading"
+			headlineTag="h2"
+			revealStagger
+			sectionName={content.sectionName}
+		/>
+		<ol class="home-workflow__grid">
+			{
+				content.steps.map((step, index) => (
+					<li
+						class="home-workflow__card home-reveal"
+						style={`--reveal-index: ${index + 3}`}>
+						<div class="home-workflow__card-top">
+							<span class="home-workflow__index" aria-hidden="true">
+								{String(index + 1).padStart(2, "0")}
+							</span>
+							<div class="home-workflow__icon-wrap">
+								<MarketingIcon className="h-5 w-5" name={step.icon} />
+							</div>
 						</div>
-						<p class="text-xs font-medium uppercase tracking-[0.22em] text-slate-500">
-							0{index + 1}
-						</p>
-					</div>
-					<h3 class="mt-5 text-lg font-semibold text-white">{step.title}</h3>
-					<p class="mt-3 text-sm leading-6 text-slate-300">{step.body}</p>
-				</HomeRhythmCard>
-			))
-		}
+						<div class="home-workflow__text-stack">
+							<h3 class="spotlight-surface-card-title">{step.title}</h3>
+							<p class="spotlight-surface-card-desc">{step.body}</p>
+						</div>
+					</li>
+				))
+			}
+		</ol>
 	</div>
-</PageSection>
+</section>
+
+<style>
+	.home-workflow {
+		background: transparent;
+		isolation: isolate;
+		margin-inline: calc(50% - 50vw);
+		overflow: hidden;
+		width: 100vw;
+	}
+
+	.home-workflow__inner {
+		margin-inline: auto;
+		max-width: var(--layout-width-navbar);
+		padding-inline: var(--layout-gutter);
+	}
+
+	.home-workflow__header :global(.section-header) {
+		max-width: 40rem;
+	}
+
+	.home-workflow__grid {
+		display: grid;
+		gap: 24px;
+		grid-template-columns: 1fr;
+		list-style: none;
+		margin: clamp(2rem, 5vw, 2.5rem) 0 0;
+		padding: 0;
+	}
+
+	@media (width >= 640px) {
+		.home-workflow__grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (width >= 1024px) {
+		.home-workflow__grid {
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+		}
+	}
+
+	.home-workflow__card {
+		/* Match FeatureSpotlightCard / home-benefits__card */
+		background: var(--feature-spotlight-card-surface);
+		border-radius: var(--feature-spotlight-card-radius);
+		display: flex;
+		flex-direction: column;
+		gap: 21px;
+		min-width: 0;
+		padding: 24px;
+	}
+
+	.home-workflow__card-top {
+		align-items: center;
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+	}
+
+	.home-workflow__text-stack {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		width: 100%;
+	}
+
+	.home-workflow__index {
+		color: var(--foreground-tertiary);
+		font-family: var(--font-ui);
+		font-size: 11px;
+		font-weight: 500;
+		letter-spacing: 0.08em;
+	}
+
+	.home-workflow__icon-wrap {
+		align-items: center;
+		background: var(--feature-spotlight-plate-fill);
+		border-radius: 999px;
+		color: var(--foreground-primary);
+		display: inline-flex;
+		padding: 8px;
+	}
+</style>

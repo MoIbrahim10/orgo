@@ -1,16 +1,12 @@
 ---
+import { Image } from 'astro:assets';
 import ActionLink from '../ui/ActionLink.astro';
 import type { HomePageContent } from '../../types/home';
 import type { Language } from '../../types/translations';
 import { t } from '../../utils/i18n';
-import heroCalAr from '../../assets/home/ar/cal.svg';
-import heroCalEn from '../../assets/home/en/cal.svg';
+import heroCalAr from '../../assets/home/ar/cal.png';
+import heroCalEn from '../../assets/home/en/cal.png';
 import HomeHeroBadge from './HomeHeroBadge.astro';
-
-const heroCalSrc: Record<Language, string> = {
-  ar: heroCalAr.src,
-  en: heroCalEn.src,
-};
 
 interface Props {
   content: HomePageContent['hero'];
@@ -20,7 +16,7 @@ interface Props {
 }
 
 const { content, lang, primaryHref, secondaryHref } = Astro.props as Props;
-const heroCalImageSrc = heroCalSrc[lang] ?? heroCalEn.src;
+const heroCalImage = lang === 'ar' ? heroCalAr : heroCalEn;
 const heroCalImageAlt = t(lang, 'home.hero.visual_alt');
 ---
 
@@ -53,14 +49,13 @@ const heroCalImageAlt = t(lang, 'home.hero.visual_alt');
     </div>
   </div>
   <div class="home-hero__visual home-reveal" style="--reveal-index: 4">
-    <img
-      class="home-hero__cal"
-      src={heroCalImageSrc}
+    <Image
       alt={heroCalImageAlt}
-      width={heroCalEn.width}
-      height={heroCalEn.height}
-      loading="eager"
+      class="home-hero__cal"
       decoding="async"
+      fetchpriority="high"
+      loading="eager"
+      src={heroCalImage}
     />
   </div>
 </section>
@@ -118,7 +113,7 @@ const heroCalImageAlt = t(lang, 'home.hero.visual_alt');
     height: auto;
     margin-left: auto;
     margin-right: auto;
-    max-width: 100%;
+    max-width: min(100%, 914px);
     min-width: min(100%, 18rem);
   }
 

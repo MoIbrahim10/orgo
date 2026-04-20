@@ -1,8 +1,7 @@
 ---
 import type { HomePageContent } from "../../types/home";
 import ActionLink from "../ui/ActionLink.astro";
-import PageSection from "../ui/PageSection.astro";
-import SectionIntro from "../ui/SectionIntro.astro";
+import SectionHeader from "../ui/SectionHeader.astro";
 
 interface Props {
 	content: HomePageContent["proposal"];
@@ -13,77 +12,184 @@ interface Props {
 const { content, primaryHref, secondaryHref } = Astro.props as Props;
 ---
 
-<PageSection class="py-8" tone="transparent">
-	<div class="proposal-panel">
-		<div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.42fr)] lg:items-center">
-			<SectionIntro
-				description={content.description}
-				eyebrow={content.eyebrow}
-				title={content.title}
-				tone="inverse"
-			/>
-			<div class="rounded-[1.75rem] border border-white/10 bg-white/04 p-5">
-				<ul class="grid gap-4">
-					{
-						content.points.map((point) => (
-							<li class="flex items-start gap-3">
-								<span class="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-amber-300"></span>
-								<span class="text-sm leading-6 text-slate-200">{point}</span>
-							</li>
-						))
-					}
-				</ul>
-				<div class="mt-6 flex flex-wrap gap-3">
-					<ActionLink href={primaryHref} variant="inverted">
+<section
+	class="home-proposal"
+	aria-labelledby="home-proposal-heading"
+	data-home-reveal-section>
+	<div class="home-proposal__inner">
+		<SectionHeader
+			align="center"
+			class="home-proposal__header"
+			description={content.description}
+			headline={content.headline}
+			headlineId="home-proposal-heading"
+			headlineTag="h2"
+			revealStagger
+			sectionName={content.sectionName}
+		/>
+		<div class="home-proposal__body">
+			<ul class="home-proposal__cards">
+				{
+					content.points.map((point, index) => (
+						<li
+							class="home-proposal__card home-reveal"
+							style={`--reveal-index: ${index + 3}`}>
+							<span class="home-proposal__step-wrap">
+								<span class="home-proposal__step">
+									{String(index + 1).padStart(2, "0")}
+								</span>
+							</span>
+							<p class="spotlight-surface-card-desc home-proposal__card-text">{point}</p>
+						</li>
+					))
+				}
+			</ul>
+			<div
+				class="home-proposal__cta home-reveal"
+				style="--reveal-index: 6">
+				<div class="home-proposal__cta-inner">
+					<ActionLink href={primaryHref} size="lg" variant="primary">
 						{content.primaryCta}
 					</ActionLink>
-					<ActionLink
-						class="text-white/80 hover:text-white"
-						href={secondaryHref}
-						variant="ghost"
-					>
+					<ActionLink href={secondaryHref} size="lg" variant="secondary">
 						{content.secondaryCta}
 					</ActionLink>
 				</div>
 			</div>
 		</div>
 	</div>
-</PageSection>
-
-<style is:global>
-	:root {
-		--home-proposal-panel-bg:
-			radial-gradient(circle at top left, oklch(83% 0.12 82deg / 14%), transparent 28%),
-			radial-gradient(circle at bottom right, oklch(82% 0.08 230deg / 16%), transparent 28%),
-			linear-gradient(
-				160deg,
-				oklch(12.9% 0.042 264.695deg) 0%,
-				oklch(20.8% 0.042 265.755deg) 62%,
-				oklch(27.9% 0.041 260.031deg) 100%
-			);
-	}
-
-	html[data-theme="dark"] {
-		--home-proposal-panel-bg:
-			radial-gradient(circle at top left, oklch(72% 0.11 82deg / 16%), transparent 28%),
-			radial-gradient(circle at bottom right, oklch(68% 0.08 195deg / 12%), transparent 28%),
-			linear-gradient(
-				160deg,
-				oklch(17.9% 0 0deg) 0%,
-				oklch(21.5% 0 0deg) 54%,
-				oklch(25.5% 0 0deg) 100%
-			);
-	}
-</style>
+</section>
 
 <style>
-	.proposal-panel {
-		background: var(--home-proposal-panel-bg);
-		border: 1px solid var(--page-border);
-		border-radius: 2rem;
-		box-shadow: 0 26px 80px oklch(20.8% 0.042 265.755deg / 18%);
-		color: oklch(100% 0 0deg);
+	.home-proposal {
+		background: transparent;
+		isolation: isolate;
+		margin-inline: calc(50% - 50vw);
 		overflow: hidden;
-		padding: 2rem;
+		width: 100vw;
+	}
+
+	.home-proposal__inner {
+		margin-inline: auto;
+		max-width: var(--layout-width-navbar);
+		padding-inline: var(--layout-gutter);
+	}
+
+	.home-proposal__header :global(.section-header) {
+		margin-inline: auto;
+		max-width: 42rem;
+	}
+
+	.home-proposal__body {
+		margin-inline: auto;
+		margin-top: clamp(1.75rem, 4.5vw, 2.75rem);
+		max-width: 56rem;
+		width: 100%;
+	}
+
+	.home-proposal__cards {
+		display: grid;
+		gap: clamp(12px, 2.5vw, 20px);
+		grid-template-columns: 1fr;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	@media (width >= 768px) {
+		.home-proposal__cards {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	/*
+		Explicit edges: in dark mode --feature-spotlight-card-surface blends into --page-bg; border + shadow read as “cards”.
+	*/
+	.home-proposal__card {
+		align-items: center;
+		background: var(--feature-spotlight-card-surface);
+		border: 1px solid var(--page-border);
+		border-radius: var(--feature-spotlight-card-radius);
+		box-shadow: var(--theme-shadow-soft);
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		isolation: isolate;
+		margin: 0;
+		min-height: 0;
+		min-width: 0;
+		padding: 22px 18px 26px;
+		position: relative;
+		text-align: center;
+	}
+
+	html[data-theme="dark"] .home-proposal__card {
+		box-shadow:
+			var(--theme-shadow-soft),
+			inset 0 1px 0 rgb(255 255 255 / 6%);
+	}
+
+	.home-proposal__step-wrap {
+		display: flex;
+		flex-shrink: 0;
+		justify-content: center;
+		width: 100%;
+	}
+
+	.home-proposal__step {
+		background: var(--feature-spotlight-plate-fill);
+		border: 1px solid color-mix(in srgb, var(--foreground-primary) 10%, transparent);
+		border-radius: 999px;
+		color: var(--foreground-secondary);
+		display: inline-flex;
+		font-family: var(--font-ui);
+		font-size: 12px;
+		font-variant-numeric: tabular-nums;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		line-height: 1;
+		padding: 8px 14px;
+	}
+
+	.home-proposal__card-text {
+		flex: 1;
+		margin: 0;
+		text-align: center;
+		text-wrap: balance;
+	}
+
+	.home-proposal__cta {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		margin-top: clamp(1.75rem, 4vw, 2.5rem);
+		padding-top: clamp(1.5rem, 3vw, 2rem);
+		position: relative;
+		width: 100%;
+	}
+
+	.home-proposal__cta::before {
+		background: linear-gradient(
+			90deg,
+			transparent,
+			color-mix(in srgb, var(--foreground-primary) 16%, transparent) 22%,
+			color-mix(in srgb, var(--foreground-primary) 16%, transparent) 78%,
+			transparent
+		);
+		content: "";
+		height: 1px;
+		left: 0;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+
+	.home-proposal__cta-inner {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+		justify-content: center;
+		width: 100%;
 	}
 </style>

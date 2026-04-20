@@ -57,9 +57,10 @@ export type HomePerspectiveCard = {
 export type HomePageContent = {
 	cta: {
 		description: string;
+		headline: string;
 		primaryCta: string;
 		secondaryCta: string;
-		title: string;
+		sectionName: string;
 	};
 	featureSpotlight: {
 		cards: HomeFeatureSpotlightItem[];
@@ -99,9 +100,9 @@ export type HomePageContent = {
 	perspectives: {
 		cards: HomePerspectiveCard[];
 		description: string;
-		eyebrow: string;
 		focusLabel: string;
-		title: string;
+		headline: string;
+		sectionName: string;
 	};
 	pricing: {
 		description: string;
@@ -123,16 +124,16 @@ export type HomePageContent = {
 	};
 	proposal: {
 		description: string;
-		eyebrow: string;
+		headline: string;
 		points: string[];
 		primaryCta: string;
 		secondaryCta: string;
-		title: string;
+		sectionName: string;
 	};
 	workflow: {
 		description: string;
-		eyebrow: string;
+		headline: string;
+		sectionName: string;
 		steps: HomeWorkflowStep[];
-		title: string;
 	};
 };

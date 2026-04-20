@@ -38,27 +38,25 @@ const bilingualPlanningHref = getLocalizedPath(lang, '/bilingual-planning');
       primaryHref={pricingHref}
       secondaryHref={bilingualPlanningHref}
     />
-    <div class="home-main-stack flex flex-col gap-36 max-w-[914px] mx-auto">
+    <div class="home-main-stack flex flex-col gap-36 max-w-[914px] mx-auto pb-12">
       <HomeFeatureSpotlightSection content={homeContent.featureSpotlight} />
       <HomeWorkspaceGlanceSection
         content={homeContent.workspaceGlance}
         lang={lang}
       />
       <HomeBenefitsSection content={homeContent.benefits} lang={lang} />
-      <HomeConnectedToolsSection content={homeContent.connectedTools} />
-      <HomePricingSection content={homeContent.pricing} lang={lang} />
-      <HomeSocialProofSection content={homeContent.socialProof} />
-
       <HomeWorkflowSection content={homeContent.workflow} />
+      <HomeConnectedToolsSection content={homeContent.connectedTools} />
+      <HomePerspectivesSection content={homeContent.perspectives} />
+      <HomeSocialProofSection content={homeContent.socialProof} />
       <HomeProposalSection
         content={homeContent.proposal}
         primaryHref={pricingHref}
         secondaryHref={bilingualPlanningHref}
       />
-      <HomePerspectivesSection content={homeContent.perspectives} />
+      <HomePricingSection content={homeContent.pricing} lang={lang} />
       <HomeCtaSection
         content={homeContent.cta}
-        eyebrow={siteTranslations.title}
         primaryHref={pricingHref}
         secondaryHref={aboutHref}
       />

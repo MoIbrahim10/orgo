@@ -1,0 +1,183 @@
+---
+import ActionLink from "./ui/ActionLink.astro";
+import Logo from "./ui/Logo.astro";
+import LocaleSwitcher from "./LocaleSwitcher.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+import { getHeaderTranslations } from "../data/translations/header";
+import type { Language } from "../types/translations";
+import type { LocalePathMap } from "../utils/routing";
+import { getLocalizedPath } from "../utils/routing";
+
+const { lang, localeSwitcherPaths } = Astro.props as {
+	lang: Language;
+	localeSwitcherPaths: LocalePathMap;
+};
+
+const headerTranslations = getHeaderTranslations(lang);
+const homeHref = getLocalizedPath(lang);
+const ctaHref = getLocalizedPath(lang, "/pricing");
+const normalizePath = (path: string) => (path.length > 1 ? path.replace(/\/$/, "") : path);
+const currentPath = normalizePath(Astro.url.pathname);
+const isActivePath = (href: string) => {
+	const normalizedHref = normalizePath(href);
+	return currentPath === normalizedHref || currentPath.startsWith(`${normalizedHref}/`);
+};
+const isCtaActive = isActivePath(ctaHref);
+---
+
+<nav
+	aria-hidden="true"
+	aria-label={headerTranslations.stickyNavLabel}
+	class="mobile-sticky-nav"
+	data-orgo-mobile-sticky-nav
+	inert
+>
+	<div class="mobile-sticky-nav__dock">
+		<div class="mobile-sticky-nav__inner">
+			<Logo alt={headerTranslations.logo} href={homeHref} />
+			<div class="mobile-sticky-nav__actions">
+				<div class="mobile-sticky-nav__locale">
+					<LocaleSwitcher lang={lang} paths={localeSwitcherPaths} />
+				</div>
+				<ThemeToggle class="nav-icon-button" lang={lang} />
+				<ActionLink
+					aria-current={isCtaActive ? "page" : undefined}
+					class="mobile-sticky-nav__cta"
+					href={ctaHref}
+					size="sm"
+					variant="secondary"
+				>
+					{headerTranslations.cta}
+				</ActionLink>
+			</div>
+		</div>
+	</div>
+</nav>
+
+<script>
+	const SELECTOR_HEADER = "[data-orgo-site-header]";
+	const SELECTOR_BAR = "[data-orgo-mobile-sticky-nav]";
+
+	function setStickyVisible(bar: HTMLElement, show: boolean): void {
+		bar.classList.toggle("mobile-sticky-nav--visible", show);
+		bar.setAttribute("aria-hidden", show ? "false" : "true");
+		if (show) {
+			bar.removeAttribute("inert");
+		} else {
+			bar.setAttribute("inert", "");
+		}
+		document.documentElement.toggleAttribute("data-orgo-sticky-nav-visible", show);
+	}
+
+	function initStickyBottomNav(): void {
+		const header = document.querySelector(SELECTOR_HEADER);
+		const bar = document.querySelector(SELECTOR_BAR);
+
+		if (!(header instanceof HTMLElement) || !(bar instanceof HTMLElement)) {
+			return;
+		}
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const entry = entries[0];
+				if (!entry) {
+					return;
+				}
+				setStickyVisible(bar, !entry.isIntersecting);
+			},
+			{ root: null, threshold: 0, rootMargin: "0px" },
+		);
+
+		observer.observe(header);
+	}
+
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", initStickyBottomNav, { once: true });
+	} else {
+		initStickyBottomNav();
+	}
+</script>
+
+<style>
+	.mobile-sticky-nav {
+		align-items: flex-end;
+		bottom: 0;
+		display: flex;
+		inset-inline: 0;
+		justify-content: center;
+		padding-block: 0 max(0.75rem, env(safe-area-inset-bottom));
+		padding-inline: max(0.75rem, var(--layout-gutter));
+		pointer-events: none;
+		position: fixed;
+		visibility: hidden;
+		z-index: calc(var(--layer-navbar-menu) - 1);
+	}
+
+	.mobile-sticky-nav--visible {
+		pointer-events: auto;
+		visibility: visible;
+	}
+
+	/* Centered floating dock (macOS-style bar), not full-bleed */
+	.mobile-sticky-nav__dock {
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+		background: var(--header-panel-surface);
+		border: 1px solid var(--header-panel-border);
+		border-radius: 9999px;
+		box-shadow: var(--header-panel-shadow), var(--theme-shadow-soft);
+		max-width: min(36rem, calc(100vw - 1.5rem));
+		transform: translate3d(0, calc(100% + 1.25rem), 0);
+		transition:
+			transform var(--control-transition),
+			visibility var(--control-transition);
+		width: 100%;
+	}
+
+	.mobile-sticky-nav--visible .mobile-sticky-nav__dock {
+		transform: translate3d(0, 0, 0);
+	}
+
+	.mobile-sticky-nav__inner {
+		align-items: center;
+		display: flex;
+		gap: 0.75rem;
+		justify-content: space-between;
+		min-height: 2.75rem;
+		padding-block: 0.5rem;
+		padding-inline: 0.875rem 1rem;
+	}
+
+	.mobile-sticky-nav__actions {
+		align-items: center;
+		display: flex;
+		flex: 1;
+		gap: 0.5rem;
+		justify-content: flex-end;
+		min-width: 0;
+	}
+
+	.mobile-sticky-nav__locale {
+		max-width: 6.5rem;
+		min-width: 0;
+	}
+
+	.mobile-sticky-nav__locale :global(.locale-switcher) {
+		width: 100%;
+	}
+
+	.mobile-sticky-nav__locale :global(.locale-switcher-menu) {
+		bottom: calc(100% + 0.375rem);
+		top: auto;
+	}
+
+	.mobile-sticky-nav__cta {
+		flex-shrink: 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.mobile-sticky-nav__dock {
+			transition: none;
+		}
+	}
+</style>

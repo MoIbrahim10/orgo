@@ -17,12 +17,17 @@
 			"changelog": "Changelog"
 		},
 		"cta": "Get Started",
-		"menu_label": "Open menu"
+		"menu_label": "Open menu",
+		"sticky_nav_label": "Quick navigation"
 	},
 	"footer": {
 		"tagline": "Calm planning, thoughtful writing, and bilingual product systems designed with care.",
 		"primary_title": "Explore",
-		"resources_title": "Resources"
+		"resources_title": "Resources",
+		"social_nav": "Social media",
+		"linkedin_aria": "Orgo on LinkedIn",
+		"x_aria": "Orgo on X",
+		"instagram_aria": "Orgo on Instagram"
 	},
 	"locale": {
 		"switcher_label": "Language",
@@ -95,17 +100,17 @@
 			"visual_alt": "Calendar and planning preview"
 		},
 		"workflow": {
-			"eyebrow": "A weekly rhythm",
-			"title": "A calmer operating system for the days that matter",
-			"description": "Orgo encourages a simple cycle you can repeat every week without turning productivity into maintenance.",
+			"section_name": "Weekly rhythm",
+			"headline": "Four steps. One calmer week.",
+			"description": "Stay organized with a simple rhythm — capture what matters, turn it into clear plans, protect your focus, and reflect with confidence.",
 			"capture_title": "Capture",
-			"capture_body": "Catch ideas, reminders, and half-formed thoughts before they vanish.",
+			"capture_body": "Grab ideas, reminders, and to-dos before they disappear — say goodbye to scattered sticky notes.",
 			"clarify_title": "Clarify",
-			"clarify_body": "Shape rough inputs into clean priorities, quiet notes, and intentional plans.",
+			"clarify_body": "Turn rough notes into clean priorities and quiet plans so you always know what comes next.",
 			"commit_title": "Commit",
-			"commit_body": "Protect the work that matters and leave room for reality to happen.",
+			"commit_body": "Protect deep work and must-dos while leaving room for real life to happen.",
 			"reflect_title": "Reflect",
-			"reflect_body": "End the cycle with memory, not guesswork, so next week starts smarter."
+			"reflect_body": "End the week with memory, not guesswork — start Monday with clarity and context."
 		},
 		"pricing": {
 			"eyebrow": "pricing",
@@ -171,24 +176,36 @@
 			"q12_body": "This app has helped me achieve better work-life balance. Truly remarkable."
 		},
 		"proof": {
-			"eyebrow": "Made for real routines",
-			"title": "Orgo fits the people doing the invisible work of staying organized",
-			"description": "Instead of pretending every customer looks the same, Orgo is shaped around a few very real patterns of work.",
+			"section_name": "Who it's for",
+			"headline": "Made for the way you really plan",
+			"description": "From founders to freelancers to personal journaling, Orgo brings powerful tools together so you can simplify your day and feel in control.",
+			"focus_label": "In their words",
 			"founders_title": "Founders and operators",
-			"founders_body": "Hold decisions, weekly priorities, and stray notes in one calm place before they spread across chat, docs, and task lists.",
-			"founders_quote": "Less tab juggling. More clarity about what matters this week.",
+			"founders_body": "Merge priorities, decisions, and loose notes in one calm view — streamline your life without losing the details.",
+			"founders_quote": "Less tab juggling. More confidence about what matters this week.",
 			"consultants_title": "Independent consultants",
-			"consultants_body": "Keep client work, meeting notes, and personal planning close enough to support each other without collapsing together.",
-			"consultants_quote": "A system that respects both delivery and reflection.",
+			"consultants_body": "Coordinate client work, meetings, and personal goals in one place — intuitive, flexible, and easy to keep up with.",
+			"consultants_quote": "Finally, delivery and reflection live in the same workflow.",
 			"personal_title": "Personal planners",
-			"personal_body": "Use Orgo as a lighter operating system for journaling, routines, and the quiet logistics that keep life moving.",
-			"personal_quote": "Structured enough to be useful, gentle enough to keep using."
+			"personal_body": "Capture thoughts, routines, and reminders with ease — reflect, plan, and find joy in a system that stays gentle day after day.",
+			"personal_quote": "Organized enough to help, light enough to keep using."
+		},
+		"proposal": {
+			"section_name": "Why Orgo",
+			"headline": "Everything you need, in one thoughtful workspace",
+			"description": "Unlock a smarter way to work with calendars, notes, and follow-through in sync — clear, friendly, and built to keep you organized.",
+			"point_one": "See meetings, tasks, and notes at a glance instead of bouncing between apps.",
+			"point_two": "Keep decisions next to the notes they came from so context never goes missing.",
+			"point_three": "Help bilingual teams stay aligned with planning that feels natural for everyone.",
+			"primary_cta": "See pricing",
+			"secondary_cta": "Explore bilingual planning"
 		},
 		"cta": {
-			"title": "Bring your plans, notes, and next steps into one calm system",
-			"description": "Start with a lighter weekly rhythm today, then grow into deeper routines as Orgo evolves.",
-			"primary_cta": "Get started",
-			"secondary_cta": "Learn about Orgo"
+			"section_name": "Get started",
+			"headline": "Your life, beautifully organized",
+			"description": "Effortlessly blend your calendars, journals, and to-dos into one seamless experience — start today and grow your routines over time.",
+			"primary_cta": "Get Started",
+			"secondary_cta": "Learn more"
 		}
 	},
 	"pages": {

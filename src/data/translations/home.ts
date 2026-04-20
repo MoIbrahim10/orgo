@@ -16,50 +16,7 @@ function getSocialProofTestimonials(lang: Language) {
 	});
 }
 
-const homeEnhancements: Record<
-	Language,
-	Pick<HomePageContent, "proposal"> & {
-		perspectivesFocusLabel: string;
-	}
-> = {
-	en: {
-		proposal: {
-			eyebrow: "Why switch now",
-			title:
-				"If planning already lives across notes, meetings, and memory, Orgo can pull it back together.",
-			description:
-				"The point is not to add another productivity layer. It is to give your week a steadier home before more context disappears into scattered tools.",
-			points: [
-				"Keep the weekly picture visible before work fragments across tabs.",
-				"Hold decisions beside the notes and follow-through they actually affect.",
-				"Give bilingual teams a cleaner way to plan without splitting the operating rhythm in two.",
-			],
-			primaryCta: "See pricing",
-			secondaryCta: "Explore bilingual planning",
-		},
-		perspectivesFocusLabel: "What they are trying to protect",
-	},
-	ar: {
-		proposal: {
-			eyebrow: "لماذا الآن",
-			title: "إذا كان التخطيط موزعاً بين الملاحظات والاجتماعات والذاكرة، يستطيع Orgo جمعه من جديد.",
-			description:
-				"الفكرة ليست إضافة طبقة إنتاجية جديدة، بل إعطاء أسبوعك بيتاً أكثر ثباتاً قبل أن يختفي مزيد من السياق في أدوات متفرقة.",
-			points: [
-				"أبقِ صورة الأسبوع ظاهرة قبل أن يتشظى العمل بين التبويبات.",
-				"ضع القرارات قرب الملاحظات والمتابعة التي تؤثر فيها فعلاً.",
-				"امنح الفرق الثنائية اللغة طريقة أنظف للتخطيط من دون تقسيم الإيقاع التشغيلي إلى مسارين.",
-			],
-			primaryCta: "اطّلع على الأسعار",
-			secondaryCta: "استكشف التخطيط الثنائي اللغة",
-		},
-		perspectivesFocusLabel: "ما الذي يحاولون حمايته",
-	},
-};
-
 export function getHomePageContent(lang: Language): HomePageContent {
-	const enhancements = homeEnhancements[lang];
-
 	return {
 		hero: {
 			eyebrow: t(lang, "home.hero.eyebrow"),
@@ -155,8 +112,8 @@ export function getHomePageContent(lang: Language): HomePageContent {
 			testimonials: getSocialProofTestimonials(lang),
 		},
 		workflow: {
-			eyebrow: t(lang, "home.workflow.eyebrow"),
-			title: t(lang, "home.workflow.title"),
+			sectionName: t(lang, "home.workflow.section_name"),
+			headline: t(lang, "home.workflow.headline"),
 			description: t(lang, "home.workflow.description"),
 			steps: [
 				{
@@ -181,7 +138,18 @@ export function getHomePageContent(lang: Language): HomePageContent {
 				},
 			],
 		},
-		proposal: enhancements.proposal,
+		proposal: {
+			sectionName: t(lang, "home.proposal.section_name"),
+			headline: t(lang, "home.proposal.headline"),
+			description: t(lang, "home.proposal.description"),
+			points: [
+				t(lang, "home.proposal.point_one"),
+				t(lang, "home.proposal.point_two"),
+				t(lang, "home.proposal.point_three"),
+			],
+			primaryCta: t(lang, "home.proposal.primary_cta"),
+			secondaryCta: t(lang, "home.proposal.secondary_cta"),
+		},
 		pricing: {
 			eyebrow: t(lang, "home.pricing.eyebrow"),
 			title: t(lang, "home.pricing.title"),
@@ -222,10 +190,10 @@ export function getHomePageContent(lang: Language): HomePageContent {
 			],
 		},
 		perspectives: {
-			eyebrow: t(lang, "home.proof.eyebrow"),
-			title: t(lang, "home.proof.title"),
+			sectionName: t(lang, "home.proof.section_name"),
+			headline: t(lang, "home.proof.headline"),
 			description: t(lang, "home.proof.description"),
-			focusLabel: enhancements.perspectivesFocusLabel,
+			focusLabel: t(lang, "home.proof.focus_label"),
 			cards: [
 				{
 					icon: "team",
@@ -248,7 +216,8 @@ export function getHomePageContent(lang: Language): HomePageContent {
 			],
 		},
 		cta: {
-			title: t(lang, "home.cta.title"),
+			sectionName: t(lang, "home.cta.section_name"),
+			headline: t(lang, "home.cta.headline"),
 			description: t(lang, "home.cta.description"),
 			primaryCta: t(lang, "home.cta.primary_cta"),
 			secondaryCta: t(lang, "home.cta.secondary_cta"),

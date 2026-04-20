@@ -654,3 +654,8 @@ html[data-theme="dark"] :is(a, button, summary).bg-white\/90:hover {
 		animation: none;
 	}
 }
+
+/* Keeps footer / end-of-page content above the floating quick-nav dock */
+html[data-orgo-sticky-nav-visible] body {
+	padding-bottom: calc(5.25rem + env(safe-area-inset-bottom));
+}

@@ -1,47 +1,241 @@
 ---
 import Container from "./ui/Container.astro";
-import { getFooterTranslations } from "../data/translations/header";
+import Logo from "./ui/Logo.astro";
+import { publicSocialLinks } from "../data/site";
+import { getFooterTranslations, getHeaderTranslations } from "../data/translations/header";
 import type { Language } from "../types/translations";
 import { getLocalizedPath } from "../utils/routing";
 
 const { lang } = Astro.props as { lang: Language };
 const footerTranslations = getFooterTranslations(lang);
+const headerTranslations = getHeaderTranslations(lang);
+const homeHref = getLocalizedPath(lang);
 ---
 
-<footer class="border-t">
-	<Container class="py-10 text-sm text-slate-600" size="site">
-		<div class="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,0.8fr)]">
-			<div class="max-w-md">
-				<p class="font-display text-xl font-semibold text-slate-900">Orgo</p>
-				<p class="mt-3 leading-7">{footerTranslations.tagline}</p>
-			</div>
-			<div>
-				<p class="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+<footer class="site-footer">
+	<Container class="site-footer-container" size="navbar">
+		<div class="site-footer-grid">
+			<section class="site-footer-brand">
+				<div class="site-footer-logo-wrap">
+					<Logo alt={headerTranslations.logo} href={homeHref} />
+				</div>
+				<p class="site-footer-tagline">{footerTranslations.tagline}</p>
+				<nav aria-label={footerTranslations.socialNavLabel} class="site-footer-social">
+					<a
+						class="site-footer-social-link"
+						href={publicSocialLinks.linkedin}
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label={footerTranslations.linkedinAria}
+					>
+						<svg class="site-footer-social-icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+							<path
+								d="M19.65 3H4.35C3.99196 3 3.64858 3.14223 3.39541 3.39541C3.14223 3.64858 3 3.99196 3 4.35V19.65C3 20.008 3.14223 20.3514 3.39541 20.6046C3.64858 20.8578 3.99196 21 4.35 21H19.65C20.008 21 20.3514 20.8578 20.6046 20.6046C20.8578 20.3514 21 20.008 21 19.65V4.35C21 3.99196 20.8578 3.64858 20.6046 3.39541C20.3514 3.14223 20.008 3 19.65 3ZM8.4 18.3H5.7V10.2H8.4V18.3ZM7.05 8.625C6.74056 8.61616 6.4406 8.51632 6.18758 8.33797C5.93456 8.15962 5.7397 7.91066 5.62737 7.6222C5.51503 7.33374 5.49019 7.01857 5.55595 6.71607C5.6217 6.41358 5.77515 6.13716 5.9971 5.92138C6.21906 5.70559 6.49968 5.55999 6.80391 5.50278C7.10814 5.44556 7.42248 5.47927 7.70766 5.59969C7.99284 5.7201 8.23622 5.92189 8.40737 6.17983C8.57853 6.43778 8.66987 6.74044 8.67 7.05C8.66289 7.47331 8.4885 7.8766 8.18495 8.17173C7.88139 8.46685 7.47335 8.62982 7.05 8.625ZM18.3 18.3H15.6V14.034C15.6 12.756 15.06 12.297 14.358 12.297C14.1522 12.3107 13.9511 12.3649 13.7663 12.4566C13.5815 12.5482 13.4166 12.6755 13.2811 12.831C13.1457 12.9866 13.0422 13.1674 12.9768 13.363C12.9114 13.5586 12.8853 13.7652 12.9 13.971C12.8955 14.0129 12.8955 14.0551 12.9 14.097V18.3H10.2V10.2H12.81V11.37C13.0733 10.9695 13.435 10.6433 13.8605 10.4227C14.286 10.2021 14.761 10.0944 15.24 10.11C16.635 10.11 18.264 10.884 18.264 13.404L18.3 18.3Z"
+								fill="currentColor"></path>
+						</svg>
+					</a>
+					<a
+						class="site-footer-social-link"
+						href={publicSocialLinks.x}
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label={footerTranslations.xAria}
+					>
+						<svg class="site-footer-social-icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+							<path
+								d="M17.4033 3.5H20.2852L13.989 10.701L21.396 20.5H15.5964L11.054 14.557L5.85637 20.5H2.97269L9.70709 12.7977L2.60156 3.5H8.54839L12.6544 8.93215L17.4033 3.5ZM16.3918 18.7738H17.9887L7.68067 5.13549H5.96702L16.3918 18.7738Z"
+								fill="currentColor"></path>
+						</svg>
+					</a>
+					<a
+						class="site-footer-social-link"
+						href={publicSocialLinks.instagram}
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label={footerTranslations.instagramAria}
+					>
+						<svg class="site-footer-social-icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+							<path
+								d="M12 4.21173C14.5365 4.21173 14.837 4.22123 15.8389 4.267C16.4411 4.27427 17.0377 4.38499 17.6024 4.59432C18.0151 4.74662 18.3884 4.9895 18.6949 5.30509C19.0105 5.61156 19.2534 5.98488 19.4057 6.39759C19.615 6.96235 19.7257 7.55888 19.733 8.16114C19.7788 9.16295 19.7883 9.4635 19.7883 12C19.7883 14.5365 19.7788 14.837 19.733 15.8389C19.7257 16.4411 19.615 17.0377 19.4057 17.6024C19.2476 18.0122 19.0055 18.3844 18.6949 18.6949C18.3844 19.0055 18.0122 19.2476 17.6024 19.4057C17.0377 19.615 16.4411 19.7257 15.8389 19.733C14.837 19.7788 14.5365 19.7883 12 19.7883C9.4635 19.7883 9.16295 19.7788 8.16114 19.733C7.55859 19.7258 6.96176 19.6151 6.39673 19.4057C5.98433 19.2533 5.61132 19.0104 5.30509 18.6949C4.9895 18.3884 4.74662 18.0151 4.59432 17.6024C4.38499 17.0377 4.27427 16.4411 4.267 15.8389C4.22123 14.837 4.21173 14.5365 4.21173 12C4.21173 9.4635 4.22123 9.16295 4.267 8.16114C4.27427 7.55888 4.38499 6.96235 4.59432 6.39759C4.74662 5.98488 4.9895 5.61156 5.30509 5.30509C5.61156 4.9895 5.98488 4.74662 6.39759 4.59432C6.96235 4.38499 7.55888 4.27427 8.16114 4.267C9.16295 4.22123 9.4635 4.21173 12 4.21173ZM12 2.5C9.42032 2.5 9.09645 2.51123 8.08341 2.557C7.29535 2.57272 6.51567 2.72194 5.7775 2.99832C5.1433 3.2371 4.56886 3.61141 4.09427 4.09514C3.61096 4.56956 3.23695 5.14369 2.99832 5.7775C2.72224 6.51572 2.57331 7.2954 2.55786 8.08341C2.51036 9.09645 2.5 9.42032 2.5 12C2.5 14.5797 2.51123 14.9035 2.557 15.9166C2.57272 16.7046 2.72194 17.4843 2.99832 18.2225C3.2371 18.8567 3.61141 19.4311 4.09514 19.9057C4.56956 20.389 5.14369 20.763 5.7775 21.0017C6.51572 21.2778 7.2954 21.4267 8.08341 21.4421C9.09645 21.4896 9.42032 21.5 12 21.5C14.5797 21.5 14.9035 21.4888 15.9166 21.443C16.7046 21.4273 17.4843 21.2781 18.2225 21.0017C18.8538 20.7576 19.4271 20.3843 19.9057 19.9057C20.3843 19.4271 20.7576 18.8538 21.0017 18.2225C21.2778 17.4843 21.4267 16.7046 21.4421 15.9166C21.4896 14.9035 21.5 14.5797 21.5 12C21.5 9.42032 21.4888 9.09645 21.443 8.08341C21.4273 7.29535 21.2781 6.51567 21.0017 5.7775C20.7629 5.1433 20.3886 4.56886 19.9049 4.09427C19.4304 3.61096 18.8563 3.23695 18.2225 2.99832C17.4843 2.72224 16.7046 2.57331 15.9166 2.55786C14.9035 2.51036 14.5797 2.5 12 2.5ZM12 7.12132C11.0351 7.12132 10.0918 7.40745 9.28955 7.94352C8.48725 8.4796 7.86194 9.24155 7.49269 10.133C7.12343 11.0245 7.02682 12.0054 7.21506 12.9518C7.40331 13.8982 7.86796 14.7675 8.55025 15.4497C9.23255 16.132 10.1018 16.5967 11.0482 16.7849C11.9946 16.9732 12.9755 16.8766 13.867 16.5073C14.7585 16.1381 15.5204 15.5127 16.0565 14.7105C16.5926 13.9082 16.8787 12.9649 16.8787 12C16.8787 10.7061 16.3647 9.46518 15.4497 8.55025C14.5348 7.63532 13.2939 7.12132 12 7.12132ZM12 15.167C11.3736 15.167 10.7613 14.9812 10.2405 14.6332C9.71973 14.2852 9.31382 13.7906 9.07412 13.2119C8.83442 12.6333 8.7717 11.9965 8.8939 11.3822C9.0161 10.7678 9.31772 10.2035 9.76063 9.76063C10.2035 9.31772 10.7678 9.0161 11.3822 8.8939C11.9965 8.7717 12.6333 8.83442 13.2119 9.07412C13.7906 9.31382 14.2852 9.71973 14.6332 10.2405C14.9812 10.7613 15.167 11.3736 15.167 12C15.167 12.8399 14.8333 13.6455 14.2394 14.2394C13.6455 14.8333 12.8399 15.167 12 15.167ZM17.0713 5.78873C16.8458 5.78873 16.6254 5.85559 16.4379 5.98085C16.2505 6.10612 16.1043 6.28416 16.0181 6.49247C15.9318 6.70078 15.9092 6.92999 15.9532 7.15113C15.9972 7.37227 16.1057 7.5754 16.2652 7.73483C16.4246 7.89426 16.6277 8.00284 16.8489 8.04682C17.07 8.09081 17.2992 8.06823 17.5075 7.98195C17.7158 7.89567 17.8939 7.74955 18.0191 7.56208C18.1444 7.37461 18.2113 7.1542 18.2113 6.92873C18.2113 6.62638 18.0912 6.33642 17.8774 6.12263C17.6636 5.90883 17.3736 5.78873 17.0713 5.78873Z"
+								fill="currentColor"></path>
+						</svg>
+					</a>
+				</nav>
+			</section>
+			<section class="site-footer-col" aria-labelledby="footer-primary-heading">
+				<p id="footer-primary-heading" class="site-footer-col-title">
 					{footerTranslations.primaryTitle}
 				</p>
-				<nav aria-label="Footer primary" class="mt-4 grid gap-3">
+				<nav aria-label={footerTranslations.primaryTitle} class="site-footer-nav">
 					{footerTranslations.primaryLinks.map((link) => (
-						<a class="transition hover:text-slate-900" href={getLocalizedPath(lang, link.href)}>
+						<a class="site-footer-link" href={getLocalizedPath(lang, link.href)}>
 							{link.label}
 						</a>
 					))}
 				</nav>
-			</div>
-			<div>
-				<p class="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+			</section>
+			<section class="site-footer-col" aria-labelledby="footer-resources-heading">
+				<p id="footer-resources-heading" class="site-footer-col-title">
 					{footerTranslations.resourcesTitle}
 				</p>
-				<nav aria-label="Footer resources" class="mt-4 grid gap-3">
+				<nav aria-label={footerTranslations.resourcesTitle} class="site-footer-nav">
 					{footerTranslations.resourceLinks.map((link) => (
-						<a class="transition hover:text-slate-900" href={getLocalizedPath(lang, link.href)}>
+						<a class="site-footer-link" href={getLocalizedPath(lang, link.href)}>
 							{link.label}
 						</a>
 					))}
 				</nav>
-			</div>
+			</section>
 		</div>
-		<div class="mt-8 border-t border-slate-200 pt-5">
-			<p>&copy; {new Date().getFullYear()} Orgo</p>
+		<div class="site-footer-meta">
+			<p class="site-footer-copyright">&copy; {new Date().getFullYear()} Orgo</p>
 		</div>
 	</Container>
 </footer>
+
+<style>
+	.site-footer {
+		background: var(--page-bg);
+		border-top: 1px solid var(--header-border);
+	}
+
+	.site-footer-container {
+		padding-block: 2.5rem 2rem;
+	}
+
+	.site-footer-grid {
+		display: grid;
+		gap: 2.5rem 2rem;
+		grid-template-columns: 1fr;
+	}
+
+	@media (min-width: 768px) {
+		.site-footer-grid {
+			grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr);
+			align-items: start;
+		}
+	}
+
+	.site-footer-brand {
+		max-width: 22rem;
+	}
+
+	.site-footer-logo-wrap {
+		display: flex;
+		align-items: center;
+	}
+
+	.site-footer-tagline {
+		margin: 0.875rem 0 0;
+		font-family: var(--font-ui);
+		font-size: 0.9375rem;
+		line-height: 1.65;
+		color: var(--foreground-secondary);
+	}
+
+	.site-footer-social {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.65rem;
+		margin-top: 1.25rem;
+	}
+
+	.site-footer-social-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 2.5rem;
+		min-height: 2.5rem;
+		padding: 0.375rem;
+		border-radius: 0.375rem;
+		color: var(--foreground-tertiary);
+		text-decoration: none;
+		outline: none;
+		transition:
+			color var(--motion-duration-xs, 0.12s) var(--motion-ease-standard, ease),
+			opacity var(--motion-duration-xs, 0.12s) var(--motion-ease-standard, ease);
+	}
+
+	.site-footer-social-link:hover {
+		color: var(--nav-link-text-hover);
+	}
+
+	.site-footer-social-link:focus-visible {
+		color: var(--nav-link-text-hover);
+		box-shadow: 0 0 0 2px var(--page-bg), 0 0 0 4px var(--focus-ring-color);
+	}
+
+	.site-footer-social-icon {
+		display: block;
+		flex-shrink: 0;
+	}
+
+	.site-footer-col-title {
+		margin: 0;
+		font-family: var(--font-ui);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--foreground-tertiary);
+	}
+
+	.site-footer-nav {
+		margin-top: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.65rem;
+	}
+
+	.site-footer-link {
+		font-family: var(--font-ui);
+		font-size: 0.9375rem;
+		font-weight: 500;
+		color: var(--nav-link-text);
+		text-decoration: none;
+		border-radius: 0.25rem;
+		outline: none;
+		transition: color var(--motion-duration-xs, 0.12s) var(--motion-ease-standard, ease);
+		width: fit-content;
+	}
+
+	.site-footer-link:hover {
+		color: var(--nav-link-text-hover);
+	}
+
+	.site-footer-link:focus-visible {
+		color: var(--nav-link-text-hover);
+		box-shadow: 0 0 0 2px var(--page-bg), 0 0 0 4px var(--focus-ring-color);
+	}
+
+	/* Matches `home-proposal__cta` divider in HomeProposalSection (“Why Orgo”). */
+	.site-footer-meta {
+		margin-top: clamp(1.75rem, 4vw, 2.5rem);
+		padding-top: clamp(1.5rem, 3vw, 2rem);
+		position: relative;
+	}
+
+	.site-footer-meta::before {
+		background: linear-gradient(
+			90deg,
+			transparent,
+			color-mix(in srgb, var(--foreground-primary) 16%, transparent) 22%,
+			color-mix(in srgb, var(--foreground-primary) 16%, transparent) 78%,
+			transparent
+		);
+		content: "";
+		height: 1px;
+		left: 0;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+
+	.site-footer-copyright {
+		margin: 0;
+		font-family: var(--font-ui);
+		font-size: 0.8125rem;
+		color: var(--foreground-tertiary);
+	}
+</style>
