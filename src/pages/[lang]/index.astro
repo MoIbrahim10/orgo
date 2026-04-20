@@ -28,14 +28,18 @@ const lang = getLanguageFromParams(Astro.params.lang);
 const siteTranslations = getSiteTranslations(lang);
 const homeContent = getHomePageContent(lang);
 const pricingHref = getLocalizedPath(lang, "/pricing");
-const blogHref = getLocalizedPath(lang, "/blog");
 const aboutHref = getLocalizedPath(lang, "/about");
 const bilingualPlanningHref = getLocalizedPath(lang, "/bilingual-planning");
 ---
 
 <Layout lang={lang} pageDescription={homeContent.hero.description} pageTitle={siteTranslations.title}>
-	<div class="home-shell pb-20">
-		<HomeHero content={homeContent.hero} primaryHref={pricingHref} secondaryHref={blogHref} />
+	<div class="py-10 flex flex-col gap-12">
+		<HomeHero
+			content={homeContent.hero}
+			lang={lang}
+			primaryHref={pricingHref}
+			secondaryHref={bilingualPlanningHref}
+		/>
 		<HomeJumpNav label={homeContent.jumpLinksLabel} links={homeContent.jumpLinks} />
 		<HomeProofStrip signals={homeContent.processSignals} />
 		{

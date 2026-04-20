@@ -17,13 +17,6 @@ export type HomeJumpLink = {
 	label: string;
 };
 
-export type HomeVisualCard = {
-	body: string;
-	icon: HomeIconName;
-	title: string;
-	tone: "mint" | "rose" | "sky" | "sun";
-};
-
 export type HomeFeatureHighlight = {
 	body: string;
 	icon: HomeIconName;
@@ -94,7 +87,6 @@ export type HomePageContent = {
 		primaryCta: string;
 		secondaryCta: string;
 		title: string;
-		visualCards: HomeVisualCard[];
 	};
 	jumpLinks: HomeJumpLink[];
 	jumpLinksLabel: string;

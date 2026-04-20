@@ -128,16 +128,6 @@
 	--theme-button-secondary-text: oklch(37.2% 0.044 257.287deg);
 	--theme-shadow-soft: 0 18px 40px oklch(20.8% 0.042 265.755deg / 6%);
 	--theme-shadow-panel: 0 24px 70px oklch(20.8% 0.042 265.755deg / 8%);
-	--home-shell-bg:
-		radial-gradient(circle at top left, oklch(95% 0.04 70deg / 92%), transparent 28%),
-		radial-gradient(circle at top right, oklch(95% 0.025 235deg / 88%), transparent 24%),
-		radial-gradient(circle at 30% 55%, oklch(97% 0.03 160deg / 62%), transparent 28%),
-		linear-gradient(
-			180deg,
-			oklch(99% 0.008 75deg) 0%,
-			oklch(100% 0 0deg) 34%,
-			oklch(98.4% 0.003 247.858deg) 100%
-		);
 	--eyebrow-bg:
 		linear-gradient(135deg, oklch(100% 0 0deg / 92%), oklch(99% 0.008 75deg / 80%)),
 		oklch(100% 0 0deg / 70%);
@@ -152,6 +142,8 @@
 			oklch(20.8% 0.042 265.755deg) 62%,
 			oklch(27.9% 0.041 260.031deg) 100%
 		);
+	--foreground-primary: var(--page-text-strong);
+	--foreground-secondary: var(--page-text-soft);
 }
 
 html[data-theme="dark"] {
@@ -235,11 +227,6 @@ html[data-theme="dark"] {
 	--theme-button-secondary-text: oklch(92% 0 0deg);
 	--theme-shadow-soft: 0 18px 50px oklch(0% 0 0deg / 34%);
 	--theme-shadow-panel: 0 24px 70px oklch(0% 0 0deg / 44%);
-	--home-shell-bg:
-		radial-gradient(circle at top left, oklch(56% 0.14 50deg / 22%), transparent 30%),
-		radial-gradient(circle at top right, oklch(68% 0.08 195deg / 18%), transparent 28%),
-		radial-gradient(circle at 30% 55%, oklch(72% 0.11 82deg / 10%), transparent 32%),
-		linear-gradient(180deg, oklch(17.9% 0 0deg) 0%, oklch(20% 0 0deg) 36%, oklch(24% 0 0deg) 100%);
 	--eyebrow-bg:
 		linear-gradient(135deg, oklch(25% 0 0deg / 84%), oklch(30% 0 0deg / 78%)),
 		oklch(21.5% 0 0deg / 70%);
@@ -254,6 +241,8 @@ html[data-theme="dark"] {
 			oklch(21.5% 0 0deg) 54%,
 			oklch(25.5% 0 0deg) 100%
 		);
+	--foreground-primary: #eaeaea;
+	--foreground-secondary: rgb(255 255 255 / 65%);
 }
 
 html {
@@ -306,10 +295,6 @@ img {
 ::selection {
 	background: var(--page-selection-bg);
 	color: var(--page-selection-text);
-}
-
-.home-shell {
-	background: var(--home-shell-bg);
 }
 
 .marketing-panel {

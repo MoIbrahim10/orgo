@@ -44,24 +44,17 @@
 			"stories": "Stories"
 		},
 		"hero": {
-			"eyebrow": "Calm planning for modern work",
-			"title": "Plan clearly. Write intentionally. Move through the week with calm.",
-			"description": "Orgo brings priorities, notes, and weekly rituals into one focused space so you can stay organized without turning your life into a dashboard.",
-			"primary_cta": "Explore pricing",
+			"eyebrow": "All your planning and journaling in one place",
+			"title": "Your Life, Beautifully Organized",
+			"description": "Effortlessly blend your calendars, journals, and to-dos into one seamless experience.",
+			"primary_cta": "Get Started",
 			"secondary_cta": "Read the journal",
 			"badges": {
 				"capture": "Capture quickly",
 				"review": "Review with context",
 				"reflect": "Reflect without friction"
 			},
-			"cards": {
-				"focus_title": "Weekly focus",
-				"focus_body": "See what matters now, what can wait, and what deserves a note.",
-				"journal_title": "Daily journal",
-				"journal_body": "Turn loose thoughts into decisions, next steps, and a quieter end of day.",
-				"sync_title": "Shared rhythm",
-				"sync_body": "Keep personal planning and team-facing work close, without mixing everything together."
-			}
+			"visual_alt": "Calendar and planning preview"
 		},
 		"features": {
 			"capture": {

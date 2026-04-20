@@ -171,26 +171,6 @@ export function getHomePageContent(lang: Language): HomePageContent {
 				t(lang, "home.hero.badges.review"),
 				t(lang, "home.hero.badges.reflect"),
 			],
-			visualCards: [
-				{
-					icon: "calendar",
-					tone: "sun",
-					title: t(lang, "home.hero.cards.focus_title"),
-					body: t(lang, "home.hero.cards.focus_body"),
-				},
-				{
-					icon: "journal",
-					tone: "rose",
-					title: t(lang, "home.hero.cards.journal_title"),
-					body: t(lang, "home.hero.cards.journal_body"),
-				},
-				{
-					icon: "team",
-					tone: "sky",
-					title: t(lang, "home.hero.cards.sync_title"),
-					body: t(lang, "home.hero.cards.sync_body"),
-				},
-			],
 		},
 		jumpLinksLabel: t(lang, "home.jump_links_label"),
 		jumpLinks: [

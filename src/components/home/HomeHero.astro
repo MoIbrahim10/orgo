@@ -1,61 +1,219 @@
 ---
-import { homeSpotlightImage } from "../../data/media";
-import ResponsiveMedia from "../common/ResponsiveMedia.astro";
-import ActionLink from "../ui/ActionLink.astro";
-import type { HomePageContent } from "../../types/home";
-import HomeHeroScene from "./HomeHeroScene.astro";
+import ActionLink from '../ui/ActionLink.astro';
+import type { HomePageContent } from '../../types/home';
+import type { Language } from '../../types/translations';
+import { t } from '../../utils/i18n';
+import heroCalAr from '../../assets/hero/ar/cal.svg';
+import heroCalEn from '../../assets/hero/en/cal.svg';
+import HomeHeroBadge from './HomeHeroBadge.astro';
+
+const heroCalSrc: Record<Language, string> = {
+  ar: heroCalAr.src,
+  en: heroCalEn.src,
+};
 
 interface Props {
-	content: HomePageContent["hero"];
-	primaryHref: string;
-	secondaryHref: string;
+  content: HomePageContent['hero'];
+  lang: Language;
+  primaryHref: string;
+  secondaryHref: string;
 }
 
-const { content, primaryHref, secondaryHref } = Astro.props as Props;
+const { content, lang, primaryHref, secondaryHref } = Astro.props as Props;
+const heroCalImageSrc = heroCalSrc[lang] ?? heroCalEn.src;
+const heroCalImageAlt = t(lang, 'home.hero.visual_alt');
 ---
 
-<section class="relative overflow-hidden px-6 pb-14 pt-12 sm:pb-18 sm:pt-16">
-	<div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(22rem,0.95fr)] lg:items-center">
-		<div class="relative z-10 max-w-3xl">
-			<p class="marketing-eyebrow">{content.eyebrow}</p>
-			<h1 class="mt-6 max-w-3xl text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl lg:text-[4.3rem] lg:leading-[1.02]">
-				{content.title}
-			</h1>
-				<p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">
-					{content.description}
-				</p>
-				<div class="mt-8 flex flex-wrap gap-4">
-					<ActionLink href={primaryHref} size="lg" variant="primary">
-						{content.primaryCta}
-					</ActionLink>
-					<ActionLink href={secondaryHref} size="lg" variant="secondary">
-						{content.secondaryCta}
-					</ActionLink>
-				</div>
-			<ul class="mt-10 flex flex-wrap gap-3 text-sm text-slate-600">
-				{
-					content.badges.map((badge) => (
-						<li class="rounded-full border border-slate-200 bg-white/80 px-4 py-2 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
-							{badge}
-						</li>
-					))
-				}
-			</ul>
-			</div>
-			<div class="relative">
-				<div class="pointer-events-none absolute inset-x-6 top-6 h-40 rounded-full bg-[radial-gradient(circle,rgba(255,237,213,0.95),transparent_68%)] blur-3xl"></div>
-				<div class="pointer-events-none absolute inset-0 overflow-hidden rounded-4xl">
-					<ResponsiveMedia
-						alt=""
-						ariaHidden={true}
-						imgClass="h-full w-full object-cover opacity-20"
-						loading="eager"
-						sizes="(max-width: 1024px) 100vw, 540px"
-						src={homeSpotlightImage}
-						widths={[480, 720, 960]}
-					/>
-				</div>
-				<HomeHeroScene cards={content.visualCards} />
-			</div>
-		</div>
-	</section>
+<section
+  class="home-hero"
+  data-home-hero>
+  <div class="home-hero__copy">
+    <HomeHeroBadge
+      className="home-hero__reveal"
+      style="--reveal-index: 0"
+      text={content.eyebrow}
+    />
+    <h1
+      class="home-hero__title home-hero__reveal"
+      style="--reveal-index: 1">
+      {content.title}
+    </h1>
+    <p
+      class="home-hero__description home-hero__reveal"
+      style="--reveal-index: 2">
+      {content.description}
+    </p>
+    <div
+      class="home-hero__actions home-hero__reveal"
+      style="--reveal-index: 3">
+      <ActionLink
+        href={primaryHref}
+        size="lg"
+        variant="primary">
+        {content.primaryCta}
+      </ActionLink>
+      <ActionLink
+        href={secondaryHref}
+        size="lg"
+        variant="secondary">
+        {content.secondaryCta}
+      </ActionLink>
+    </div>
+  </div>
+  <div
+    class="home-hero__visual home-hero__reveal"
+    style="--reveal-index: 4">
+    <img
+      class="home-hero__cal"
+      src={heroCalImageSrc}
+      alt={heroCalImageAlt}
+      width={heroCalEn.width}
+      height={heroCalEn.height}
+      loading="eager"
+      decoding="async"
+    />
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const revealHero = (hero) => {
+      hero.classList.add('is-visible');
+    };
+
+    const bindHeroReveal = () => {
+      const heroes = document.querySelectorAll('[data-home-hero]');
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!('IntersectionObserver' in window) || prefersReducedMotion) {
+        heroes.forEach(revealHero);
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) {
+              continue;
+            }
+
+            revealHero(entry.target);
+            observer.unobserve(entry.target);
+          }
+        },
+        { threshold: 0.12 },
+      );
+
+      heroes.forEach((hero) => {
+        if (!(hero instanceof HTMLElement) || hero.dataset.homeHeroBound === 'true') {
+          return;
+        }
+
+        hero.dataset.homeHeroBound = 'true';
+        observer.observe(hero);
+      });
+    };
+
+    document.addEventListener('astro:page-load', bindHeroReveal);
+    bindHeroReveal();
+  })();
+</script>
+
+<style>
+  .home-hero {
+    overflow: hidden;
+    padding-inline: 6px;
+    padding-top: 12px;
+    position: relative;
+  }
+
+  .home-hero__copy {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .home-hero__title {
+    color: var(--foreground-primary);
+    font-size: 48px;
+    font-weight: 600;
+    margin-top: 18px;
+    margin-bottom: 8px;
+    max-width: 46rem;
+    text-wrap: balance;
+  }
+
+  .home-hero__description {
+    color: var(--foreground-secondary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    font-weight: 400;
+    max-width: 41rem;
+    text-wrap: pretty;
+  }
+
+  .home-hero__actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .home-hero__visual {
+    margin-top: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .home-hero__cal {
+    display: block;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    min-width: min(100%, 18rem);
+  }
+
+  .home-hero :global(.home-hero__reveal) {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .home-hero.is-visible :global(.home-hero__reveal) {
+    animation: home-hero-reveal 1s ease-out forwards;
+    animation-delay: calc(var(--reveal-index, 0) * 0.3s);
+  }
+
+  @keyframes home-hero-reveal {
+    from {
+      filter: blur(5px);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      filter: blur(0);
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .home-hero__title {
+      font-size: 40px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-hero :global(.home-hero__reveal) {
+      opacity: 1;
+      transform: none;
+    }
+
+    .home-hero.is-visible :global(.home-hero__reveal) {
+      animation: none;
+    }
+  }
+</style>
