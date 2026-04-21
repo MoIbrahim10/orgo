@@ -1,5 +1,6 @@
 ---
 import { metadataConfig, siteConfig } from "../../data/site";
+import themeTokensUrl from "../../styles/theme-tokens.css?url";
 import { ClientRouter } from "astro:transitions";
 import { themeMetaColors } from "../../data/theme";
 import { englishTypography } from "../../data/typography";
@@ -39,6 +40,7 @@ const {
 <head>
 	<meta charset="UTF-8" />
 	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<link rel="stylesheet" href={themeTokensUrl} />
 	<ClientRouter />
 	{
 		shouldPreloadEnglishFonts &&

@@ -187,7 +187,7 @@ const switchToLightLabel = t(lang, "theme.switch_to_light");
 					toggle.addEventListener("click", toggleTheme);
 				});
 
-				applyTheme(readPreference());
+				applyTheme(readPreference(), { instant: true });
 			};
 
 			bindThemeToggles();

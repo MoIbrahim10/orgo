@@ -27,7 +27,7 @@ const alternateLanguages = supportedLanguages.filter(
 					<>
 						{index > 0 && <span aria-hidden="true">·</span>}
 						<a
-							class="font-medium text-(--page-text-strong) underline decoration-(--page-border-strong) underline-offset-4"
+							class="font-medium text-primary-foreground underline decoration-(--page-border-strong) underline-offset-4"
 							dir={getLocaleConfig(language).dir}
 							href={availablePaths[language] as string}
 							lang={getLocaleConfig(language).htmlLang}
