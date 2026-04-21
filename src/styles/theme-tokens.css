@@ -18,6 +18,12 @@
 	--control-font-size: 1rem;
 	--control-font-weight: 500;
 	--control-transition: 160ms ease-out;
+	--motion-duration-xs: 100ms;
+	--motion-duration-sm: 140ms;
+	--motion-duration-md: 160ms;
+	--motion-duration-lg: 200ms;
+	--motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+	--motion-ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
 	--page-text-strong: oklch(16% 0 0deg);
 	--page-text: oklch(24% 0 0deg);
 	--page-text-soft: oklch(44% 0 0deg);
