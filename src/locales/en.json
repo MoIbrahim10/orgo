@@ -370,8 +370,11 @@
 		"back_to_blog": "Back to blog",
 		"about_author": "About the author",
 		"contact_author": "Contact author",
+		"share_article": "Share article",
+		"share_copied": "Link copied",
 		"unknown_author": "Unknown author",
 		"by": "by",
+		"read_time": "{minutes} min read",
 		"translation_label": "Translations",
 		"available_in": "Also available in",
 		"coming_soon": "Coming soon in {languages}."

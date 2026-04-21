@@ -13,7 +13,7 @@ import { getBlogCoverOgUrl } from '../../../data/blogCovers';
 import { formatLocalizedDate } from '../../../data/site';
 import BlogLayout from '../../../layouts/BlogLayout.astro';
 import { getBlogCategoryPath, getBlogEntrySlug, getBlogIndexPath, getBlogLocaleAlternates, getBlogLocaleSwitcherPaths, getBlogPostPath, getBlogTagPath, getBlogTranslationEntries, getCategorySlug, getRelatedBlogPosts, getTagSlug } from '../../../utils/blog';
-import { t } from '../../../utils/i18n';
+import { t, tWithParams } from '../../../utils/i18n';
 import { createArticleMetadata, createBreadcrumbStructuredData } from '../../../utils/metadata';
 import { getLocalizedPerson } from '../../../utils/people';
 import { getLanguageFromParams, getLocalizedPath } from '../../../utils/routing';
@@ -88,6 +88,7 @@ const structuredData = {
     : {}),
 };
 const structuredDataItems = [structuredData, breadcrumbStructuredData].filter(Boolean) as Array<Record<string, unknown>>;
+const readingMinutes = Math.max(1, Math.ceil((page.body ?? '').split(/\s+/u).filter(Boolean).length / 220));
 const metadata = createArticleMetadata(lang, {
   canonicalUrl,
   description: page.data.metaDescription ?? page.data.title,
@@ -105,23 +106,45 @@ const { Content } = await render(page);
 <BlogLayout {...metadata}>
   <SiteMainStack class="px-(--blog-page-inline)">
     <section class="blog-article contents">
-      <Container size="article">
-        <article class="blog-article__inner space-y-12 pb-4">
-          <header class="blog-article__hero space-y-8">
-            <Breadcrumbs items={breadcrumbItems} />
+      <Container size="article" class="py-0">
+        <article class="space-y-8 rounded-4xl border border-(--page-border) bg-(--page-surface-solid) p-5 pb-6 shadow-(--theme-shadow-soft) md:p-8">
+          <section class="space-y-6">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <Breadcrumbs items={breadcrumbItems} />
+              <div class="sm:text-end">
+                <TranslationAvailabilityNotice
+                  availablePaths={localeAlternates}
+                  lang={lang}
+                />
+              </div>
+            </div>
             <div class="flex flex-wrap items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-(--page-text-muted)">
               <a
-                class="rounded-full bg-(--page-surface-strong) px-3 py-1 text-(--theme-button-primary-text) transition hover:opacity-90"
+                class="rounded-full border border-(--page-border-strong) bg-(--theme-button-primary) px-3 py-1 text-(--theme-button-primary-text) transition hover:opacity-90"
                 href={getBlogCategoryPath(lang, getCategorySlug(page.data.category))}>
                 {page.data.category}
               </a>
               <time datetime={page.data.publishDate.toISOString()}>{formattedDate}</time>
+              <span aria-hidden="true">·</span>
+              <span>{tWithParams(lang, 'blog.read_time', { minutes: String(readingMinutes) })}</span>
+              <button
+                aria-label={t(lang, 'blog.share_article')}
+                class="article-share-chip ms-auto"
+                data-copied-label={t(lang, 'blog.share_copied')}
+                data-share-article
+                title={t(lang, 'blog.share_article')}
+                type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M17.6 15.2a3.5 3.5 0 0 0-2.4 1l-5.8-3.3c.1-.3.2-.6.2-.9s-.1-.6-.2-.9l5.8-3.3a3.5 3.5 0 1 0-.8-1.4L8.5 9.8a3.5 3.5 0 1 0 0 4.4l5.9 3.4a3.5 3.5 0 1 0 3.2-2.4Zm0-9.7a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6ZM6.4 10.2a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6Zm11.2 8.3a1.8 1.8 0 1 1 0-3.6 1.8 1.8 0 0 1 0 3.6Z" />
+                </svg>
+                <span>{t(lang, 'blog.share_article')}</span>
+              </button>
             </div>
-            <div class="space-y-4">
+            <div class="space-y-3">
               <h1 class="font-display text-4xl font-semibold tracking-tight text-(--page-text-strong) sm:text-5xl sm:leading-[1.08]">
                 {page.data.title}
               </h1>
-              <p class="text-lg leading-8 text-(--page-text-soft)">
+              <p class="max-w-[62ch] text-lg leading-8 text-(--page-text-soft)">
                 {page.data.metaDescription ?? page.data.title}
               </p>
             </div>
@@ -138,7 +161,7 @@ const { Content } = await render(page);
                 </div>
               )
             }
-            <div class="rounded-[1.75rem] border border-(--page-border) bg-(--page-surface-solid) p-5 shadow-(--theme-shadow-soft)">
+            <div class="rounded-[1.75rem] border border-(--page-border) bg-(--page-surface-solid) p-4 shadow-(--theme-shadow-soft)">
               <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
                 <div class="flex items-center gap-4">
                   <PersonAvatar
@@ -158,16 +181,21 @@ const { Content } = await render(page);
                     {author?.bio && <p class="mt-2 text-sm leading-6 text-(--page-text-soft)">{author.bio}</p>}
                   </div>
                 </div>
-                {
-                  author?.email && (
-                    <ActionLink
-                      href={`mailto:${author.email}`}
-                      size="sm"
-                      variant="secondary">
-                      {t(lang, 'blog.contact_author')}
-                    </ActionLink>
-                  )
-                }
+                <div class="flex items-center gap-2">
+                  {
+                    author?.email && (
+                      <a
+                        aria-label={t(lang, 'blog.contact_author')}
+                        class="article-icon-button"
+                        href={`mailto:${author.email}`}
+                        title={t(lang, 'blog.contact_author')}>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M4 6.5h16c.8 0 1.5.7 1.5 1.5v8c0 .8-.7 1.5-1.5 1.5H4c-.8 0-1.5-.7-1.5-1.5V8c0-.8.7-1.5 1.5-1.5Zm0 1.7v.1l8 5.1 8-5.1v-.1H4Zm16 7.6v-5.5l-7.5 4.8a1 1 0 0 1-1.1 0L4 10.3v5.5h16Z" />
+                        </svg>
+                      </a>
+                    )
+                  }
+                </div>
               </div>
             </div>
             <div class="overflow-hidden rounded-4xl border border-(--page-border) bg-(--page-surface-muted) shadow-(--theme-shadow-panel)">
@@ -181,25 +209,21 @@ const { Content } = await render(page);
                 wrapperClass="aspect-[16/9] w-full rounded-[inherit] sm:aspect-[2/1]"
               />
             </div>
-          </header>
-          <TranslationAvailabilityNotice
-            availablePaths={localeAlternates}
-            lang={lang}
-          />
-          <div class="blog-article-body border-t border-(--page-border) pt-10">
-            <section class="blog-prose">
-              <Content />
-            </section>
-          </div>
+          </section>
+
+          <section class="space-y-8 border-t border-(--page-border) pt-8">
+            <div class="blog-article-body">
+              <section class="blog-prose">
+                <Content />
+              </section>
+            </div>
+          </section>
+
           {
             relatedPosts.length > 0 && (
-              <section
-                class="blog-article__related space-y-6"
-                aria-labelledby="related-posts-heading">
+              <section class="space-y-6 border-t border-(--page-border) pt-8">
                 <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                  <h2
-                    class="font-display text-2xl font-semibold tracking-tight text-(--page-text-strong) sm:text-3xl"
-                    id="related-posts-heading">
+                  <h2 class="font-display text-2xl font-semibold tracking-tight text-(--page-text-strong) sm:text-3xl">
                     {t(lang, 'blog.related_posts')}
                   </h2>
                   <p class="text-sm text-(--page-text-muted)">{t(lang, 'blog.related_posts_sub')}</p>
@@ -238,19 +262,103 @@ const { Content } = await render(page);
               </section>
             )
           }
+
+        </article>
+        <section class="pt-8">
           <BlogSubscribeBand
             lang={lang}
             rssHref={rssFeedUrl}
           />
-          <div class="flex justify-center border-t border-(--page-border) pt-10">
-            <ActionLink
-              href={getBlogIndexPath(lang)}
-              variant="secondary">
-              {t(lang, 'blog.back_to_blog')}
-            </ActionLink>
-          </div>
-        </article>
+        </section>
       </Container>
     </section>
   </SiteMainStack>
+
+  <style is:global>
+    .article-share-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid var(--page-border);
+      border-radius: 999px;
+      background: var(--page-surface-muted);
+      color: var(--page-text-soft);
+      padding: 0.34rem 0.68rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 140ms ease;
+    }
+
+    .article-share-chip svg {
+      width: 0.95rem;
+      height: 0.95rem;
+      fill: currentColor;
+    }
+
+    .article-share-chip:hover {
+      border-color: var(--page-border-strong);
+      color: var(--page-text-strong);
+      background: var(--page-surface-solid);
+    }
+
+    .article-icon-button {
+      display: inline-grid;
+      place-items: center;
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 999px;
+      border: 1px solid var(--page-border);
+      background: var(--page-surface-muted);
+      color: var(--page-text-soft);
+      transition: all 140ms ease;
+      cursor: pointer;
+    }
+
+    .article-icon-button svg {
+      width: 1.05rem;
+      height: 1.05rem;
+      fill: currentColor;
+    }
+
+    .article-icon-button:hover {
+      border-color: var(--page-border-strong);
+      color: var(--page-text-strong);
+      background: var(--page-surface-solid);
+    }
+  </style>
+
+  <script>
+    (() => {
+      const shareButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-share-article]'));
+
+      const shareCurrentArticle = async (button: HTMLButtonElement) => {
+        const url = window.location.href;
+        const title = document.title;
+        try {
+          if (navigator.share) {
+            await navigator.share({ title, url });
+            return;
+          }
+          await navigator.clipboard.writeText(url);
+          const originalLabel = button.title;
+          button.title = button.dataset.copiedLabel || originalLabel;
+          window.setTimeout(() => {
+            button.title = originalLabel;
+          }, 1400);
+        } catch {
+          // Keep silent to avoid interrupting reading flow.
+        }
+      };
+
+      shareButtons.forEach((button) => {
+        button.dataset.copiedLabel = button.dataset.copiedLabel || button.title;
+        button.addEventListener('click', () => {
+          void shareCurrentArticle(button);
+        });
+      });
+    })();
+  </script>
 </BlogLayout>

@@ -370,8 +370,11 @@
 		"back_to_blog": "العودة إلى المدونة",
 		"about_author": "عن الكاتب",
 		"contact_author": "تواصل مع الكاتب",
+		"share_article": "مشاركة المقال",
+		"share_copied": "تم نسخ الرابط",
 		"unknown_author": "كاتب غير معروف",
 		"by": "بقلم",
+		"read_time": "{minutes} دقيقة قراءة",
 		"translation_label": "الترجمات",
 		"available_in": "متاح أيضاً باللغة",
 		"coming_soon": "سيتوفر قريباً باللغة {languages}."

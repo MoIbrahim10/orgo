@@ -14,17 +14,17 @@ const { class: className = "", items } = Astro.props as Props;
 
 {
 	items.length > 0 && (
-		<nav aria-label="Breadcrumb" class:list={["text-sm text-slate-500", className]}>
+		<nav aria-label="Breadcrumb" class:list={["text-sm text-(--page-text-muted)", className]}>
 			<ol class="flex flex-wrap items-center gap-2">
 				{items.map((item, index) => (
 					<li class="flex items-center gap-2">
-						{index > 0 && <span aria-hidden="true" class="text-slate-300">/</span>}
+						{index > 0 && <span aria-hidden="true" class="text-(--page-border-strong)">/</span>}
 						{item.href ? (
-							<a class="transition hover:text-slate-900" href={item.href}>
+							<a class="transition hover:text-(--page-text-soft)" href={item.href}>
 								{item.label}
 							</a>
 						) : (
-							<span aria-current="page" class="font-medium text-slate-700">
+							<span aria-current="page" class="font-medium text-(--page-text-soft)">
 								{item.label}
 							</span>
 						)}
