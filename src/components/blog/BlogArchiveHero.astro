@@ -46,11 +46,22 @@ const metricItems = metrics
 			},
 		]
 	: [];
+
+let revealIndex = 0;
+const breadcrumbRevealIndex = breadcrumbs.length > 0 ? revealIndex++ : null;
+const eyebrowRevealIndex = eyebrow ? revealIndex++ : null;
+const titleRevealIndex = revealIndex++;
+const descriptionRevealIndex = revealIndex++;
+const metricsRevealIndex = metricItems.length > 0 ? revealIndex++ : null;
 ---
 
-<section class="blog-hero">
+<section class="blog-hero" data-home-reveal-section>
 	{breadcrumbs.length > 0 && (
-		<nav aria-label="Breadcrumb" class="blog-hero__breadcrumbs">
+		<nav
+			aria-label="Breadcrumb"
+			class:list={["blog-hero__breadcrumbs", "home-reveal"]}
+			style={`--reveal-index: ${breadcrumbRevealIndex}`}
+		>
 			<ol class="blog-hero__breadcrumbs-list">
 				{breadcrumbs.map((item, breadcrumbIndex) => (
 					<li class="blog-hero__breadcrumbs-item">
@@ -68,12 +79,24 @@ const metricItems = metrics
 
 	<div class="blog-hero__layout">
 		<div class="blog-hero__main">
-			{eyebrow && <p class="blog-hero__eyebrow">{eyebrow}</p>}
-			<h1 class="blog-hero__title">{title}</h1>
-			<p class="blog-hero__description">{description}</p>
+			{eyebrow && (
+				<p class:list={["blog-hero__eyebrow", "home-reveal"]} style={`--reveal-index: ${eyebrowRevealIndex}`}>
+					{eyebrow}
+				</p>
+			)}
+			<h1 class:list={["blog-hero__title", "home-reveal"]} style={`--reveal-index: ${titleRevealIndex}`}>
+				{title}
+			</h1>
+			<p class:list={["blog-hero__description", "home-reveal"]} style={`--reveal-index: ${descriptionRevealIndex}`}>
+				{description}
+			</p>
 			{
 				metricItems.length > 0 && (
-					<ul class="blog-hero__metrics" aria-label="Archive metrics">
+					<ul
+						class:list={["blog-hero__metrics", "home-reveal"]}
+						aria-label="Archive metrics"
+						style={`--reveal-index: ${metricsRevealIndex}`}
+					>
 						{metricItems.map((metric) => (
 							<li class="blog-hero__metric">
 								<p class="blog-hero__metric-value">{metric.value}</p>
@@ -100,7 +123,7 @@ const metricItems = metrics
 				color-mix(in srgb, var(--page-surface-muted) 26%, var(--page-bg)),
 				var(--page-bg) 88%
 			);
-		border-block: 1px solid color-mix(in srgb, var(--page-border) 55%, transparent);
+		/* border-block: 1px solid color-mix(in srgb, var(--page-border) 55%, transparent); */
 		box-shadow: none;
 		display: grid;
 		gap: clamp(0.85rem, 2vw, 1.2rem);

@@ -1,99 +1,216 @@
 ---
-import "../styles/global.css";
+import '../styles/global.css';
 
-import AnalyticsScripts from "../components/common/AnalyticsScripts.astro";
-import HomeRevealSectionsScript from "../components/common/HomeRevealSectionsScript.astro";
-import LayoutHead from "../components/common/LayoutHead.astro";
-import Footer from "../components/Footer.astro";
-import Header from "../components/header.astro";
-import MobileStickyNav from "../components/MobileStickyNav.astro";
-import LocaleSuggestionBanner from "../components/LocaleSuggestionBanner.astro";
-import { getHtmlLanguage, getLocaleConfig } from "../data/site";
-import { themeMetaColors, themeStorageKey } from "../data/theme";
-import type { LayoutMetadataProps } from "../utils/metadata";
-import { resolveLayoutChrome } from "../utils/layout";
+import AnalyticsScripts from '../components/common/AnalyticsScripts.astro';
+import HomeRevealSectionsScript from '../components/common/HomeRevealSectionsScript.astro';
+import LayoutHead from '../components/common/LayoutHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/header.astro';
+import MobileStickyNav from '../components/MobileStickyNav.astro';
+import LocaleSuggestionBanner from '../components/LocaleSuggestionBanner.astro';
+import { getHtmlLanguage, getLocaleConfig } from '../data/site';
+import { themeMetaColors, themeStorageKey } from '../data/theme';
+import type { LayoutMetadataProps } from '../utils/metadata';
+import { resolveLayoutChrome } from '../utils/layout';
 
 interface Props extends LayoutMetadataProps {
-	bodyClass?: string;
-	hideHeader?: boolean;
-	hideFooter?: boolean;
-	mainClass?: string;
+  bodyClass?: string;
+  hideHeader?: boolean;
+  hideFooter?: boolean;
+  mainClass?: string;
 }
 
-const {
-	lang,
-	pageTitle,
-	pageDescription,
-	canonicalUrl,
-	ogImage,
-	rssFeedTitle,
-	rssFeedUrl,
-	noIndex = false,
-	openGraphType,
-	localeAlternates,
-	localeSwitcherPaths,
-	showLocaleSuggestion,
-	structuredData,
-	paginationPrevUrl,
-	paginationNextUrl,
-	bodyClass = "",
-	hideHeader = false,
-	hideFooter = false,
-	mainClass = "",
-} = Astro.props as Props;
+const { lang, pageTitle, pageDescription, canonicalUrl, ogImage, rssFeedTitle, rssFeedUrl, noIndex = false, openGraphType, localeAlternates, localeSwitcherPaths, showLocaleSuggestion, structuredData, paginationPrevUrl, paginationNextUrl, bodyClass = '', hideHeader = false, hideFooter = false, mainClass = '' } = Astro.props as Props;
 
 const localeConfig = getLocaleConfig(lang);
-const { resolvedLocaleAlternates, resolvedLocaleSwitcherPaths, showLocaleSuggestion: shouldShowLocaleSuggestion } =
-	resolveLayoutChrome({
-		lang,
-		localeAlternates,
-		localeSwitcherPaths,
-		pathname: Astro.url.pathname,
-		showLocaleSuggestion,
-	});
+const {
+  resolvedLocaleAlternates,
+  resolvedLocaleSwitcherPaths,
+  showLocaleSuggestion: shouldShowLocaleSuggestion,
+} = resolveLayoutChrome({
+  lang,
+  localeAlternates,
+  localeSwitcherPaths,
+  pathname: Astro.url.pathname,
+  showLocaleSuggestion,
+});
 const headProps = {
-	canonicalUrl,
-	lang,
-	localeAlternates,
-	noIndex,
-	ogImage,
-	openGraphType,
-	pageDescription,
-	pageTitle,
-	paginationNextUrl,
-	paginationPrevUrl,
-	rssFeedTitle,
-	rssFeedUrl,
-	structuredData,
+  canonicalUrl,
+  lang,
+  localeAlternates,
+  noIndex,
+  ogImage,
+  openGraphType,
+  pageDescription,
+  pageTitle,
+  paginationNextUrl,
+  paginationPrevUrl,
+  rssFeedTitle,
+  rssFeedUrl,
+  structuredData,
 };
+const usesBlogShell = bodyClass.split(/\s+/u).includes('blog-layout-body');
 ---
 
 <!doctype html>
 <html
-	data-theme-color-dark={themeMetaColors.dark}
-	data-theme-color-light={themeMetaColors.light}
-	data-theme-storage-key={themeStorageKey}
-	dir={localeConfig.dir}
-	lang={getHtmlLanguage(lang)}
->
-	<LayoutHead {...headProps} localeBodyClass={localeConfig.bodyClass} />
-	<body class:list={["min-h-screen antialiased", localeConfig.bodyClass, bodyClass]}>
-		<a
-			class="sr-only absolute left-4 top-4 z-50 rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-white focus:not-sr-only"
-			href="#main-content"
-		>
-			Skip to content
-		</a>
-		{shouldShowLocaleSuggestion && !hideHeader && (
-			<LocaleSuggestionBanner lang={lang} paths={resolvedLocaleAlternates} />
-		)}
-		{!hideHeader && <Header lang={lang} localeSwitcherPaths={resolvedLocaleSwitcherPaths} />}
-		{!hideHeader && <MobileStickyNav lang={lang} localeSwitcherPaths={resolvedLocaleSwitcherPaths} />}
-		<main class:list={["min-h-[calc(100vh-137px)]", mainClass]} id="main-content">
-			<slot />
-		</main>
-		{!hideFooter && <Footer lang={lang} />}
-		<AnalyticsScripts />
-		<HomeRevealSectionsScript />
-	</body>
+  data-theme-color-dark={themeMetaColors.dark}
+  data-theme-color-light={themeMetaColors.light}
+  data-theme-storage-key={themeStorageKey}
+  dir={localeConfig.dir}
+  lang={getHtmlLanguage(lang)}>
+  <LayoutHead
+    {...headProps}
+    localeBodyClass={localeConfig.bodyClass}
+  />
+  <body class:list={['min-h-screen antialiased', localeConfig.bodyClass, bodyClass]}>
+    <a
+      class="sr-only absolute left-4 top-4 z-50 rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-white focus:not-sr-only"
+      href="#main-content">
+      Skip to content
+    </a>
+    {
+      usesBlogShell ? (
+        <>
+          {
+            shouldShowLocaleSuggestion && !hideHeader && (
+              <LocaleSuggestionBanner
+                lang={lang}
+                paths={resolvedLocaleAlternates}
+              />
+            )
+          }
+          {
+            !hideHeader && (
+              <Header
+                lang={lang}
+                localeSwitcherPaths={resolvedLocaleSwitcherPaths}
+              />
+            )
+          }
+          {
+            !hideHeader && (
+              <MobileStickyNav
+                lang={lang}
+                localeSwitcherPaths={resolvedLocaleSwitcherPaths}
+              />
+            )
+          }
+          <main
+            class:list={['min-h-[calc(100vh-137px)]', mainClass]}
+            id="main-content">
+            <slot />
+          </main>
+          {!hideFooter && <Footer lang={lang} />}
+        </>
+      ) : (
+        <div class="layout-shell">
+          {
+            shouldShowLocaleSuggestion && !hideHeader && (
+              <LocaleSuggestionBanner
+                lang={lang}
+                paths={resolvedLocaleAlternates}
+              />
+            )
+          }
+          {
+            !hideHeader && (
+              <Header
+                lang={lang}
+                localeSwitcherPaths={resolvedLocaleSwitcherPaths}
+              />
+            )
+          }
+          {
+            !hideHeader && (
+              <MobileStickyNav
+                lang={lang}
+                localeSwitcherPaths={resolvedLocaleSwitcherPaths}
+              />
+            )
+          }
+          <main
+            class:list={['min-h-[calc(100vh-137px)]', 'layout-main--chrome-inset', mainClass]}
+            id="main-content">
+            <slot />
+          </main>
+          {!hideFooter && <Footer lang={lang} />}
+        </div>
+      )
+    }
+    <script is:inline>
+      (() => {
+        const globalWindow = window;
+        if (globalWindow.__orgoBlogTransitionBindingDone) {
+          return;
+        }
+        globalWindow.__orgoBlogTransitionBindingDone = true;
+
+        const BLOG_PATH_PATTERN = /\/blog(?:\/|$)/;
+
+        const asPathname = (value) => {
+          if (!value) {
+            return '';
+          }
+          if (typeof value === 'string') {
+            try {
+              return new URL(value, window.location.origin).pathname;
+            } catch {
+              return '';
+            }
+          }
+          if (value instanceof URL) {
+            return value.pathname;
+          }
+          if (typeof value === 'object' && 'pathname' in value && typeof value.pathname === 'string') {
+            return value.pathname;
+          }
+          return '';
+        };
+
+        const isBlogPath = (pathname) => BLOG_PATH_PATTERN.test(pathname);
+
+        const clearBlogTransitionFlags = () => {
+          document.documentElement.removeAttribute('data-nav-to-blog');
+          document.documentElement.removeAttribute('data-nav-from-blog');
+        };
+
+        const setBlogTransitionFlags = (event) => {
+          const detail = event?.detail ?? {};
+          const targetPathname =
+            asPathname(event?.to) ||
+            asPathname(detail?.to) ||
+            asPathname(detail?.direction?.to) ||
+            asPathname(detail?.navigation?.to);
+          const currentPathname = window.location.pathname;
+
+          if (!targetPathname) {
+            clearBlogTransitionFlags();
+            return;
+          }
+
+          const goingToBlog = isBlogPath(targetPathname) && !isBlogPath(currentPathname);
+          const leavingBlog = !isBlogPath(targetPathname) && isBlogPath(currentPathname);
+
+          if (goingToBlog) {
+            document.documentElement.setAttribute('data-nav-to-blog', 'true');
+          } else {
+            document.documentElement.removeAttribute('data-nav-to-blog');
+          }
+
+          if (leavingBlog) {
+            document.documentElement.setAttribute('data-nav-from-blog', 'true');
+          } else {
+            document.documentElement.removeAttribute('data-nav-from-blog');
+          }
+        };
+
+        document.addEventListener('astro:before-preparation', setBlogTransitionFlags);
+        document.addEventListener('astro:page-load', clearBlogTransitionFlags);
+      })();
+    </script>
+    <AnalyticsScripts />
+    <HomeRevealSectionsScript />
+  </body>
 </html>
+

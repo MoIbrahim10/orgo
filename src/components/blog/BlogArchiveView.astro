@@ -96,14 +96,15 @@ function getFeedTone(index: number): "note" | "river" | "spotlight" {
 		{
 			featuredStory && (
 				<div class="blog-archive-frame__featured">
-					<section class="blog-archive-section" aria-labelledby="blog-featured-story">
-						<div class="blog-archive-section__header">
-							<p class="blog-archive-section__eyebrow">{copy.featuredLabel}</p>
+					<section class="blog-archive-section" aria-labelledby="blog-featured-story" data-home-reveal-section>
+						<div class:list={["blog-archive-section__header", "home-reveal"]} style="--reveal-index: 0">
 							<h2 class="blog-archive-section__title" id="blog-featured-story">
 								{copy.featuredLabel}
 							</h2>
 						</div>
-						<BlogLeadStory copy={copy} lang={lang} story={featuredStory} />
+						<div class="home-reveal" style="--reveal-index: 1">
+							<BlogLeadStory copy={copy} lang={lang} story={featuredStory} />
+						</div>
 					</section>
 				</div>
 			)
@@ -126,8 +127,16 @@ function getFeedTone(index: number): "note" | "river" | "spotlight" {
 									"blog-archive-section",
 									addStoriesBottomPadding && "blog-archive-section--stories-padded",
 								]}
+								data-home-reveal-section
 							>
-								<div class:list={["blog-archive-section__header", "blog-archive-section__header--feed"]}>
+								<div
+									class:list={[
+										"blog-archive-section__header",
+										"blog-archive-section__header--feed",
+										"home-reveal",
+									]}
+									style="--reveal-index: 0"
+								>
 									<h2 class="blog-archive-section__title" id="blog-archive-feed">
 										{copy.allStoriesLabel}
 									</h2>
@@ -149,7 +158,12 @@ function getFeedTone(index: number): "note" | "river" | "spotlight" {
 										</div>
 									</div>
 								</div>
-								<div class="blog-archive-feed" data-blog-feed-items data-lang={lang}>
+								<div
+									class:list={["blog-archive-feed", "home-reveal"]}
+									data-blog-feed-items
+									data-lang={lang}
+									style="--reveal-index: 1"
+								>
 									{archiveStories.map((story, index) => (
 										<BlogPostCard
 											copy={copy}
@@ -164,20 +178,24 @@ function getFeedTone(index: number): "note" | "river" | "spotlight" {
 					}
 
 					{pagination && (
-						<BlogPagination
-							currentPage={pagination.currentPage}
-							initialItemCount={archiveStories.length}
-							itemsUnitLabel={t(lang, "blog.pagination.items_unit")}
-							nextHref={pagination.nextPath}
-							nextLabel={t(lang, "blog.pagination.load_more")}
-							prevHref={pagination.prevPath}
-							prevLabel={t(lang, "blog.pagination.prev")}
-							summaryLabel={t(lang, "blog.pagination.summary")
-								.replace("{page}", String(pagination.currentPage))
-								.replace("{total}", String(pagination.totalPages))}
-							totalItems={totalItems ?? archiveStories.length}
-							totalPages={pagination.totalPages}
-						/>
+						<div data-home-reveal-section>
+							<div class="home-reveal" style="--reveal-index: 0">
+								<BlogPagination
+									currentPage={pagination.currentPage}
+									initialItemCount={archiveStories.length}
+									itemsUnitLabel={t(lang, "blog.pagination.items_unit")}
+									nextHref={pagination.nextPath}
+									nextLabel={t(lang, "blog.pagination.load_more")}
+									prevHref={pagination.prevPath}
+									prevLabel={t(lang, "blog.pagination.prev")}
+									summaryLabel={t(lang, "blog.pagination.summary")
+										.replace("{page}", String(pagination.currentPage))
+										.replace("{total}", String(pagination.totalPages))}
+									totalItems={totalItems ?? archiveStories.length}
+									totalPages={pagination.totalPages}
+								/>
+							</div>
+						</div>
 					)}
 
 				</div>
@@ -194,8 +212,10 @@ function getFeedTone(index: number): "note" | "river" | "spotlight" {
 
 		{
 			hasBelowFold && (
-				<div class="blog-archive-below-fold">
-					<slot name="belowFold" />
+				<div class="blog-archive-below-fold" data-home-reveal-section>
+					<div class="home-reveal" style="--reveal-index: 0">
+						<slot name="belowFold" />
+					</div>
 				</div>
 			)
 		}

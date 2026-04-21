@@ -1,47 +1,49 @@
 ---
-import type { LayoutMetadataProps } from "../utils/metadata";
-import Layout from "./Layout.astro";
+import type { LayoutMetadataProps } from '../utils/metadata';
+import Layout from './Layout.astro';
 
 interface Props extends LayoutMetadataProps {
-	hideFooter?: boolean;
-	hideHeader?: boolean;
+  hideFooter?: boolean;
+  hideHeader?: boolean;
 }
 
 const props = Astro.props as Props;
 ---
 
-<Layout {...props} bodyClass="blog-layout-body" mainClass="blog-layout-main">
-	<slot />
+<Layout
+  {...props}
+  bodyClass="blog-layout-body"
+  mainClass="blog-layout-main">
+  <slot />
 </Layout>
 
 <style is:global>
-	body.blog-layout-body {
-		--blog-page-inline: clamp(1rem, 5vw, 3.25rem);
-		--blog-page-max: var(--layout-width-navbar);
-		--blog-page-max-shell: calc(var(--layout-width-navbar) + 6.5rem);
+  body.blog-layout-body {
+    --blog-page-inline: clamp(1rem, 5vw, 3.25rem);
+    --blog-page-max: var(--layout-width-navbar);
+    --blog-page-max-shell: calc(var(--layout-width-navbar) + 6.5rem);
+    --blog-layout-transition-bg: radial-gradient(circle at 50% 0, color-mix(in srgb, var(--action-link-primary-gradient-middle) 8%, transparent), transparent 36rem), linear-gradient(180deg, color-mix(in srgb, var(--page-surface-muted) 24%, var(--page-bg)), var(--page-bg) 75%);
+  }
 
-		padding-block: var(--page-shell-padding);
-		padding-inline: 0;
-	}
+  .blog-layout-main {
+    background: var(--page-bg);
+    isolation: isolate;
+    overflow: clip;
+    position: relative;
+  }
 
-	body.blog-layout-body .site-header,
-	body.blog-layout-body .site-footer {
-		padding-inline: var(--page-shell-padding);
-	}
+  .blog-layout-main::before {
+    background: var(--blog-layout-transition-bg);
+    content: '';
+    inset: 0;
+    opacity: 0.86;
+    pointer-events: none;
+    position: absolute;
+    z-index: 0;
+  }
 
-	body.blog-layout-body [data-orgo-locale-suggestion] {
-		margin-inline: var(--page-shell-padding);
-	}
-
-	.blog-layout-main {
-		background: var(--page-bg);
-		overflow: clip;
-	}
-
-	@media (max-width: 640px) {
-		body.blog-layout-body .site-header,
-		body.blog-layout-body .site-footer {
-			padding-inline: clamp(0.75rem, 4vw, var(--page-shell-padding));
-		}
-	}
+  .blog-layout-main > * {
+    position: relative;
+    z-index: 1;
+  }
 </style>

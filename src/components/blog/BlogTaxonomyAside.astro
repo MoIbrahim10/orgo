@@ -28,8 +28,8 @@ const topicToggleHideLabel = t(lang, "blog.topics_toggle_hide");
 
 {
 	visibleGroups.length > 0 && (
-		<section class="blog-taxonomy-aside" aria-labelledby="blog-taxonomy-aside-heading">
-			<header class="blog-taxonomy-aside__header">
+		<section class="blog-taxonomy-aside" aria-labelledby="blog-taxonomy-aside-heading" data-home-reveal-section>
+			<header class:list={["blog-taxonomy-aside__header", "home-reveal"]} style="--reveal-index: 0">
 				<p class="blog-taxonomy-aside__eyebrow">{t(lang, "blog.sidebar_title")}</p>
 				<h2 class="blog-taxonomy-aside__title" id="blog-taxonomy-aside-heading">
 					{t(lang, "blog.sidebar_title")}
@@ -37,6 +37,7 @@ const topicToggleHideLabel = t(lang, "blog.topics_toggle_hide");
 				<p class="blog-taxonomy-aside__hint">{t(lang, "blog.sidebar_hint")}</p>
 			</header>
 
+			<div class="blog-taxonomy-aside__groups home-reveal" style="--reveal-index: 1">
 			{
 				categoriesGroup && (
 					<section class="blog-taxonomy-aside__group" aria-labelledby="taxonomy-group-categories">
@@ -113,6 +114,7 @@ const topicToggleHideLabel = t(lang, "blog.topics_toggle_hide");
 					</section>
 				)
 			}
+			</div>
 		</section>
 	)
 }
@@ -197,6 +199,12 @@ const topicToggleHideLabel = t(lang, "blog.topics_toggle_hide");
 		display: grid;
 		gap: 1.35rem;
 		padding: 1rem;
+	}
+
+	.blog-taxonomy-aside__groups {
+		display: grid;
+		gap: 0;
+		min-width: 0;
 	}
 
 	.blog-taxonomy-aside__header,
