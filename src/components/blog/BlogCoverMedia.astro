@@ -26,8 +26,26 @@ const src = buildBlogCoverUrl(translationGroup, widths[widths.length - 1] ?? 128
 const srcset = buildBlogCoverSrcset(translationGroup, widths);
 ---
 
-<div class:list={["blog-cover-media", wrapperClass]}>
+<div class:list={["blog-cover-media", wrapperClass]} data-blog-cover-media data-cover-state="loaded">
 	<div class="blog-cover-media__frame" aria-hidden="true"></div>
+	<div class="blog-cover-media__placeholder" aria-hidden="true">
+		<div class="blog-cover-media__placeholder-mark">
+			<div class="blog-cover-media__placeholder-ring blog-cover-media__placeholder-ring--outer"></div>
+			<div class="blog-cover-media__placeholder-ring blog-cover-media__placeholder-ring--inner"></div>
+			<div class="blog-cover-media__placeholder-core">
+				<svg
+					aria-hidden="true"
+					class="blog-cover-media__placeholder-icon"
+					fill="none"
+					viewBox="0 0 24 24"
+				>
+					<rect x="3.5" y="5.5" width="17" height="13" rx="2.5"></rect>
+					<circle cx="16.75" cy="9.25" r="1.2"></circle>
+					<path d="M5.5 16.5L10.2 11.7C10.5 11.4 11 11.4 11.3 11.7L13.4 13.8C13.7 14.1 14.2 14.1 14.5 13.8L16.8 11.5C17.1 11.2 17.6 11.2 17.9 11.5L20.5 14.1"></path>
+				</svg>
+			</div>
+		</div>
+	</div>
 	<img
 		alt={alt}
 		class:list={["blog-cover-media__img", imgClass]}
@@ -35,12 +53,49 @@ const srcset = buildBlogCoverSrcset(translationGroup, widths);
 		fetchpriority={fetchpriority}
 		height={675}
 		loading={loading}
+		onerror="this.closest('[data-blog-cover-media]')?.setAttribute('data-cover-state','missing')"
+		onload="this.closest('[data-blog-cover-media]')?.setAttribute('data-cover-state','loaded')"
 		sizes={sizes}
 		src={src}
 		srcset={srcset}
 		width={1200}
 	/>
 </div>
+
+<script>
+	function setCoverState(mediaRoot: HTMLElement, state: "loaded" | "missing") {
+		mediaRoot.dataset.coverState = state;
+	}
+
+	function bindBlogCoverMediaState() {
+		const mediaRoots = document.querySelectorAll<HTMLElement>("[data-blog-cover-media]");
+		for (const mediaRoot of mediaRoots) {
+			if (mediaRoot.dataset.coverBound === "1") {
+				continue;
+			}
+			mediaRoot.dataset.coverBound = "1";
+			const image = mediaRoot.querySelector<HTMLImageElement>("img");
+			if (!image) {
+				continue;
+			}
+
+			const syncFromImage = () => {
+				const state = image.naturalWidth > 0 ? "loaded" : "missing";
+				setCoverState(mediaRoot, state);
+			};
+
+			image.addEventListener("load", () => setCoverState(mediaRoot, "loaded"));
+			image.addEventListener("error", () => setCoverState(mediaRoot, "missing"));
+
+			if (image.complete) {
+				syncFromImage();
+			}
+		}
+	}
+
+	bindBlogCoverMediaState();
+	document.addEventListener("astro:page-load", bindBlogCoverMediaState);
+</script>
 
 <style>
 	.blog-cover-media {
@@ -65,6 +120,137 @@ const srcset = buildBlogCoverSrcset(translationGroup, widths);
 		width: 100%;
 	}
 
+	.blog-cover-media__placeholder {
+		background:
+			radial-gradient(
+				circle at 20% 20%,
+				color-mix(in srgb, var(--action-link-primary-gradient-start) 28%, transparent),
+				transparent 36%
+			),
+			radial-gradient(
+				circle at 80% 80%,
+				color-mix(in srgb, var(--action-link-primary-gradient-end) 22%, transparent),
+				transparent 38%
+			),
+			linear-gradient(
+				135deg,
+				color-mix(in srgb, var(--page-surface-strong) 44%, var(--page-bg)),
+				color-mix(in srgb, var(--page-surface-muted) 76%, var(--page-bg))
+			);
+		border-radius: inherit;
+		display: none;
+		inset: 0;
+		place-items: center;
+		position: absolute;
+		overflow: hidden;
+	}
+
+	.blog-cover-media__placeholder::before,
+	.blog-cover-media__placeholder::after {
+		content: "";
+		inset-inline-start: 50%;
+		position: absolute;
+		transform: translateX(-50%);
+	}
+
+	.blog-cover-media__placeholder::before {
+		background: linear-gradient(
+			90deg,
+			transparent 0%,
+			color-mix(in srgb, var(--page-border) 34%, transparent) 28%,
+			color-mix(in srgb, var(--page-text-muted) 44%, transparent) 50%,
+			color-mix(in srgb, var(--page-border) 34%, transparent) 72%,
+			transparent 100%
+		);
+		height: 1px;
+		inset-block-start: 0;
+		width: min(90%, 30rem);
+	}
+
+	.blog-cover-media__placeholder::after {
+		background: linear-gradient(
+			180deg,
+			transparent 0%,
+			color-mix(in srgb, var(--page-border) 34%, transparent) 28%,
+			color-mix(in srgb, var(--page-text-muted) 44%, transparent) 50%,
+			color-mix(in srgb, var(--page-border) 34%, transparent) 72%,
+			transparent 100%
+		);
+		height: min(90%, 30rem);
+		inset-block-start: 50%;
+		transform: translate(-50%, -50%);
+		width: 1px;
+	}
+
+	.blog-cover-media__placeholder-mark {
+		display: grid;
+		place-items: center;
+		position: relative;
+		width: clamp(8rem, 18%, 10.5rem);
+		aspect-ratio: 1 / 1;
+	}
+
+	.blog-cover-media__placeholder-mark::before,
+	.blog-cover-media__placeholder-mark::after {
+		background: linear-gradient(
+			180deg,
+			transparent 0%,
+			color-mix(in srgb, var(--page-border) 26%, transparent) 22%,
+			color-mix(in srgb, var(--page-text-muted) 36%, transparent) 50%,
+			color-mix(in srgb, var(--page-border) 26%, transparent) 78%,
+			transparent 100%
+		);
+		content: "";
+		height: 150%;
+		position: absolute;
+		width: 1px;
+	}
+
+	.blog-cover-media__placeholder-mark::before {
+		transform: rotate(45deg);
+	}
+
+	.blog-cover-media__placeholder-mark::after {
+		transform: rotate(-45deg);
+	}
+
+	.blog-cover-media__placeholder-ring {
+		border: 1px solid color-mix(in srgb, var(--page-border) 48%, transparent);
+		border-radius: 999px;
+		position: absolute;
+	}
+
+	.blog-cover-media__placeholder-ring--outer {
+		inset: 0;
+	}
+
+	.blog-cover-media__placeholder-ring--inner {
+		border-color: color-mix(in srgb, var(--page-text-muted) 32%, transparent);
+		inset: 22%;
+	}
+
+	.blog-cover-media__placeholder-core {
+		align-items: center;
+		background: color-mix(in srgb, var(--page-surface-solid) 94%, transparent);
+		border: 1px solid color-mix(in srgb, var(--page-border) 44%, transparent);
+		border-radius: 999px;
+		display: grid;
+		height: 2.8rem;
+		justify-items: center;
+		box-shadow: 0 0 0 1px color-mix(in srgb, var(--page-border) 26%, transparent);
+		width: 2.8rem;
+		z-index: 1;
+	}
+
+	.blog-cover-media__placeholder-icon {
+		height: 1.25rem;
+		stroke: color-mix(in srgb, var(--page-text-muted) 74%, transparent);
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		stroke-width: 1.6;
+		width: 1.25rem;
+	}
+
 	.blog-cover-media::after {
 		background: linear-gradient(
 			145deg,
@@ -85,5 +271,47 @@ const srcset = buildBlogCoverSrcset(translationGroup, widths);
 	html[data-theme="dark"] .blog-cover-media::after {
 		mix-blend-mode: soft-light;
 		opacity: 0.22;
+	}
+
+	.blog-cover-media[data-cover-state="missing"] .blog-cover-media__img {
+		display: none;
+	}
+
+	.blog-cover-media[data-cover-state="missing"] .blog-cover-media__placeholder {
+		display: grid;
+	}
+
+	html[data-theme="dark"] .blog-cover-media__placeholder-icon {
+		stroke: color-mix(in srgb, var(--page-text-soft) 84%, transparent);
+	}
+
+	html[data-theme="dark"] .blog-cover-media__placeholder::before {
+		background: linear-gradient(
+			90deg,
+			transparent 0%,
+			color-mix(in srgb, var(--page-border) 42%, transparent) 28%,
+			color-mix(in srgb, var(--page-text-muted) 54%, transparent) 50%,
+			color-mix(in srgb, var(--page-border) 42%, transparent) 72%,
+			transparent 100%
+		);
+	}
+
+	html[data-theme="dark"] .blog-cover-media__placeholder::after {
+		background: linear-gradient(
+			180deg,
+			transparent 0%,
+			color-mix(in srgb, var(--page-border) 42%, transparent) 28%,
+			color-mix(in srgb, var(--page-text-muted) 54%, transparent) 50%,
+			color-mix(in srgb, var(--page-border) 42%, transparent) 72%,
+			transparent 100%
+		);
+	}
+
+	html[data-theme="dark"] .blog-cover-media__placeholder-ring {
+		border-color: color-mix(in srgb, var(--page-text-muted) 40%, transparent);
+	}
+
+	html[data-theme="dark"] .blog-cover-media__placeholder-ring--inner {
+		border-color: color-mix(in srgb, var(--page-text-soft) 34%, transparent);
 	}
 </style>

@@ -8,18 +8,17 @@ import { t } from "../../utils/i18n";
 import BlogPagination from "./BlogPagination.astro";
 import BlogPostCard from "./BlogPostCard.astro";
 import BlogTaxonomyAside, { type TaxonomyAsideGroup } from "./BlogTaxonomyAside.astro";
-import PageSection from "../ui/PageSection.astro";
 import {
 	createEditorialPosts,
 	getEditorialArchiveCopy,
 } from "../../utils/blogVariants";
 
 interface Props {
+	addStoriesBottomPadding?: boolean;
 	breadcrumbs?: BreadcrumbItem[];
 	description: string;
 	eyebrow?: string;
 	featuredPost?: import("astro:content").CollectionEntry<"blog">;
-	heroComparison?: boolean;
 	heroMetrics?: {
 		categoryCount: number;
 		postCount: number;
@@ -29,32 +28,28 @@ interface Props {
 	lang: Language;
 	pagination?: {
 		currentPage: number;
-		nextHref?: string;
-		prevHref?: string;
+		nextPath?: string;
+		prevPath?: string;
 		totalPages: number;
 	};
 	posts: import("astro:content").CollectionEntry<"blog">[];
-	rssFeedUrl?: string;
-	sectionBackdrop?: "none" | "grid" | "glow";
-	sectionTone?: "default" | "soft" | "contrast" | "transparent" | "warm";
 	taxonomyGroups?: TaxonomyAsideGroup[];
+	totalItems?: number;
 	title: string;
 }
 
 const {
+	addStoriesBottomPadding = false,
 	breadcrumbs = [],
 	description,
 	eyebrow,
 	featuredPost,
-	heroComparison = false,
 	heroMetrics,
 	lang,
 	pagination,
 	posts,
-	rssFeedUrl,
-	sectionBackdrop,
-	sectionTone,
 	taxonomyGroups = [],
+	totalItems,
 	title,
 } = Astro.props as Props;
 
@@ -68,127 +63,134 @@ const featuredStory = featuredPost
 const archiveStories = featuredStory
 	? visibleStories.filter((story) => story.id !== featuredStory.id)
 	: visibleStories;
-const highlightStories = archiveStories.slice(0, 2);
-const riverStories = archiveStories.slice(2);
 const hasTaxonomyGroups = taxonomyGroups.some((group) => group.items.length > 0);
-const resolvedBackdrop = sectionBackdrop ?? (featuredStory ? "glow" : "none");
-const resolvedTone = sectionTone ?? "transparent";
 const hasBelowFold = Astro.slots.has("belowFold");
-const paginationSummary =
-	pagination && pagination.totalPages > 1
-		? t(lang, "blog.pagination.summary")
-				.replace("{page}", String(pagination.currentPage))
-				.replace("{total}", String(pagination.totalPages))
-		: undefined;
+const canUseSpotlightInFeed = Boolean(featuredStory) && (pagination?.currentPage ?? 1) === 1;
 
-function getRiverTone(index: number): "note" | "river" {
-	return index % 3 === 2 ? "note" : "river";
-}
-
-function getRiverReverse(index: number): boolean {
-	return index % 2 === 1 && getRiverTone(index) === "river";
+function getFeedTone(index: number): "note" | "river" | "spotlight" {
+	if (canUseSpotlightInFeed && index === 0) {
+		return "spotlight";
+	}
+	return "river";
 }
 ---
 
-<PageSection
-	backdrop={resolvedBackdrop}
-	layout={hasTaxonomyGroups ? "split" : "default"}
-	size="wide"
-	tone={resolvedTone}
+<section
+	class:list={["blog-archive-frame", hasTaxonomyGroups && "blog-archive-frame--with-aside"]}
+	data-blog-archive-root
 >
-	<div slot="intro">
-		<BlogArchiveHero
-			breadcrumbs={breadcrumbs}
-			compare={heroComparison}
-			copy={copy}
-			description={description}
-			eyebrow={eyebrow}
-			featuredStory={featuredStory}
-			lang={lang}
-			metrics={heroMetrics}
-			paginationSummary={paginationSummary}
-			rssFeedUrl={rssFeedUrl}
-			title={title}
-		/>
-	</div>
+	<div class="blog-archive-frame__inner">
+		<div class="blog-archive-frame__intro">
+			<BlogArchiveHero
+				breadcrumbs={breadcrumbs}
+				copy={copy}
+				description={description}
+				eyebrow={eyebrow}
+				featuredStory={featuredStory}
+				lang={lang}
+				metrics={heroMetrics}
+				title={title}
+			/>
+		</div>
 
-	<div class="blog-archive-main">
 		{
 			featuredStory && (
-				<section class="blog-archive-section" aria-labelledby="blog-featured-story">
-					<div class="blog-archive-section__header">
-						<p class="blog-archive-section__eyebrow">{copy.featuredLabel}</p>
-						<h2 class="blog-archive-section__title" id="blog-featured-story">
-							{featuredStory.title}
-						</h2>
-					</div>
-					<BlogLeadStory copy={copy} lang={lang} story={featuredStory} />
-				</section>
+				<div class="blog-archive-frame__featured">
+					<section class="blog-archive-section" aria-labelledby="blog-featured-story">
+						<div class="blog-archive-section__header">
+							<p class="blog-archive-section__eyebrow">{copy.featuredLabel}</p>
+							<h2 class="blog-archive-section__title" id="blog-featured-story">
+								{copy.featuredLabel}
+							</h2>
+						</div>
+						<BlogLeadStory copy={copy} lang={lang} story={featuredStory} />
+					</section>
+				</div>
 			)
 		}
 
-		{
-			highlightStories.length > 0 && (
-				<section class="blog-archive-section" aria-labelledby="blog-highlight-stories">
-					<div class="blog-archive-section__header">
-						<p class="blog-archive-section__eyebrow">
-							{featuredStory ? copy.recentLabel : copy.allStoriesLabel}
-						</p>
-						<h2 class="blog-archive-section__title" id="blog-highlight-stories">
-							{featuredStory ? copy.recentLabel : copy.allStoriesLabel}
-						</h2>
-					</div>
-					<div class="blog-archive-highlights">
-						{highlightStories.map((story, index) => (
-							<BlogPostCard
-								copy={copy}
-								lang={lang}
-								story={story}
-								tone={index === 0 ? "spotlight" : "note"}
-							/>
-						))}
-					</div>
-				</section>
-			)
-		}
+		<div
+			class:list={[
+				"blog-archive-frame__body",
+				hasTaxonomyGroups && "blog-archive-frame__body--split",
+				addStoriesBottomPadding && "blog-archive-frame__body--stories-padded",
+			]}
+		>
+			<div class="blog-archive-frame__primary">
+				<div class="blog-archive-main">
+					{
+						archiveStories.length > 0 && (
+							<section
+								aria-labelledby="blog-archive-feed"
+								class:list={[
+									"blog-archive-section",
+									addStoriesBottomPadding && "blog-archive-section--stories-padded",
+								]}
+							>
+								<div class:list={["blog-archive-section__header", "blog-archive-section__header--feed"]}>
+									<h2 class="blog-archive-section__title" id="blog-archive-feed">
+										{copy.allStoriesLabel}
+									</h2>
+									<div class="blog-archive-sort">
+										<label class="blog-archive-sort__label" for="blog-sort-select">
+											{t(lang, "blog.sort_label")}
+										</label>
+										<div class="blog-archive-sort__control">
+											<select
+												class="blog-archive-sort__select"
+												data-blog-sort-select
+												id="blog-sort-select"
+											>
+												<option selected value="recent">{t(lang, "blog.sort_recent")}</option>
+												<option value="oldest">{t(lang, "blog.sort_oldest")}</option>
+												<option value="title">{t(lang, "blog.sort_title")}</option>
+											</select>
+											<span aria-hidden="true" class="blog-archive-sort__chevron"></span>
+										</div>
+									</div>
+								</div>
+								<div class="blog-archive-feed" data-blog-feed-items data-lang={lang}>
+									{archiveStories.map((story, index) => (
+										<BlogPostCard
+											copy={copy}
+											lang={lang}
+											story={story}
+											tone={getFeedTone(index)}
+										/>
+									))}
+								</div>
+							</section>
+						)
+					}
 
-		{
-			riverStories.length > 0 && (
-				<section class="blog-archive-section" aria-labelledby="blog-archive-river">
-					<div class="blog-archive-section__header">
-						<p class="blog-archive-section__eyebrow">{copy.archiveLabel}</p>
-						<h2 class="blog-archive-section__title" id="blog-archive-river">
-							{copy.archiveLabel}
-						</h2>
-					</div>
-					<div class="blog-archive-river">
-						{riverStories.map((story, index) => (
-							<BlogPostCard
-								copy={copy}
-								lang={lang}
-								reverse={getRiverReverse(index)}
-								story={story}
-								tone={getRiverTone(index)}
-							/>
-						))}
-					</div>
-				</section>
-			)
-		}
+					{pagination && (
+						<BlogPagination
+							currentPage={pagination.currentPage}
+							initialItemCount={archiveStories.length}
+							itemsUnitLabel={t(lang, "blog.pagination.items_unit")}
+							nextHref={pagination.nextPath}
+							nextLabel={t(lang, "blog.pagination.load_more")}
+							prevHref={pagination.prevPath}
+							prevLabel={t(lang, "blog.pagination.prev")}
+							summaryLabel={t(lang, "blog.pagination.summary")
+								.replace("{page}", String(pagination.currentPage))
+								.replace("{total}", String(pagination.totalPages))}
+							totalItems={totalItems ?? archiveStories.length}
+							totalPages={pagination.totalPages}
+						/>
+					)}
 
-		{pagination && (
-			<BlogPagination
-				currentPage={pagination.currentPage}
-				nextHref={pagination.nextHref}
-				nextLabel={t(lang, "blog.pagination.next")}
-				prevHref={pagination.prevHref}
-				prevLabel={t(lang, "blog.pagination.prev")}
-				summaryLabel={t(lang, "blog.pagination.summary")
-					.replace("{page}", String(pagination.currentPage))
-					.replace("{total}", String(pagination.totalPages))}
-				totalPages={pagination.totalPages}
-			/>
-		)}
+				</div>
+			</div>
+
+			{
+				hasTaxonomyGroups && (
+					<aside class="blog-archive-frame__aside">
+						<BlogTaxonomyAside groups={taxonomyGroups} lang={lang} />
+					</aside>
+				)
+			}
+		</div>
 
 		{
 			hasBelowFold && (
@@ -198,17 +200,101 @@ function getRiverReverse(index: number): boolean {
 			)
 		}
 	</div>
+</section>
 
-	{
-		hasTaxonomyGroups && (
-			<div slot="aside">
-				<BlogTaxonomyAside groups={taxonomyGroups} lang={lang} />
-			</div>
-		)
+<script>
+	function applyBlogFeedSort(feed: HTMLElement, sortValue: string) {
+		const language = feed.dataset.lang === "ar" ? "ar" : "en";
+		const cards = Array.from(feed.querySelectorAll<HTMLElement>("[data-blog-feed-item]"));
+		const sortedCards = [...cards].sort((leftCard, rightCard) => {
+			const leftDate = Number(leftCard.dataset.publishedTs ?? "0");
+			const rightDate = Number(rightCard.dataset.publishedTs ?? "0");
+			const leftTitle = leftCard.dataset.sortTitle ?? "";
+			const rightTitle = rightCard.dataset.sortTitle ?? "";
+			if (sortValue === "oldest") {
+				return leftDate - rightDate;
+			}
+			if (sortValue === "title") {
+				return leftTitle.localeCompare(rightTitle, language);
+			}
+			return rightDate - leftDate;
+		});
+		sortedCards.forEach((card) => {
+			feed.append(card);
+		});
 	}
-</PageSection>
+
+	function bindArchiveSortControls() {
+		const roots = document.querySelectorAll<HTMLElement>("[data-blog-archive-root]");
+		for (const root of roots) {
+			if (root.dataset.blogSortBound === "1") {
+				continue;
+			}
+			root.dataset.blogSortBound = "1";
+			const feed = root.querySelector<HTMLElement>("[data-blog-feed-items]");
+			const select = root.querySelector<HTMLSelectElement>("[data-blog-sort-select]");
+			if (!feed || !select) {
+				continue;
+			}
+			const applyCurrentSort = () => applyBlogFeedSort(feed, select.value);
+			applyCurrentSort();
+			select.addEventListener("change", applyCurrentSort);
+			document.addEventListener("blog:feed-updated", (event) => {
+				const detail = (event as CustomEvent<{ feed?: HTMLElement }>).detail;
+				if (detail?.feed === feed) {
+					applyCurrentSort();
+				}
+			});
+		}
+	}
+
+	bindArchiveSortControls();
+	document.addEventListener("astro:page-load", bindArchiveSortControls);
+</script>
 
 <style>
+	.blog-archive-frame {
+		background: var(--page-bg);
+		overflow: visible;
+		position: relative;
+	}
+
+	.blog-archive-frame__inner {
+		box-sizing: border-box;
+		display: grid;
+		gap: clamp(2rem, 5vw, 4rem);
+		margin-inline: auto;
+		max-width: var(--blog-page-max-shell, var(--layout-width-navbar));
+		/* padding-block: clamp(2rem, 6vw, 5rem); */
+		padding-inline: var(--blog-page-inline, var(--layout-gutter));
+		width: 100%;
+	}
+
+	.blog-archive-frame__intro {
+		display: grid;
+	}
+
+	.blog-archive-frame__body {
+		display: grid;
+		gap: clamp(2rem, 4vw, 3rem);
+	}
+
+	.blog-archive-frame__body--stories-padded {
+		padding-bottom: clamp(1.8rem, 3.8vw, 3.25rem);
+	}
+
+	.blog-archive-frame__featured {
+		display: grid;
+	}
+
+	.blog-archive-frame__primary {
+		min-width: 0;
+	}
+
+	.blog-archive-frame__aside {
+		min-width: 0;
+	}
+
 	.blog-archive-main,
 	.blog-archive-section {
 		display: grid;
@@ -220,11 +306,64 @@ function getRiverReverse(index: number): boolean {
 		gap: 0.9rem;
 	}
 
+	.blog-archive-section__header--feed {
+		align-items: end;
+		grid-template-columns: minmax(0, 1fr);
+		padding-bottom: 0.2rem;
+	}
+
+	.blog-archive-sort {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.45rem;
+	}
+
+	.blog-archive-sort__label {
+		color: var(--page-text-muted);
+		font-size: 0.82rem;
+		line-height: 1.4;
+	}
+
+	.blog-archive-sort__select {
+		appearance: none;
+		background: color-mix(in srgb, var(--page-surface-muted) 78%, transparent);
+		border: 1px solid color-mix(in srgb, var(--page-border) 55%, transparent);
+		border-radius: 999px;
+		color: var(--page-text);
+		font-size: 0.84rem;
+		line-height: 1;
+		min-height: 2rem;
+		padding: 0.35rem 2.2rem 0.35rem 0.78rem;
+		width: 100%;
+	}
+
+	.blog-archive-sort__select:focus-visible {
+		outline: 2px solid color-mix(in srgb, var(--focus-ring-color) 70%, transparent);
+		outline-offset: 1px;
+	}
+
+	.blog-archive-sort__control {
+		position: relative;
+	}
+
+	.blog-archive-sort__chevron {
+		border-bottom: 1.25px solid color-mix(in srgb, var(--page-text-muted) 86%, transparent);
+		border-inline-end: 1.25px solid color-mix(in srgb, var(--page-text-muted) 86%, transparent);
+		height: 0.42rem;
+		inset-inline-end: 0.82rem;
+		pointer-events: none;
+		position: absolute;
+		top: 50%;
+		transform: translateY(-60%) rotate(45deg);
+		width: 0.42rem;
+	}
+
 	.blog-archive-section__eyebrow {
 		color: var(--page-text-muted);
 		font-size: 0.74rem;
 		font-weight: 600;
-		letter-spacing: 0.14em;
+		letter-spacing: 0;
 		line-height: 1.4;
 		margin: 0;
 		text-transform: uppercase;
@@ -234,7 +373,7 @@ function getRiverReverse(index: number): boolean {
 		color: var(--page-text-strong);
 		font-family: var(--font-display-latin), var(--font-display-arabic), serif;
 		font-weight: 600;
-		letter-spacing: -0.035em;
+		letter-spacing: 0;
 		line-height: 0.94;
 		margin: 0;
 		text-wrap: balance;
@@ -244,23 +383,40 @@ function getRiverReverse(index: number): boolean {
 		font-size: clamp(1.6rem, 2.4vw, 2rem);
 	}
 
-	.blog-archive-highlights,
-	.blog-archive-river,
+	.blog-archive-feed,
 	.blog-archive-below-fold {
 		display: grid;
 		gap: clamp(1rem, 2vw, 1.5rem);
 	}
 
-	.blog-archive-section + .blog-archive-section,
-	.blog-archive-below-fold {
+	.blog-archive-section + .blog-archive-section {
 		border-top: 1px solid color-mix(in srgb, var(--page-border) 52%, transparent);
 		padding-top: clamp(1.5rem, 3vw, 2.25rem);
 	}
 
-	@media (min-width: 900px) {
-		.blog-archive-highlights {
-			grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+	.blog-archive-section--stories-padded {
+		padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+	}
+
+	.blog-archive-below-fold {
+		gap: clamp(1.35rem, 3vw, 2.5rem);
+	}
+
+	@media (min-width: 1024px) {
+		.blog-archive-frame__body--split {
 			align-items: start;
+			grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.36fr);
+		}
+
+		.blog-archive-frame__aside {
+			align-self: start;
+			position: sticky;
+			top: 4.5rem;
+		}
+
+		.blog-archive-section__header--feed {
+			grid-template-columns: minmax(0, 1fr) auto;
+			gap: 0.9rem 1.2rem;
 		}
 	}
 </style>

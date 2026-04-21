@@ -3,90 +3,224 @@ import ActionLink from "../ui/ActionLink.astro";
 
 interface Props {
 	currentPage: number;
+	initialItemCount: number;
+	itemsUnitLabel: string;
 	nextHref?: string;
 	nextLabel: string;
 	prevHref?: string;
 	prevLabel: string;
 	summaryLabel: string;
+	totalItems: number;
 	totalPages: number;
 }
 
-const { currentPage, nextHref, nextLabel, prevHref, prevLabel, summaryLabel, totalPages } =
+const {
+	currentPage,
+	initialItemCount,
+	itemsUnitLabel,
+	nextHref,
+	nextLabel,
+	prevHref,
+	prevLabel,
+	summaryLabel,
+	totalItems,
+	totalPages,
+} =
 	Astro.props as Props;
+
+const hasNextPage = Boolean(nextHref);
+const initialSummaryLabel = `${initialItemCount} / ${totalItems}\u00A0${itemsUnitLabel}`;
 ---
 
 {
 	totalPages > 1 && (
-		<nav class="blog-pagination" aria-label={summaryLabel}>
-			<div class="blog-pagination__edge">
+		<nav
+			aria-label={summaryLabel}
+			class="blog-pagination"
+			data-blog-pagination
+			data-current-page={currentPage}
+			data-current-item-count={initialItemCount}
+			data-next-href={nextHref ?? ""}
+			data-next-label={nextLabel}
+			data-items-unit={itemsUnitLabel}
+			data-summary={summaryLabel}
+			data-total-items={totalItems}
+			data-total-pages={totalPages}
+		>
+			<div class="blog-pagination__summary" data-blog-pagination-summary>
+				<p class="blog-pagination__summary-label">
+					{initialSummaryLabel}
+				</p>
+			</div>
+			<div class="blog-pagination__actions">
+				{hasNextPage && (
+					<button class="blog-pagination__load-more" data-blog-load-more type="button">
+						{nextLabel}
+					</button>
+				)}
 				{prevHref && (
 					<ActionLink href={prevHref} size="sm" variant="subtle">
 						{prevLabel}
 					</ActionLink>
 				)}
 			</div>
-			<p class="blog-pagination__summary">
-				<span>{summaryLabel}</span>
-				<span>
-					{currentPage} / {totalPages}
-				</span>
-			</p>
-			<div class="blog-pagination__edge blog-pagination__edge--end">
-				{nextHref && (
-					<ActionLink href={nextHref} size="sm" variant="secondary">
-						{nextLabel}
-					</ActionLink>
-				)}
-			</div>
+			{nextHref && (
+				<noscript>
+					<div class="blog-pagination__noscript">
+						<ActionLink href={nextHref} size="sm" variant="secondary">
+							{nextLabel}
+						</ActionLink>
+					</div>
+				</noscript>
+			)}
 		</nav>
 	)
 }
+
+<script>
+	function bindBlogLoadMore() {
+		const paginations = document.querySelectorAll<HTMLElement>("[data-blog-pagination]");
+		for (const pagination of paginations) {
+			if (pagination.dataset.blogLoadMoreBound === "1") {
+				continue;
+			}
+			pagination.dataset.blogLoadMoreBound = "1";
+			const button = pagination.querySelector<HTMLButtonElement>("[data-blog-load-more]");
+			const summary = pagination.querySelector<HTMLElement>("[data-blog-pagination-summary]");
+			if (!button) {
+				continue;
+			}
+			const archiveRoot = pagination.closest<HTMLElement>("[data-blog-archive-root]");
+			const feed = archiveRoot?.querySelector<HTMLElement>("[data-blog-feed-items]");
+			if (!feed) {
+				continue;
+			}
+			button.addEventListener("click", async () => {
+				const nextHref = pagination.dataset.nextHref?.trim();
+				if (!nextHref || button.disabled) {
+					return;
+				}
+				const idleLabel = pagination.dataset.nextLabel ?? button.textContent?.trim() ?? "Load more";
+				button.disabled = true;
+				button.textContent = `${idleLabel}...`;
+				try {
+					const response = await fetch(nextHref, {
+						headers: {
+							"X-Requested-With": "blog-load-more",
+						},
+					});
+					if (!response.ok) {
+						throw new Error(`Failed to fetch ${nextHref}: ${response.status}`);
+					}
+					const html = await response.text();
+					const parser = new DOMParser();
+					const doc = parser.parseFromString(html, "text/html");
+					const nextFeed = doc.querySelector<HTMLElement>("[data-blog-feed-items]");
+					const nextItems = nextFeed?.querySelectorAll<HTMLElement>("[data-blog-feed-item]");
+					if (!nextItems || nextItems.length === 0) {
+						pagination.dataset.nextHref = "";
+						pagination.setAttribute("hidden", "hidden");
+						return;
+					}
+					nextItems.forEach((item) => {
+						feed.append(item.cloneNode(true));
+					});
+					document.dispatchEvent(new CustomEvent("blog:feed-updated", { detail: { feed } }));
+					const nextPagination = doc.querySelector<HTMLElement>("[data-blog-pagination]");
+					const nextNextHref = nextPagination?.dataset.nextHref?.trim() ?? "";
+					const nextCurrentPage = Number(nextPagination?.dataset.currentPage ?? "0");
+					pagination.dataset.currentPage = String(nextCurrentPage || Number(pagination.dataset.currentPage ?? "1"));
+					pagination.dataset.nextHref = nextNextHref;
+					if (summary) {
+						const summaryPrimary = summary.querySelector(".blog-pagination__summary-label");
+						if (summaryPrimary) {
+							const totalItems = Number(pagination.dataset.totalItems ?? String(feed.children.length));
+							const shownItems = feed.querySelectorAll("[data-blog-feed-item]").length;
+							const unit = pagination.dataset.itemsUnit ?? "";
+							summaryPrimary.textContent = `${shownItems} / ${totalItems}\u00A0${unit}`;
+						}
+					}
+					if (!nextNextHref) {
+						pagination.setAttribute("hidden", "hidden");
+					}
+				} catch (error) {
+					console.error(error);
+				} finally {
+					button.disabled = false;
+					button.textContent = idleLabel;
+				}
+			});
+		}
+	}
+
+	bindBlogLoadMore();
+	document.addEventListener("astro:page-load", bindBlogLoadMore);
+</script>
 
 <style>
 	.blog-pagination {
 		align-items: center;
 		border-top: 1px solid color-mix(in srgb, var(--page-border) 58%, transparent);
-		display: grid;
-		gap: 1rem;
-		padding-top: 1.75rem;
-	}
-
-	.blog-pagination__edge {
 		display: flex;
-	}
-
-	.blog-pagination__edge--end {
-		justify-content: flex-start;
+		flex-wrap: wrap;
+		gap: 0.75rem 1rem;
+		justify-content: space-between;
+		padding-top: 1rem;
 	}
 
 	.blog-pagination__summary {
-		color: var(--page-text-muted);
-		display: grid;
-		gap: 0.2rem;
+		display: flex;
 		margin: 0;
-		text-align: center;
+		text-align: start;
 	}
 
-	.blog-pagination__summary span:first-child {
-		font-size: 0.86rem;
-		line-height: 1.6;
-	}
-
-	.blog-pagination__summary span:last-child {
+	.blog-pagination__summary-label {
 		color: var(--page-text-soft);
-		font-size: 0.8rem;
-		font-variant-numeric: tabular-nums;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
+		font-size: 0.86rem;
+		line-height: 1.4;
+		margin: 0;
 	}
 
-	@media (min-width: 720px) {
-		.blog-pagination {
-			grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-		}
+	.blog-pagination__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+	}
 
-		.blog-pagination__edge--end {
-			justify-content: flex-end;
+	.blog-pagination__load-more {
+		background: var(--action-link-secondary-bg);
+		border: 0;
+		border-radius: 999px;
+		color: var(--action-link-secondary-text);
+		cursor: pointer;
+		font-size: 0.9rem;
+		font-weight: 600;
+		line-height: 1;
+		min-height: 2.6rem;
+		padding: 0.65rem 1.15rem;
+		transition: transform 160ms ease, filter 160ms ease, opacity 160ms ease;
+	}
+
+	.blog-pagination__load-more:hover,
+	.blog-pagination__load-more:focus-visible {
+		filter: brightness(1.06);
+		outline: none;
+		transform: translateY(-1px);
+	}
+
+	.blog-pagination__load-more:disabled {
+		cursor: progress;
+		opacity: 0.8;
+		transform: none;
+	}
+
+	.blog-pagination__noscript {
+		margin-top: 0.2rem;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.blog-pagination__load-more {
+			transition: none;
 		}
 	}
 </style>

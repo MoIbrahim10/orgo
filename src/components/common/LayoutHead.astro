@@ -1,5 +1,6 @@
 ---
 import { metadataConfig, siteConfig } from "../../data/site";
+import { ClientRouter } from "astro:transitions";
 import { themeMetaColors } from "../../data/theme";
 import { englishTypography } from "../../data/typography";
 import type { LayoutMetadataProps } from "../../utils/metadata";
@@ -38,6 +39,7 @@ const {
 <head>
 	<meta charset="UTF-8" />
 	<meta content="width=device-width, initial-scale=1" name="viewport" />
+	<ClientRouter />
 	{
 		shouldPreloadEnglishFonts &&
 			englishTypography.preload.map((font) => (

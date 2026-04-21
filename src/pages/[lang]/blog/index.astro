@@ -1,10 +1,9 @@
 ---
 import { getCollection } from "astro:content";
 import BlogArchiveView from "../../../components/blog/BlogArchiveView.astro";
-import BlogIndexJournalPanel from "../../../components/blog/BlogIndexJournalPanel.astro";
 import BlogSubscribeBand from "../../../components/blog/BlogSubscribeBand.astro";
 import { getBlogCoverOgUrl } from "../../../data/blogCovers";
-import Layout from "../../../layouts/Layout.astro";
+import BlogLayout from "../../../layouts/BlogLayout.astro";
 import { supportedLanguages, type Language } from "../../../types/translations";
 import { getBlogIndexPath, getCategorySummaries, getPaginatedItems, getPaginationState, getPublishedBlogEntries, getTagSummaries } from "../../../utils/blog";
 import { t } from "../../../utils/i18n";
@@ -68,13 +67,12 @@ const metadata = createArchiveMetadata(lang, {
 });
 ---
 
-<Layout {...metadata}>
+<BlogLayout {...metadata}>
 	<BlogArchiveView
 		breadcrumbs={breadcrumbs}
 		description={pageDescription}
 		eyebrow={t(lang, "blog.eyebrow")}
 		featuredPost={featuredPost}
-		heroComparison={true}
 		heroMetrics={{
 			categoryCount,
 			postCount: publishedPosts.length,
@@ -84,18 +82,22 @@ const metadata = createArchiveMetadata(lang, {
 		lang={lang}
 		pagination={pagination}
 		posts={archivePosts}
-		rssFeedUrl={rssFeedUrl}
-		sectionBackdrop="glow"
-		sectionTone="soft"
 		taxonomyGroups={[
 			{ title: t(lang, "blog.categories_title"), items: categories, mode: "list" },
 			{ title: t(lang, "blog.topics_title"), items: tags, mode: "chips" },
 		]}
+		totalItems={Math.max(0, publishedPosts.length - (featuredPost ? 1 : 0))}
 		title={pageTitle}
 	>
-		<div class="space-y-10" slot="belowFold">
-			<BlogIndexJournalPanel lang={lang} />
+		<div class="blog-index-section-variants" slot="belowFold">
 			<BlogSubscribeBand lang={lang} rssHref={rssFeedUrl} />
 		</div>
 	</BlogArchiveView>
-</Layout>
+</BlogLayout>
+
+<style>
+	.blog-index-section-variants {
+		display: grid;
+		gap: clamp(1.25rem, 3vw, 2.5rem);
+	}
+</style>

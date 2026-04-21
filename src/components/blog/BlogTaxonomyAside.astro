@@ -16,6 +16,14 @@ interface Props {
 
 const { groups, lang } = Astro.props as Props;
 const visibleGroups = groups.filter((group) => group.items.length > 0);
+const COLLAPSED_TOPICS_COUNT = 7;
+const categoriesGroup = visibleGroups.find((group) => group.mode !== "chips");
+const topicsGroup = visibleGroups.find((group) => group.mode === "chips");
+const topicToggleShowLabel = t(lang, "blog.topics_toggle_show").replace(
+	"{count}",
+	String(topicsGroup?.items.length ?? 0),
+);
+const topicToggleHideLabel = t(lang, "blog.topics_toggle_hide");
 ---
 
 {
@@ -29,54 +37,166 @@ const visibleGroups = groups.filter((group) => group.items.length > 0);
 				<p class="blog-taxonomy-aside__hint">{t(lang, "blog.sidebar_hint")}</p>
 			</header>
 
-			{visibleGroups.map((group, index) => (
-				<section class="blog-taxonomy-aside__group" aria-labelledby={`taxonomy-group-${index}`}>
-					<h3 class="blog-taxonomy-aside__group-title" id={`taxonomy-group-${index}`}>
-						{group.title}
-					</h3>
-					{group.mode === "chips" ? (
-						<ul class="blog-taxonomy-aside__chips">
-							{group.items.map((item) => (
-								<li>
-									<a
-										class:list={[
-											"blog-taxonomy-aside__chip",
-											item.active && "is-active",
-										]}
-										href={item.href}
-									>
-										<span>{item.label}</span>
-										<span class="blog-taxonomy-aside__count">{item.count}</span>
-									</a>
-								</li>
-							))}
-						</ul>
-					) : (
+			{
+				categoriesGroup && (
+					<section class="blog-taxonomy-aside__group" aria-labelledby="taxonomy-group-categories">
+						<h3 class="blog-taxonomy-aside__group-title" id="taxonomy-group-categories">
+							{categoriesGroup.title}
+						</h3>
 						<ul class="blog-taxonomy-aside__list">
-							{group.items.map((item) => (
+							{categoriesGroup.items.map((item) => (
 								<li>
-									<a
-										class:list={["blog-taxonomy-aside__row", item.active && "is-active"]}
-										href={item.href}
-									>
+									<a class:list={["blog-taxonomy-aside__row", item.active && "is-active"]} href={item.href}>
 										<span>{item.label}</span>
 										<span class="blog-taxonomy-aside__count">{item.count}</span>
 									</a>
 								</li>
 							))}
 						</ul>
-					)}
-				</section>
-			))}
+					</section>
+				)
+			}
+
+			{
+				topicsGroup && (
+					<section class="blog-taxonomy-aside__group" aria-labelledby="taxonomy-group-topics">
+						<h3 class="blog-taxonomy-aside__group-title" id="taxonomy-group-topics">
+							{topicsGroup.title}
+						</h3>
+						<div class="blog-taxonomy-aside__topics" data-topics-shell>
+							<label class="blog-taxonomy-aside__search-label" for="taxonomy-topic-search">
+								{t(lang, "blog.topics_search_placeholder")}
+							</label>
+							<input
+								class="blog-taxonomy-aside__search-input"
+								data-topics-search
+								id="taxonomy-topic-search"
+								placeholder={t(lang, "blog.topics_search_placeholder")}
+								type="search"
+							/>
+							<ul class="blog-taxonomy-aside__topic-list">
+								{topicsGroup.items.map((item, index) => (
+									<li
+										class="blog-taxonomy-aside__topic-item"
+										data-topic-chip-item
+										data-topic-index={index}
+										data-topic-label={item.label.toLocaleLowerCase()}
+									>
+										<a
+											class:list={["blog-taxonomy-aside__row", "blog-taxonomy-aside__row--topic", item.active && "is-active"]}
+											href={item.href}
+										>
+											<span>{item.label}</span>
+											<span class="blog-taxonomy-aside__count">{item.count}</span>
+										</a>
+									</li>
+								))}
+							</ul>
+							<p class="blog-taxonomy-aside__no-results" data-topics-no-results hidden>
+								{t(lang, "blog.topics_search_no_results")}
+							</p>
+							{
+								topicsGroup.items.length > COLLAPSED_TOPICS_COUNT && (
+									<button
+										aria-expanded="false"
+										class="blog-taxonomy-aside__toggle"
+										data-topics-toggle
+										data-topics-toggle-hide={topicToggleHideLabel}
+										data-topics-toggle-show={topicToggleShowLabel}
+										type="button"
+									>
+										{topicToggleShowLabel}
+									</button>
+								)
+							}
+						</div>
+					</section>
+				)
+			}
 		</section>
 	)
 }
 
+<script>
+	function bindBlogTopicsAside() {
+		const COLLAPSED_TOPICS_COUNT = 7;
+		const asides = document.querySelectorAll<HTMLElement>(".blog-taxonomy-aside");
+		for (const aside of asides) {
+			if (aside.dataset.blogTopicsBound === "1") {
+				continue;
+			}
+			aside.dataset.blogTopicsBound = "1";
+			const searchInput = aside.querySelector<HTMLInputElement>("[data-topics-search]");
+			const shell = aside.querySelector<HTMLElement>("[data-topics-shell]");
+			const toggle = aside.querySelector<HTMLButtonElement>("[data-topics-toggle]");
+			const chips = aside.querySelectorAll<HTMLElement>("[data-topic-chip-item]");
+			const noResults = aside.querySelector<HTMLElement>("[data-topics-no-results]");
+			if (toggle && shell) {
+				toggle.addEventListener("click", () => {
+					const isExpanded = toggle.getAttribute("aria-expanded") === "true";
+					const nextExpanded = !isExpanded;
+					toggle.setAttribute("aria-expanded", String(nextExpanded));
+					shell.classList.toggle("is-expanded", nextExpanded);
+					const nextLabel = nextExpanded
+						? toggle.dataset.topicsToggleHide ?? toggle.textContent ?? ""
+						: toggle.dataset.topicsToggleShow ?? toggle.textContent ?? "";
+					toggle.textContent = nextLabel;
+					searchInput?.dispatchEvent(new Event("input", { bubbles: true }));
+				});
+			}
+			if (searchInput && chips.length > 0) {
+				const getExpandedState = () => toggle?.getAttribute("aria-expanded") === "true";
+				const setExpandedState = (expanded: boolean) => {
+					if (!shell || !toggle) {
+						return;
+					}
+					shell.classList.toggle("is-expanded", expanded);
+					toggle.setAttribute("aria-expanded", String(expanded));
+					toggle.textContent = expanded
+						? toggle.dataset.topicsToggleHide ?? toggle.textContent ?? ""
+						: toggle.dataset.topicsToggleShow ?? toggle.textContent ?? "";
+				};
+				const applySearch = () => {
+					const query = searchInput.value.trim().toLocaleLowerCase();
+					const hasQuery = query.length > 0;
+					if (hasQuery) {
+						setExpandedState(true);
+					}
+					const isExpanded = getExpandedState();
+					let visibleCount = 0;
+					chips.forEach((chip) => {
+						const label = chip.dataset.topicLabel ?? "";
+						const topicIndex = Number(chip.dataset.topicIndex ?? "0");
+						const visibleByQuery = query.length === 0 || label.includes(query);
+						const visibleByCollapse = query.length > 0 || isExpanded || topicIndex < COLLAPSED_TOPICS_COUNT;
+						const visible = visibleByQuery && visibleByCollapse;
+						chip.hidden = !visible;
+						if (visibleByQuery) {
+							visibleCount += 1;
+						}
+					});
+					if (noResults) {
+						noResults.hidden = visibleCount > 0 || query.length === 0;
+					}
+				};
+				applySearch();
+				searchInput.addEventListener("input", applySearch);
+			}
+		}
+	}
+
+	bindBlogTopicsAside();
+	document.addEventListener("astro:page-load", bindBlogTopicsAside);
+</script>
+
 <style>
 	.blog-taxonomy-aside {
+		background: color-mix(in srgb, var(--page-surface-muted) 52%, transparent);
+		border: 1px solid color-mix(in srgb, var(--page-border) 46%, transparent);
+		border-radius: 0.95rem;
 		display: grid;
-		gap: 1.5rem;
-		padding-top: 0.35rem;
+		gap: 1.35rem;
+		padding: 1rem;
 	}
 
 	.blog-taxonomy-aside__header,
@@ -86,7 +206,7 @@ const visibleGroups = groups.filter((group) => group.items.length > 0);
 	}
 
 	.blog-taxonomy-aside__group {
-		border-top: 1px solid color-mix(in srgb, var(--page-border) 56%, transparent);
+		border-top: 1px solid color-mix(in srgb, var(--page-border) 48%, transparent);
 		padding-top: 1rem;
 	}
 
@@ -119,7 +239,7 @@ const visibleGroups = groups.filter((group) => group.items.length > 0);
 
 	.blog-taxonomy-aside__list {
 		display: grid;
-		gap: 0.4rem;
+		gap: 0.45rem;
 		list-style: none;
 		margin: 0;
 		padding: 0;
@@ -131,42 +251,89 @@ const visibleGroups = groups.filter((group) => group.items.length > 0);
 		display: flex;
 		gap: 0.85rem;
 		justify-content: space-between;
-		padding-block: 0.15rem;
+		padding: 0.25rem 0.1rem;
+		border-radius: 0.45rem;
 		text-decoration: none;
 		transition: color 160ms ease, transform 160ms ease;
 	}
 
 	.blog-taxonomy-aside__row:hover,
-	.blog-taxonomy-aside__row:focus-visible,
-	.blog-taxonomy-aside__chip:hover,
-	.blog-taxonomy-aside__chip:focus-visible {
+	.blog-taxonomy-aside__row:focus-visible {
 		color: var(--page-text-strong);
 		outline: none;
-		transform: translateX(1px);
+		transform: translateX(0.18rem);
 	}
 
-	.blog-taxonomy-aside__chips {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.55rem;
+	.blog-taxonomy-aside__toggle {
+		background: none;
+		border: 0;
+		color: var(--page-text-soft);
+		cursor: pointer;
+		font-size: 0.84rem;
+		font-weight: 500;
+		padding: 0;
+		text-align: start;
+	}
+
+	.blog-taxonomy-aside__toggle:hover,
+	.blog-taxonomy-aside__toggle:focus-visible {
+		color: var(--page-text-strong);
+		outline: none;
+	}
+
+	.blog-taxonomy-aside__topics {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	.blog-taxonomy-aside__search-label {
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		width: 1px;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+	}
+
+	.blog-taxonomy-aside__search-input {
+		background: color-mix(in srgb, var(--page-surface-muted) 72%, transparent);
+		border: 1px solid color-mix(in srgb, var(--page-border) 50%, transparent);
+		border-radius: 0.65rem;
+		color: var(--page-text);
+		font-size: 0.86rem;
+		line-height: 1.2;
+		min-height: 2rem;
+		padding: 0.4rem 0.75rem;
+	}
+
+	.blog-taxonomy-aside__search-input:focus-visible {
+		outline: 2px solid color-mix(in srgb, var(--focus-ring-color) 70%, transparent);
+		outline-offset: 1px;
+	}
+
+	.blog-taxonomy-aside__topic-list {
+		display: grid;
+		gap: 0.35rem;
 		list-style: none;
 		margin: 0;
 		padding: 0;
 	}
 
-	.blog-taxonomy-aside__chip {
+	.blog-taxonomy-aside__topic-item {
+		overflow: hidden;
+	}
+
+	.blog-taxonomy-aside__row--topic {
 		align-items: center;
-		background: color-mix(in srgb, var(--page-surface-muted) 72%, var(--page-bg));
-		border-radius: 999px;
-		color: var(--page-text-soft);
-		display: inline-flex;
-		gap: 0.45rem;
-		padding: 0.45rem 0.8rem;
-		text-decoration: none;
-		transition:
-			background-color 160ms ease,
-			color 160ms ease,
-			transform 160ms ease;
+	}
+
+	.blog-taxonomy-aside__no-results {
+		color: var(--page-text-muted);
+		font-size: 0.82rem;
+		line-height: 1.5;
+		margin: 0;
 	}
 
 	.blog-taxonomy-aside__count {
@@ -175,31 +342,26 @@ const visibleGroups = groups.filter((group) => group.items.length > 0);
 		font-variant-numeric: tabular-nums;
 	}
 
-	.blog-taxonomy-aside__row.is-active,
-	.blog-taxonomy-aside__chip.is-active {
+	.blog-taxonomy-aside__row.is-active {
 		color: var(--page-text-strong);
+		font-weight: 650;
+		transform: translateX(0.18rem);
 	}
 
-	.blog-taxonomy-aside__chip.is-active {
-		background: color-mix(in srgb, var(--page-surface-strong) 88%, var(--page-bg));
-		color: var(--theme-button-primary-text);
-	}
-
-	.blog-taxonomy-aside__chip.is-active .blog-taxonomy-aside__count {
-		color: color-mix(in srgb, var(--theme-button-primary-text) 74%, transparent);
+	.blog-taxonomy-aside__row.is-active .blog-taxonomy-aside__count {
+		color: var(--page-text-strong);
+		font-weight: 600;
 	}
 
 	@media (max-width: 1023px) {
 		.blog-taxonomy-aside {
-			border-top: 1px solid color-mix(in srgb, var(--page-border) 58%, transparent);
 			margin-top: 0.5rem;
-			padding-top: 1.5rem;
+			padding: 1rem;
 		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.blog-taxonomy-aside__row,
-		.blog-taxonomy-aside__chip {
+		.blog-taxonomy-aside__row {
 			transition: none;
 		}
 	}

@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import BlogArchiveView from "../../../../../../components/blog/BlogArchiveView.astro";
 import { getBlogCoverOgUrl } from "../../../../../../data/blogCovers";
-import Layout from "../../../../../../layouts/Layout.astro";
+import BlogLayout from "../../../../../../layouts/BlogLayout.astro";
 import { supportedLanguages } from "../../../../../../types/translations";
 import {
 	findTagSummary,
@@ -99,8 +99,9 @@ const metadata = createArchiveMetadata(lang, {
 });
 ---
 
-<Layout {...metadata}>
+<BlogLayout {...metadata}>
 	<BlogArchiveView
+		addStoriesBottomPadding
 		breadcrumbs={breadcrumbs}
 		description={pageDescription}
 		eyebrow={t(lang, "blog.topics_title")}
@@ -111,6 +112,7 @@ const metadata = createArchiveMetadata(lang, {
 			{ title: t(lang, "blog.categories_title"), items: categories, mode: "list" },
 			{ title: t(lang, "blog.topics_title"), items: tags, mode: "chips" },
 		]}
+		totalItems={postsForTag.length}
 		title={pageTitle}
 	/>
-</Layout>
+</BlogLayout>

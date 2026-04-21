@@ -14,8 +14,10 @@ import type { LayoutMetadataProps } from "../utils/metadata";
 import { resolveLayoutChrome } from "../utils/layout";
 
 interface Props extends LayoutMetadataProps {
+	bodyClass?: string;
 	hideHeader?: boolean;
 	hideFooter?: boolean;
+	mainClass?: string;
 }
 
 const {
@@ -34,8 +36,10 @@ const {
 	structuredData,
 	paginationPrevUrl,
 	paginationNextUrl,
+	bodyClass = "",
 	hideHeader = false,
 	hideFooter = false,
+	mainClass = "",
 } = Astro.props as Props;
 
 const localeConfig = getLocaleConfig(lang);
@@ -73,7 +77,7 @@ const headProps = {
 	lang={getHtmlLanguage(lang)}
 >
 	<LayoutHead {...headProps} localeBodyClass={localeConfig.bodyClass} />
-	<body class={`min-h-screen antialiased ${localeConfig.bodyClass}`}>
+	<body class:list={["min-h-screen antialiased", localeConfig.bodyClass, bodyClass]}>
 		<a
 			class="sr-only absolute left-4 top-4 z-50 rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-white focus:not-sr-only"
 			href="#main-content"
@@ -85,7 +89,7 @@ const headProps = {
 		)}
 		{!hideHeader && <Header lang={lang} localeSwitcherPaths={resolvedLocaleSwitcherPaths} />}
 		{!hideHeader && <MobileStickyNav lang={lang} localeSwitcherPaths={resolvedLocaleSwitcherPaths} />}
-		<main class="min-h-[calc(100vh-137px)]" id="main-content">
+		<main class:list={["min-h-[calc(100vh-137px)]", mainClass]} id="main-content">
 			<slot />
 		</main>
 		{!hideFooter && <Footer lang={lang} />}

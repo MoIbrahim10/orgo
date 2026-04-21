@@ -41,47 +41,37 @@ const pillars = [
 <style>
 	.blog-journal-panel {
 		background:
-			linear-gradient(
-				180deg,
-				color-mix(in srgb, var(--page-surface-muted) 72%, var(--page-bg)),
-				color-mix(in srgb, var(--page-surface-solid) 88%, var(--page-bg))
+			radial-gradient(
+				circle at 16% 8%,
+				color-mix(in srgb, var(--action-link-primary-gradient-start) 18%, transparent),
+				transparent 20rem
 			);
-		border-radius: 0.5rem;
+		color: var(--page-text-strong);
 		display: grid;
-		gap: 1.5rem;
-		padding: clamp(1.25rem, 4vw, 2rem);
-		position: relative;
-		overflow: hidden;
-	}
-
-	.blog-journal-panel::before {
-		background: linear-gradient(
-			135deg,
-			color-mix(in srgb, var(--action-link-primary-gradient-start) 22%, transparent),
-			color-mix(in srgb, var(--action-link-primary-gradient-end) 16%, transparent)
+		gap: clamp(1.45rem, 3vw, 2.6rem);
+		margin-inline: calc(50% - 50vw);
+		overflow: clip;
+		padding-block: clamp(2.3rem, 5.5vw, 4.8rem);
+		padding-inline: max(
+			var(--blog-page-inline, var(--layout-gutter)),
+			calc((100vw - var(--blog-page-max-shell, var(--layout-width-navbar))) / 2 + var(--blog-page-inline, var(--layout-gutter)))
 		);
-		content: "";
-		height: 14rem;
-		inset: auto -4rem -8rem auto;
-		position: absolute;
-		width: 14rem;
+		position: relative;
 	}
 
 	.blog-journal-panel__intro,
 	.blog-journal-panel__copy {
 		display: grid;
-		gap: 0.7rem;
-		position: relative;
-		z-index: 1;
+		gap: 0.72rem;
 	}
 
 	.blog-journal-panel__eyebrow,
 	.blog-journal-panel__number {
 		color: var(--page-text-muted);
 		font-size: 0.72rem;
-		font-weight: 600;
-		letter-spacing: 0.14em;
-		line-height: 1.4;
+		font-weight: 650;
+		letter-spacing: 0;
+		line-height: 1.45;
 		margin: 0;
 		text-transform: uppercase;
 	}
@@ -89,61 +79,75 @@ const pillars = [
 	.blog-journal-panel__title {
 		color: var(--page-text-strong);
 		font-family: var(--font-display-latin), var(--font-display-arabic), serif;
-		font-size: clamp(2.2rem, 4vw, 3.3rem);
+		font-size: clamp(3rem, 7vw, 5.9rem);
 		font-weight: 600;
-		line-height: 0.98;
+		letter-spacing: 0;
+		line-height: 0.9;
 		margin: 0;
-		max-width: 9ch;
+		text-wrap: balance;
 	}
 
 	.blog-journal-panel__lead,
 	.blog-journal-panel__item-body {
 		color: var(--page-text-soft);
-		font-size: 1rem;
+		font-size: clamp(1rem, 1.25vw, 1.1rem);
 		line-height: 1.78;
 		margin: 0;
-		max-width: 64ch;
+		max-width: 66ch;
 	}
 
 	.blog-journal-panel__list {
 		display: grid;
-		gap: 1rem;
+		gap: 0.9rem;
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		position: relative;
-		z-index: 1;
 	}
 
 	.blog-journal-panel__item {
+		background:
+			linear-gradient(145deg, color-mix(in srgb, var(--card-accent) 28%, transparent), transparent 70%),
+			color-mix(in srgb, white 6%, transparent);
+		border: 1px solid color-mix(in srgb, var(--card-accent) 38%, transparent);
+		border-radius: 0.5rem;
+		box-shadow: 0 1.25rem 3rem color-mix(in srgb, #000 24%, transparent);
 		display: grid;
-		gap: 0.5rem;
-		padding-top: 1rem;
-		border-top: 1px solid color-mix(in srgb, var(--page-border) 46%, transparent);
+		gap: 0.8rem;
+		min-height: clamp(12rem, 17vw, 15rem);
+		padding: clamp(1rem, 2vw, 1.35rem);
+	}
+
+	.blog-journal-panel__item:nth-child(1) {
+		--card-accent: var(--action-link-primary-gradient-start);
+	}
+
+	.blog-journal-panel__item:nth-child(2) {
+		--card-accent: var(--action-link-primary-gradient-middle);
+	}
+
+	.blog-journal-panel__item:nth-child(3) {
+		--card-accent: var(--action-link-primary-gradient-end);
+	}
+
+	.blog-journal-panel__number {
+		color: color-mix(in srgb, var(--card-accent) 72%, var(--page-text-strong));
+		font-family: var(--font-display-latin), var(--font-display-arabic), serif;
+		font-size: clamp(2.4rem, 5vw, 4.2rem);
+		line-height: 1;
 	}
 
 	.blog-journal-panel__item-title {
 		color: var(--page-text-strong);
-		font-size: 1.08rem;
-		font-weight: 600;
-		line-height: 1.35;
+		font-size: clamp(1.22rem, 2vw, 1.6rem);
+		font-weight: 650;
+		letter-spacing: 0;
+		line-height: 1.08;
 		margin: 0;
 	}
 
-	@media (min-width: 880px) {
-		.blog-journal-panel {
-			align-items: start;
-			grid-template-columns: minmax(0, 0.78fr) minmax(0, 1fr);
-			gap: 2rem;
-		}
-
+	@media (min-width: 760px) {
 		.blog-journal-panel__list {
-			padding-top: 0.35rem;
-		}
-
-		.blog-journal-panel__item {
-			grid-template-columns: auto minmax(0, 1fr);
-			gap: 1rem;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
 		}
 	}
 </style>
