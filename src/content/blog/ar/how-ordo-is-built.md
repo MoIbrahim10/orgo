@@ -3,7 +3,7 @@ isDraft: false
 title: "كيف بُني Orgo من الداخل"
 category: "البنية"
 translationGroup: "architecture"
-author: "ahmed-ali"
+author: "youssef-mansour"
 image:
   src: "/images/blog/ordo-ar-architecture.jpg"
   alt: "رسم تجريدي يعبّر عن البنية الداخلية لـ Orgo"

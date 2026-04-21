@@ -3,7 +3,7 @@ isDraft: false
 title: "التصميم للتركيز والبساطة"
 category: "التصميم"
 translationGroup: "focus"
-author: "ahmed-ali"
+author: "youssef-mansour"
 image:
   src: "/images/blog/focus-ar.jpg"
   alt: "واجهة مستخدم بسيطة لتطبيق Orgo"

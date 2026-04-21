@@ -3,7 +3,7 @@ isDraft: false
 title: "The shape of a good week"
 category: "Workflow"
 translationGroup: "shape-of-a-week"
-author: "jane-doe"
+author: "sarah-mitchell"
 image:
   src: "/images/blog/the-shape-of-a-good-week.jpg"
   alt: "Planner spread with a few clear priorities"

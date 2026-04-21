@@ -3,7 +3,7 @@ isDraft: false
 title: "Designing search for memory, not just retrieval"
 category: "Design"
 translationGroup: "search-memory"
-author: "john-doe"
+author: "marcus-lindgren"
 image:
   src: "/images/blog/search-built-for-memory.jpg"
   alt: "Abstract search interface with layered notes"

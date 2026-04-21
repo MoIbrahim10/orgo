@@ -3,7 +3,7 @@ isDraft: false
 title: "Introducing Orgo"
 category: "Product"
 translationGroup: "introduction"
-author: "john-doe"
+author: "marcus-lindgren"
 image:
   src: "/images/blog/ordo-intro.jpg"
   alt: "Screenshot of Ordo in action"

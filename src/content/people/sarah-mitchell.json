@@ -1,12 +1,12 @@
 {
-	"id": "jane-doe",
+	"id": "sarah-mitchell",
 	"order": 1,
 	"location": "Brooklyn, NY, United States",
 	"email": "sarah.mitchell@orgo.app",
 	"portfolio": "https://x.com/m0code",
 	"availability": "Open to advisory on product narrative, launch rituals, and editorial systems.",
 	"image": {
-		"src": "/images/authors/jane.jpg",
+		"src": "/images/people/sarah-mitchell.png",
 		"alt": "Illustrated portrait placeholder for Sarah Mitchell"
 	},
 	"localized": {

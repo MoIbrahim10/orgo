@@ -3,7 +3,7 @@ isDraft: false
 title: "A weekly review that does not feel like homework"
 category: "Rituals"
 translationGroup: "weekly-review"
-author: "jane-doe"
+author: "sarah-mitchell"
 image:
   src: "/images/blog/weekly-review-without-dread.jpg"
   alt: "Open notebook with a simple weekly checklist"

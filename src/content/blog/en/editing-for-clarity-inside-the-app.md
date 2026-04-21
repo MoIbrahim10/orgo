@@ -3,7 +3,7 @@ isDraft: false
 title: "Editing for clarity inside the app"
 category: "Design"
 translationGroup: "editing-for-clarity"
-author: "john-doe"
+author: "marcus-lindgren"
 image:
   src: "/images/blog/editing-for-clarity-inside-the-app.jpg"
   alt: "Close-up of text revisions in an interface mockup"

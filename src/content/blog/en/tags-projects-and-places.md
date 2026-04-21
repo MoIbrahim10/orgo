@@ -3,7 +3,7 @@ isDraft: false
 title: "Tags, projects, and places: choosing the right home for a note"
 category: "Workflow"
 translationGroup: "tags-projects-places"
-author: "jane-doe"
+author: "sarah-mitchell"
 image:
   src: "/images/blog/tags-projects-and-places.jpg"
   alt: "Desk with index cards sorted into groups"

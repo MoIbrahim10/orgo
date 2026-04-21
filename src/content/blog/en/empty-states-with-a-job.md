@@ -3,7 +3,7 @@ isDraft: false
 title: "Empty states should have a job"
 category: "Design"
 translationGroup: "empty-states"
-author: "john-doe"
+author: "marcus-lindgren"
 image:
   src: "/images/blog/empty-states-with-a-job.jpg"
   alt: "Minimal empty interface with a single focused prompt"

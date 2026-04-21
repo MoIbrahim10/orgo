@@ -1,44 +1,119 @@
 ---
-import { Image } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
-import teamJane from '../../assets/team-1.png';
-import teamJohn from '../../assets/team-2.png';
-import teamAhmed from '../../assets/team-3.png';
-
 interface Props {
-	personId: string;
+	personName?: string;
+	imageSrc?: string;
 	alt: string;
 	class?: string;
+	size?: "card" | "compact";
 }
 
-const teamByPersonId: Record<string, ImageMetadata> = {
-	'jane-doe': teamJane,
-	'john-doe': teamJohn,
-	'ahmed-ali': teamAhmed,
-};
+const {
+	personName,
+	imageSrc,
+	alt,
+	class: className = "",
+	size = "card",
+} = Astro.props as Props;
 
-const { personId, alt, class: className = '' } = Astro.props as Props;
-const src = teamByPersonId[personId] ?? teamJane;
+const hasImage = Boolean(imageSrc);
+const initials = (personName ?? alt)
+	.split(/\s+/u)
+	.filter(Boolean)
+	.slice(0, 2)
+	.map((segment) => segment[0]?.toUpperCase() ?? "")
+	.join("");
 ---
 
-<div class:list={['person-avatar', className]}>
-	<Image alt={alt} class="person-avatar__img" height={320} src={src} widths={[200, 280, 360]} sizes="(max-width: 900px) 40vw, 200px" />
+<div
+	class:list={["person-avatar", `person-avatar--${size}`, className]}
+	data-has-image={hasImage ? "true" : "false"}
+>
+	{
+		hasImage && (
+			<img
+				alt={alt}
+				class="person-avatar__img"
+				loading="lazy"
+				decoding="async"
+				src={imageSrc}
+				onerror="this.closest('.person-avatar')?.setAttribute('data-image-error','true')"
+			/>
+		)
+	}
+	<div class="person-avatar__placeholder" aria-hidden="true">
+		<svg class="person-avatar__placeholder-svg" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" fill="none">
+			<rect x="1.5" y="1.5" width="157" height="157" rx="28" stroke="currentColor" stroke-opacity="0.2" stroke-width="3" />
+			<circle cx="80" cy="73" r="44" stroke="currentColor" stroke-opacity="0.18" stroke-width="2.5" />
+			<circle cx="80" cy="73" r="27" stroke="currentColor" stroke-opacity="0.36" stroke-width="2.5" />
+			<rect x="51" y="112" width="58" height="24" rx="12" stroke="currentColor" stroke-opacity="0.32" stroke-width="2.5" />
+			<circle cx="80" cy="73" r="8.5" fill="currentColor" fill-opacity="0.2" />
+			<path d="M62 96c6.5-7 29.5-7 36 0" stroke="currentColor" stroke-opacity="0.35" stroke-width="2.5" stroke-linecap="round" />
+		</svg>
+		<span class="person-avatar__initials">{initials}</span>
+	</div>
 </div>
 
 <style>
 	.person-avatar {
 		align-items: center;
+		background: color-mix(in srgb, var(--page-surface-muted) 88%, transparent);
+		border: 1px solid color-mix(in srgb, var(--page-border) 82%, transparent);
+		border-radius: 1rem;
 		display: flex;
 		justify-content: center;
+		overflow: hidden;
+		position: relative;
 		width: 100%;
+	}
+
+	.person-avatar--card {
+		aspect-ratio: 5 / 4;
+		max-width: 11.5rem;
+	}
+
+	.person-avatar--compact {
+		border-radius: 999px;
+		height: 4rem;
+		width: 4rem;
 	}
 
 	.person-avatar__img {
 		display: block;
-		height: auto;
-		max-height: 9.5rem;
-		width: auto;
-		max-width: 100%;
-		object-fit: contain;
+		height: 100%;
+		object-fit: cover;
+		width: 100%;
+	}
+
+	.person-avatar__placeholder {
+		align-items: center;
+		color: color-mix(in srgb, var(--foreground-primary) 62%, var(--foreground-tertiary));
+		display: grid;
+		inset: 0;
+		justify-items: center;
+		padding: 0.55rem;
+		position: absolute;
+	}
+
+	.person-avatar__placeholder-svg {
+		height: 100%;
+		width: 100%;
+	}
+
+	.person-avatar__initials {
+		font-size: 0.68rem;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		position: absolute;
+		text-transform: uppercase;
+		top: 50%;
+		transform: translateY(1.8rem);
+	}
+
+	.person-avatar[data-has-image="true"]:not([data-image-error="true"]) .person-avatar__placeholder {
+		display: none;
+	}
+
+	.person-avatar[data-image-error="true"] .person-avatar__img {
+		display: none;
 	}
 </style>

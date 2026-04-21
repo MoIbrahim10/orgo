@@ -3,7 +3,7 @@ isDraft: false
 title: "Shipping quietly and often"
 category: "Product"
 translationGroup: "shipping-rhythm"
-author: "jane-doe"
+author: "sarah-mitchell"
 image:
   src: "/images/blog/shipping-quietly-and-often.jpg"
   alt: "Soft-lit desk with release notes on screen"

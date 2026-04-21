@@ -3,7 +3,7 @@ isDraft: false
 title: "Designing notifications that do not steal the day"
 category: "Design"
 translationGroup: "calm-notifications"
-author: "john-doe"
+author: "marcus-lindgren"
 image:
   src: "/images/blog/quiet-notifications.jpg"
   alt: "Minimal phone screen with a restrained notification"

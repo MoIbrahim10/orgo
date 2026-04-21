@@ -3,7 +3,7 @@ isDraft: false
 title: "The post-meeting cleanup checklist"
 category: "Rituals"
 translationGroup: "meeting-cleanup"
-author: "jane-doe"
+author: "sarah-mitchell"
 image:
   src: "/images/blog/meeting-cleanup-checklist.jpg"
   alt: "Notebook page with a short post-meeting checklist"

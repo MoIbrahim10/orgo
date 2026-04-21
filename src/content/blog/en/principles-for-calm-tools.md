@@ -3,7 +3,7 @@ isDraft: false
 title: "Product principles for calm tools"
 category: "Product"
 translationGroup: "calm-tools"
-author: "jane-doe"
+author: "sarah-mitchell"
 image:
   src: "/images/blog/principles-for-calm-tools.jpg"
   alt: "Minimal desk scene with soft light and a planner"

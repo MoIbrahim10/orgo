@@ -3,7 +3,7 @@ isDraft: false
 title: "Building an RTL design system without treating Arabic as an exception"
 category: "Localization"
 translationGroup: "rtl-design-system"
-author: "ahmed-ali"
+author: "youssef-mansour"
 image:
   src: "/images/blog/building-an-rtl-design-system.jpg"
   alt: "Abstract interface with mirrored layout blocks"

@@ -3,7 +3,7 @@ isDraft: false
 title: "Translation is product work"
 category: "Localization"
 translationGroup: "translation-product-work"
-author: "ahmed-ali"
+author: "youssef-mansour"
 image:
   src: "/images/blog/translation-is-product-work.jpg"
   alt: "Text layers in Arabic and English over interface blocks"

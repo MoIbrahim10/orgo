@@ -4,13 +4,12 @@ import { getCollection, getEntry, getEntries, render } from 'astro:content';
 import BlogCoverMedia from '../../../components/blog/BlogCoverMedia.astro';
 import BlogSubscribeBand from '../../../components/blog/BlogSubscribeBand.astro';
 import SiteMainStack from '../../../components/layout/SiteMainStack.astro';
-import ResponsiveMedia from '../../../components/common/ResponsiveMedia.astro';
+import PersonAvatar from '../../../components/people/PersonAvatar.astro';
 import TranslationAvailabilityNotice from '../../../components/TranslationAvailabilityNotice.astro';
 import ActionLink from '../../../components/ui/ActionLink.astro';
 import Breadcrumbs from '../../../components/ui/Breadcrumbs.astro';
 import Container from '../../../components/ui/Container.astro';
 import { getBlogCoverOgUrl } from '../../../data/blogCovers';
-import { getAuthorAvatarImage } from '../../../data/media';
 import { formatLocalizedDate } from '../../../data/site';
 import Layout from '../../../layouts/Layout.astro';
 import { getBlogCategoryPath, getBlogEntrySlug, getBlogIndexPath, getBlogLocaleAlternates, getBlogLocaleSwitcherPaths, getBlogPostPath, getBlogTagPath, getBlogTranslationEntries, getCategorySlug, getRelatedBlogPosts, getTagSlug } from '../../../utils/blog';
@@ -44,7 +43,6 @@ const relatedPosts = getRelatedBlogPosts({
 const translationEntries = getBlogTranslationEntries(page, allPosts);
 const localeAlternates = getBlogLocaleAlternates(translationEntries);
 const localeSwitcherPaths = getBlogLocaleSwitcherPaths(localeAlternates);
-const authorAvatar = getAuthorAvatarImage(author?.id ?? authorEntry?.data.id);
 const formattedDate = formatLocalizedDate(lang, page.data.publishDate);
 const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined;
 const coverOgUrl = getBlogCoverOgUrl(page.data.translationGroup);
@@ -143,18 +141,13 @@ const { Content } = await render(page);
             <div class="rounded-[1.75rem] border border-(--page-border) bg-(--page-surface-solid) p-5 shadow-(--theme-shadow-soft)">
               <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
                 <div class="flex items-center gap-4">
-                  {
-                    authorAvatar && (
-                      <ResponsiveMedia
-                        alt={author?.image?.alt ?? author?.name ?? t(lang, 'blog.unknown_author')}
-                        height={64}
-                        imgClass="h-16 w-16 rounded-full border border-(--page-border) bg-(--page-surface-muted) object-cover"
-                        mode="image"
-                        src={authorAvatar}
-                        width={64}
-                      />
-                    )
-                  }
+                  <PersonAvatar
+                    alt={author?.image?.alt ?? author?.name ?? t(lang, 'blog.unknown_author')}
+                    class="shrink-0"
+                    imageSrc={author?.image?.src}
+                    personName={author?.name}
+                    size="compact"
+                  />
                   <div class="min-w-0">
                     <p class="text-xs font-medium uppercase tracking-[0.2em] text-(--page-text-muted)">
                       {t(lang, 'blog.about_author')}

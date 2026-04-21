@@ -1,12 +1,12 @@
 {
-	"id": "john-doe",
+	"id": "marcus-lindgren",
 	"order": 2,
 	"location": "London, United Kingdom",
 	"email": "marcus.lindgren@orgo.app",
 	"portfolio": "https://x.com/m0code",
 	"availability": "Design systems reviews, interface audits, and product UX partnerships.",
 	"image": {
-		"src": "/images/authors/john.jpg",
+		"src": "/images/people/marcus-lindgren.png",
 		"alt": "Illustrated portrait placeholder for Marcus Lindgren"
 	},
 	"localized": {

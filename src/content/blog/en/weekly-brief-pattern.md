@@ -3,7 +3,7 @@ isDraft: false
 title: "The weekly brief pattern"
 category: "Workflow"
 translationGroup: "weekly-brief"
-author: "jane-doe"
+author: "sarah-mitchell"
 image:
   src: "/images/blog/weekly-brief-pattern.jpg"
   alt: "Single-page weekly brief with concise sections"

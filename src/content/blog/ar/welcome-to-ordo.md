@@ -3,7 +3,7 @@ isDraft: false
 title: "مرحبًا بك في Orgo"
 category: "المنتج"
 translationGroup: "introduction"
-author: "ahmed-ali"
+author: "youssef-mansour"
 image:
   src: "/images/blog/ordo-ar-intro.jpg"
   alt: "واجهة Orgo باللغة العربية"

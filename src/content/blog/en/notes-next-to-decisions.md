@@ -3,7 +3,7 @@ isDraft: false
 title: "Why decisions need to live next to notes"
 category: "Product"
 translationGroup: "decisions-in-context"
-author: "jane-doe"
+author: "sarah-mitchell"
 image:
   src: "/images/blog/notes-next-to-decisions.jpg"
   alt: "Editorial still life of a notebook beside a planner"

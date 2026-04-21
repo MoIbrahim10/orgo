@@ -24,7 +24,8 @@ const { lang, people } = Astro.props as Props;
             <div class="person-card__avatar">
               <PersonAvatar
                 alt={localizedPerson.image?.alt ?? localizedPerson.name}
-                personId={person.id}
+                imageSrc={localizedPerson.image?.src}
+                personName={localizedPerson.name}
               />
             </div>
           </div>

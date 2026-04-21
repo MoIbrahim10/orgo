@@ -3,7 +3,7 @@ isDraft: false
 title: "Architecture that favors context over cleverness"
 category: "Architecture"
 translationGroup: "context-over-cleverness"
-author: "jane-doe"
+author: "sarah-mitchell"
 image:
   src: "/images/blog/context-over-cleverness.jpg"
   alt: "Orderly abstract blocks suggesting software structure"

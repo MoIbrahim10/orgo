@@ -3,7 +3,7 @@ isDraft: false
 title: "Deep Dive: How Orgo Works"
 category: "Architecture"
 translationGroup: "architecture"
-author: "jane-doe"
+author: "sarah-mitchell"
 image:
   src: "/images/blog/deep-dive.jpg"
   alt: "Diagrams explaining Orgo architecture"

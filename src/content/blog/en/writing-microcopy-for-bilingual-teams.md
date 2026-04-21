@@ -3,7 +3,7 @@ isDraft: false
 title: "Writing microcopy for bilingual teams"
 category: "Localization"
 translationGroup: "bilingual-microcopy"
-author: "ahmed-ali"
+author: "youssef-mansour"
 image:
   src: "/images/blog/writing-microcopy-for-bilingual-teams.jpg"
   alt: "Close crop of interface labels in Arabic and English"

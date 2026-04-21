@@ -3,7 +3,7 @@ isDraft: false
 title: "Calendar hygiene for small teams"
 category: "Workflow"
 translationGroup: "calendar-hygiene"
-author: "jane-doe"
+author: "sarah-mitchell"
 image:
   src: "/images/blog/calendar-hygiene-for-small-teams.jpg"
   alt: "Clean weekly calendar with room between commitments"

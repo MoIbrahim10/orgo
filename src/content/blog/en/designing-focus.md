@@ -3,7 +3,7 @@ isDraft: false
 title: "Designing for Focus"
 category: "Design"
 translationGroup: "focus"
-author: "john-doe"
+author: "marcus-lindgren"
 image:
   src: "/images/blog/focus-design.jpg"
   alt: "Minimal interface of Orgo"
