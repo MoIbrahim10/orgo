@@ -1,66 +1,71 @@
 {
-	"name": "orgo",
-	"version": "0.0.1",
-	"private": true,
-	"license": "MIT",
-	"author": "Mo Ibrahim",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/MoIbrahim10/orgo"
-	},
-	"type": "module",
-	"scripts": {
-		"dev": "astro dev",
-		"start": "astro dev --open",
-		"build": "astro check && astro build",
-		"preview": "astro preview",
-		"astro": "astro",
-		"test": "bun test",
-		"check:i18n": "ts-node src/utils/checkTranslations.ts",
-		"check:format": "oxfmt --check .",
-		"check:build": "bun run build",
-		"format": "oxfmt .",
-		"lint:oxc": "oxlint .",
-		"lint:oxc:ci": "oxlint . --deny-warnings",
-		"lint:oxc:fix": "oxlint --fix .",
-		"lint:style": "stylelint \"src/**/*.{css,scss}\"",
-		"lint:style:fix": "stylelint \"src/**/*.{css,scss}\" --fix",
-		"check:lint": "bun run lint:oxc && bun run lint:style",
-		"lint": "bun run check:format && bun run check:lint",
-		"lint:fix": "bun run format && bun run lint:oxc:fix && bun run lint:style:fix",
-		"ci": "bun run check:i18n && bun run check:format && bun run lint:oxc:ci && bun run lint:style",
-		"audit:bun": "bun audit",
-		"audit:npm": "bun ./scripts/npm-audit.mjs",
-		"check:audit": "bun run audit:bun && bun run audit:npm",
-		"verify": "bun run check:i18n && bun run lint && bun run check:build && bun run check:audit",
-		"commit": "gitmoji -c"
-	},
-	"dependencies": {
-		"@astrojs/check": "^0.9.8",
-		"@fontsource/inter": "^5.2.8",
-		"@fontsource/playfair-display": "^5.2.8",
-		"@tailwindcss/vite": "^4.2.2",
-		"astro": "^6.1.5",
-		"tailwindcss": "^4.2.2"
-	},
-	"devDependencies": {
-		"@commitlint/cli": "^20.5.0",
-		"@commitlint/config-conventional": "^20.5.0",
-		"@types/node": "24.12.2",
-		"bun-types": "^1.3.11",
-		"lefthook": "^2.1.5",
-		"oxfmt": "^0.44.0",
-		"oxlint": "^1.59.0",
-		"stylelint": "^17.6.0",
-		"stylelint-config-standard": "^40.0.0",
-		"ts-node": "^10.9.2"
-	},
-	"overrides": {
-		"yaml": "^2.8.3"
-	},
-	"engines": {
-		"bun": ">=1.3.10",
-		"node": ">=24.0.0"
-	},
-	"packageManager": "bun@1.3.10"
+  "name": "orgo",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "author": "Mo Ibrahim",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MoIbrahim10/orgo"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev --open",
+    "build": "astro check && astro build",
+    "preview": "bun run build && wrangler dev",
+    "astro": "astro",
+    "test": "bun test",
+    "check:i18n": "ts-node src/utils/checkTranslations.ts",
+    "check:format": "oxfmt --check .",
+    "check:build": "bun run build",
+    "format": "oxfmt .",
+    "lint:oxc": "oxlint .",
+    "lint:oxc:ci": "oxlint . --deny-warnings",
+    "lint:oxc:fix": "oxlint --fix .",
+    "lint:style": "stylelint \"src/**/*.{css,scss}\"",
+    "lint:style:fix": "stylelint \"src/**/*.{css,scss}\" --fix",
+    "check:lint": "bun run lint:oxc && bun run lint:style",
+    "lint": "bun run check:format && bun run check:lint",
+    "lint:fix": "bun run format && bun run lint:oxc:fix && bun run lint:style:fix",
+    "ci": "bun run check:i18n && bun run check:format && bun run lint:oxc:ci && bun run lint:style",
+    "audit:bun": "bun audit",
+    "audit:npm": "bun ./scripts/npm-audit.mjs",
+    "check:audit": "bun run audit:bun && bun run audit:npm",
+    "verify": "bun run check:i18n && bun run lint && bun run check:build && bun run check:audit",
+    "commit": "gitmoji -c",
+    "generate-types": "wrangler types",
+    "deploy": "bun run build && wrangler deploy"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.8",
+    "@astrojs/cloudflare": "^13.2.1",
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/playfair-display": "^5.2.8",
+    "@tailwindcss/vite": "^4.2.2",
+    "astro": "^6.1.5",
+    "tailwindcss": "^4.2.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@types/node": "24.12.2",
+    "bun-types": "^1.3.11",
+    "lefthook": "^2.1.5",
+    "oxfmt": "^0.44.0",
+    "oxlint": "^1.59.0",
+    "stylelint": "^17.6.0",
+    "stylelint-config-standard": "^40.0.0",
+    "ts-node": "^10.9.2",
+    "wrangler": "^4.84.1"
+  },
+  "overrides": {
+    "yaml": "^2.8.3",
+    "vite": "^7"
+  },
+  "engines": {
+    "bun": ">=1.3.10",
+    "node": ">=24.0.0"
+  },
+  "packageManager": "bun@1.3.10"
 }
