@@ -395,19 +395,19 @@ html[data-theme="dark"] :is(a, button, summary).bg-white:hover {
 /* Scroll-in reveal (home hero, feature spotlight, …) — paired with HomeRevealSectionsScript */
 [data-home-reveal-section] .home-reveal {
 	opacity: 0;
-	transform: translateY(20px);
+	transform: translateY(15px);
 }
 
 [data-home-reveal-section].is-visible .home-reveal {
-	animation: home-reveal 1s ease-out forwards;
-	animation-delay: calc(var(--reveal-index, 0) * 0.3s);
+	animation: home-reveal 550ms ease-out forwards;
+	animation-delay: calc(var(--reveal-index, 0) * 0.25s);
 }
 
 @keyframes home-reveal {
 	from {
 		filter: blur(5px);
 		opacity: 0;
-		transform: translateY(20px);
+		transform: translateY(15px);
 	}
 
 	to {

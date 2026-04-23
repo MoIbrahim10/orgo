@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import ActionLink from '../ui/ActionLink.astro';
 import type { HomePageContent } from '../../types/home';
 import type { Language } from '../../types/translations';
@@ -49,13 +48,15 @@ const heroCalImageAlt = t(lang, 'home.hero.visual_alt');
     </div>
   </div>
   <div class="home-hero__visual home-reveal" style="--reveal-index: 4">
-    <Image
+    <img
       alt={heroCalImageAlt}
       class="home-hero__cal"
       decoding="async"
       fetchpriority="high"
       loading="eager"
-      src={heroCalImage}
+      height={heroCalImage.height}
+      src={heroCalImage.src}
+      width={heroCalImage.width}
     />
   </div>
 </section>
