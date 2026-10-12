@@ -9,19 +9,19 @@ const siteUrl = process.env.SITE_URL;
 
 // https://astro.build/config
 export default defineConfig({
-  ...(siteUrl ? { site: siteUrl } : {}),
+	...(siteUrl ? { site: siteUrl } : {}),
 
-  vite: {
-      plugins: [tailwindcss({ applyBaseStyles: false })],
+	vite: {
+		plugins: [tailwindcss({ applyBaseStyles: false })],
 	},
 
-  i18n: {
-      locales,
-      defaultLocale: defaultLang,
-      routing: {
-          prefixDefaultLocale: true,
-      },
+	i18n: {
+		locales,
+		defaultLocale: defaultLang,
+		routing: {
+			prefixDefaultLocale: true,
+		},
 	},
 
-  adapter: cloudflare(),
+	adapter: cloudflare(),
 });
