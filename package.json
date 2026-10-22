@@ -39,11 +39,11 @@
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.9.8",
-		"@astrojs/cloudflare": "^13.2.1",
+		"@astrojs/cloudflare": "^13.7.0",
 		"@fontsource/inter": "^5.2.8",
 		"@fontsource/playfair-display": "^5.2.8",
 		"@tailwindcss/vite": "^4.2.2",
-		"astro": "^6.1.5",
+		"astro": "^6.4.8",
 		"tailwindcss": "^4.2.2"
 	},
 	"devDependencies": {
@@ -57,9 +57,10 @@
 		"stylelint": "^17.6.0",
 		"stylelint-config-standard": "^40.0.0",
 		"ts-node": "^10.9.2",
-		"wrangler": "^4.84.1"
+		"wrangler": "^4.151.3"
 	},
 	"overrides": {
+		"tinypool": "2.1.2",
 		"vite": "^7",
 		"yaml": "^2.8.3"
 	},
