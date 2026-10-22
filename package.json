@@ -39,11 +39,11 @@
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.9.8",
-		"@astrojs/cloudflare": "^13.7.0",
+		"@astrojs/cloudflare": "^14.4.1",
 		"@fontsource/inter": "^5.2.8",
 		"@fontsource/playfair-display": "^5.2.8",
 		"@tailwindcss/vite": "^4.2.2",
-		"astro": "^6.4.8",
+		"astro": "^7.4.2",
 		"tailwindcss": "^4.2.2"
 	},
 	"devDependencies": {
@@ -61,7 +61,6 @@
 	},
 	"overrides": {
 		"tinypool": "2.1.2",
-		"vite": "^7",
 		"yaml": "^2.8.3"
 	},
 	"engines": {
