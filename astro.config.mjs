@@ -10,6 +10,8 @@ const siteUrl = process.env.SITE_URL;
 // https://astro.build/config
 export default defineConfig({
 	...(siteUrl ? { site: siteUrl } : {}),
+	// Preserve Astro 6's whitespace output after the Astro 7 default change.
+	compressHTML: true,
 
 	vite: {
 		plugins: [tailwindcss({ applyBaseStyles: false })],
